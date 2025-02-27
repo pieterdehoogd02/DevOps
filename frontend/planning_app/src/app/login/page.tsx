@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from 'react';
+// import react, { useState, useEffect } from 'react';
 
 function Login() {
 
@@ -8,3 +8,5 @@ function Login() {
         </div>
     );
 }
+
+export default Login;

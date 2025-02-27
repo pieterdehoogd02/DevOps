@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 
 export default function Home() {
 
@@ -32,10 +32,10 @@ function TopBar() {
         </div>
         <div className="absolute left-[88%] top-0 w-[10%] h-full flex flex-row justify-center items-center">
           <div className="relative flex left-0 top-0 w-[50%] h-[50%] justify-center items-center ">
-            <img src="./cog.png" className="w-[60%] h-[100%]"></img>
+            <img src="./cog.png" className="w-[60%] h-[100%]" alt="Profile settings"></img>
           </div>
           <div className="relative flex left-0 top-0 w-[50%] h-[50%] justify-center items-center ">
-            <img src="./ProfilePic.png" className="w-[60%] h-[100%]"></img>
+            <img src="./ProfilePic.png" className="w-[60%] h-[100%]" alt="Profile pic"></img>
           </div>
         </div>
       </div>
