@@ -11,7 +11,11 @@ const axios = require('axios');
 // Initialize Express app
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: '*', // or '*', but specify domain if possible for security
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
 
 // Set up session storage for Keycloak
 const memoryStore = new session.MemoryStore();
