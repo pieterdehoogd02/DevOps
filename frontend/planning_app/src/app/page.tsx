@@ -1,9 +1,79 @@
-// import Image from "next/image";
+'use client'
+
+import react, { useState, useEffect } from "react";
+import Login from "./login/page";
+import dotenv from 'dotenv';
+import axios from "axios";
+dotenv.config();
+
+
+// Load environment variables from the .env file
+
+const server_ip = "54.243.10.234:8080"
 
 export default function Home() {
 
+  const [loggedIn, setLogIn] = useState(false)
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
+  const loggingIn = async () => {
+    setLogIn(true)
+  }
+
+  useEffect(() => {
+    console.log('EC2 Keycloak URL:', server_ip);
+  }, []);
+
+
+  const handleLogin = async (username : string, password : string) => {
+    const url = `http://${server_ip}/realms/DevOpsProject/protocol/openid-connect/token`;
+
+    console.log("username = " + username + ", password = " + password)
+
+    const params = new URLSearchParams();
+    params.append("client_id", "DevOpsProjFrontend1"); // "your-client-id");
+    params.append("grant_type", "password");
+    params.append("username", username);
+    params.append("password", password);
+
+    try {
+      console.log("in try destination url = " + server_ip)
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: params
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Login failed:", errorData);
+            console.log("Login failed! Check credentials.");
+            return;
+        }
+
+        const data = await response.json();
+        console.log("Login success! Token:", data.access_token);
+
+        loggingIn() // sets the loggedIn to true so we can now enter the dashboard
+
+        // You could store the token in localStorage or state
+        localStorage.setItem("access_token", data.access_token);
+        console.log("Login successful!");
+    } catch (error) {
+        console.error("Error logging in:", error);
+        console.log("An error occurred while logging in.");
+    }
+  };
+
+
   return (
-    <Dashboard></Dashboard>
+    <div className="w-full h-full">
+      {!loggedIn && <Login username={username} setUsername={setUsername} password={password} setPassword={setPassword} handleLogin={handleLogin}></Login>}
+      {loggedIn && <Dashboard></Dashboard>}
+    </div>
   );
 }
 
