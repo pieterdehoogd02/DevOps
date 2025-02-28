@@ -45,7 +45,7 @@ app.get('/user', keycloak.protect("realm:CIO"), (req, res) => {
         user: req.kauth.grant.access_token.content // Return user data from Keycloak
     });
 });
-
+ 
 // ✅ Assign a user to a team (CIO only)
 app.post('/assign-team', keycloak.protect("realm:CIO"), async (req, res) => {
     try {
