@@ -34,7 +34,7 @@ export default function Home() {
     console.log("username = " + username + ", password = " + password)
 
     const params = new URLSearchParams();
-    params.append("client_id", "DevOpsProjFrontend1"); // "your-client-id");
+    params.append("client_id", "DevOpsFrontend1"); // "your-client-id");
     params.append("grant_type", "password");
     params.append("username", username);
     params.append("password", password);
