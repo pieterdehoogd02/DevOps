@@ -4,6 +4,8 @@ import react, { useState, useEffect } from "react";
 import Login from "./login/page";
 import dotenv from 'dotenv';
 import axios from "axios";
+import jwt from 'jsonwebtoken';
+
 dotenv.config();
 
 
@@ -56,6 +58,10 @@ export default function Home() {
 
         const data = await response.json();
         console.log("Login success! Token:", data.access_token);
+
+        const decoded = jwt.decode(data.access_token)
+
+        console.log("decoded response = " + JSON.stringify(decoded))
 
         loggingIn() // sets the loggedIn to true so we can now enter the dashboard
 
