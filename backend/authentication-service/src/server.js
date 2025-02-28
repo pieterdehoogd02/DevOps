@@ -51,7 +51,7 @@ app.post('/auth/login', async (req, res) => {
         params.append("grant_type", "password");
         params.append("username", username);
         params.append("password", password);
-        params.append("client_secret", process.env.KEYCLOAK_CLIENT_SECRET); // If your client requires a secret
+        // params.append("client_secret", process.env.KEYCLOAK_CLIENT_SECRET); // If your client requires a secret
 
         const response = await axios.post(
             `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
