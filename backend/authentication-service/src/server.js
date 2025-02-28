@@ -129,4 +129,6 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
 
 // Start Express server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`✅ Authentication Service running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('Server running on port 5001');
+});
