@@ -82,8 +82,8 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-// ✅ Protected route: Retrieve user info (Only accessible to CIOs)
-app.get('/user', keycloak.protect("realm:CIO"), (req, res) => {
+// ✅ Protected route: Retrieve user info 
+app.get('/user', keycloak.protect(), (req, res) => {
     res.json({
         message: 'User Authenticated',
         user: req.kauth.grant.access_token.content // Return user data from Keycloak
@@ -91,11 +91,9 @@ app.get('/user', keycloak.protect("realm:CIO"), (req, res) => {
 });
  
 // ✅ Assign a user to a team (CIO only)
-app.post('/assign-team', keycloak.protect("realm:CIO"), async (req, res) => {
+app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
     try {
         const roles = req.kauth.grant.access_token.content.realm_access.roles;
-
-        // Only allow CIOs to assign teams
         if (!roles.includes("CIO")) {
             return res.status(403).json({ error: "Access Denied" });
         }
@@ -105,19 +103,19 @@ app.post('/assign-team', keycloak.protect("realm:CIO"), async (req, res) => {
             return res.status(400).json({ error: "User ID and Team Name are required" });
         }
 
-        // Get the Keycloak Group (team) ID
-        const groupResponse = await axios.get(`${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`, {
-            headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` }
-        });
+        const groupResponse = await axios.get(
+            `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
+            { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+        );
 
-        // Find the group that matches teamName
         const team = groupResponse.data.find(group => group.name === teamName);
         if (!team) return res.status(404).json({ error: "Team not found" });
 
-        // Assign user to the team
-        await axios.put(`${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`, {}, {
-            headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` }
-        });
+        await axios.put(
+            `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
+            {},
+            { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+        );
 
         res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
     } catch (error) {
