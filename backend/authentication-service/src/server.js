@@ -42,34 +42,45 @@ app.get('/', (req, res) => {
 app.post('/auth/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
 
-        const params = new URLSearchParams();
-        params.append("client_id", process.env.KEYCLOAK_CLIENT_ID);
-        params.append("grant_type", "password");
-        params.append("username", username);
-        params.append("password", password);
-        // params.append("client_secret", process.env.KEYCLOAK_CLIENT_SECRET); // If your client requires a secret
-
+        // Request a token from Keycloak
         const response = await axios.post(
             `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
-            params,
+            new URLSearchParams({
+                client_id: process.env.KEYCLOAK_CLIENT_ID,
+                grant_type: 'password',
+                username,
+                password
+            }),
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         );
 
+        // Decode access token to get user roles
+        const accessToken = response.data.access_token;
+        const decodedToken = jwt.decode(accessToken);
+
+        if (!decodedToken || !decodedToken.realm_access) {
+            return res.status(403).json({ error: "User has no roles assigned" });
+        }
+
+        // Extract roles from Keycloak token
+        const userRoles = decodedToken.realm_access.roles;
+
         res.json({
-            access_token: response.data.access_token,
+            access_token: accessToken,
             refresh_token: response.data.refresh_token,
-            expires_in: response.data.expires_in
+            expires_in: response.data.expires_in,
+            roles: userRoles // ✅ Send roles back to the frontend
         });
 
     } catch (error) {
         res.status(401).json({ error: "Invalid credentials", details: error.response?.data || error.message });
     }
 });
-
 
 // ✅ Protected route: Retrieve user info (Only accessible to CIOs)
 app.get('/user', keycloak.protect("realm:CIO"), (req, res) => {
