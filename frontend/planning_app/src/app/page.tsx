@@ -28,51 +28,45 @@ export default function Home() {
   }, []);
 
 
-  const handleLogin = async (username : string, password : string) => {
-    const url = `http://54.164.144.99:5001/auth/login/`                 // URL for the AuthService 
+    const handleLogin = async (username: string, password: string) => {
+      const url = `http://54.164.144.99:5001/auth/login/`; // Your AuthService URL
 
-    console.log("username = " + username + ", password = " + password)
+      console.log("username = " + username + ", password = " + password);
 
-    const params = new URLSearchParams();
-    // params.append("client_id", "DevOpsFrontend1"); // "your-client-id");
-    // params.append("grant_type", "password");
-    params.append("username", username);
-    params.append("password", password);
+      try {
+          const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ username, password })  // Sending JSON directly
+          });
 
-    try {
-      console.log("in try destination url = " + server_ip)
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: params
-        });
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Login failed:", errorData);
+              console.log("Login failed! Check credentials.");
+              return;
+          }
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Login failed:", errorData);
-            console.log("Login failed! Check credentials.");
-            return;
-        }
+          const data = await response.json();
+          console.log("Login success! Token:", data.access_token);
 
-        const data = await response.json();
-        console.log("Login success! Token:", data.access_token);
+          const decoded = jwt.decode(data.access_token);
 
-        const decoded = jwt.decode(data.access_token)
+          console.log("decoded response = " + JSON.stringify(decoded));
 
-        console.log("decoded response = " + JSON.stringify(decoded))
+          loggingIn(); // sets the loggedIn to true so we can now enter the dashboard
 
-        loggingIn() // sets the loggedIn to true so we can now enter the dashboard
-
-        // You could store the token in localStorage or state
-        localStorage.setItem("access_token", data.access_token);
-        console.log("Login successful!");
-    } catch (error) {
-        console.error("Error logging in:", error);
-        console.log("An error occurred while logging in.");
-    }
+          // Store token somewhere (localStorage, sessionStorage, etc.)
+          localStorage.setItem("access_token", data.access_token);
+          console.log("Login successful!");
+      } catch (error) {
+          console.error("Error logging in:", error);
+          console.log("An error occurred while logging in.");
+      }
   };
+
 
 
   return (
