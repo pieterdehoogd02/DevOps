@@ -44,6 +44,10 @@ app.get('/', (req, res) => {
 
 // ✅ User Login Endpoint
 app.post('/auth/login', async (req, res) => {
+
+    console.log('Login request received');
+    console.log('Body:', req.body); // <-- log this to see exactly what arrives
+    
     try {
         console.log("here?")
 
