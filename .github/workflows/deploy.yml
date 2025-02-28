@@ -1,0 +1,43 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Change this if necessary
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
+
+    - name: Connect to EC2 and Deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          # Go to project directory
+          cd /home/ubuntu/authentication-service
+
+          # Ensure the correct repository URL is used
+          git remote set-url origin ${{ secrets.DEPLOY_REPO_URL }}
+          
+          # Pull latest changes from GitHub
+          git pull origin main
+
+          # Stop & Remove existing container
+          docker stop auth-service || true
+          docker rm auth-service || true
+
+          # Build and Run New Container
+          docker build -t authentication-service .
+          docker run -d -p 5001:5001 --name auth-service authentication-service
+
+          # Clean up unused Docker images
+          docker system prune -f
+        EOF
