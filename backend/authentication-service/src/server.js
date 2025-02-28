@@ -41,6 +41,8 @@ app.get('/', (req, res) => {
 // ✅ User Login Endpoint
 app.post('/auth/login', async (req, res) => {
     try {
+        console.log("here?")
+
         const { username, password } = req.body;
 
         console.log("username = " + username + " pswd = " + password)
