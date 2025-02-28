@@ -29,13 +29,13 @@ export default function Home() {
 
 
   const handleLogin = async (username : string, password : string) => {
-    const url = `http://${server_ip}/realms/DevOpsProject/protocol/openid-connect/token`;
+    const url = `http://54.164.144.99:5001/auth/login/`                 // URL for the AuthService 
 
     console.log("username = " + username + ", password = " + password)
 
     const params = new URLSearchParams();
-    params.append("client_id", "DevOpsFrontend1"); // "your-client-id");
-    params.append("grant_type", "password");
+    // params.append("client_id", "DevOpsFrontend1"); // "your-client-id");
+    // params.append("grant_type", "password");
     params.append("username", username);
     params.append("password", password);
 
