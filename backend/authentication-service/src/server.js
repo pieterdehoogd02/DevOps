@@ -38,6 +38,38 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
+// ✅ User Login Endpoint
+app.post('/auth/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ error: "Username and password are required" });
+        }
+
+        // Request a token from Keycloak
+        const response = await axios.post(
+            `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+            new URLSearchParams({
+                client_id: process.env.KEYCLOAK_CLIENT_ID,
+                grant_type: 'password',
+                username,
+                password
+            }),
+            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        );
+
+        res.json({
+            access_token: response.data.access_token,
+            refresh_token: response.data.refresh_token,
+            expires_in: response.data.expires_in
+        });
+
+    } catch (error) {
+        res.status(401).json({ error: "Invalid credentials", details: error.response?.data || error.message });
+    }
+});
+
 // ✅ Protected route: Retrieve user info (Only accessible to CIOs)
 app.get('/user', keycloak.protect("realm:CIO"), (req, res) => {
     res.json({
