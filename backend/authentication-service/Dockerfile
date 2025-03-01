@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5001
 
 # Define the command to start the service
-CMD ["node", "./src/server.js"]
+CMD ["node", "src/server.js"]
