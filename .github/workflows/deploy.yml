@@ -23,8 +23,8 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           
           # Go to project directory
-          mkdir authentication-service 
-          cd /home/ubuntu/authentication-service
+          mkdir app
+          cd /home/ubuntu/app
   
           # Test if the .git directory exists and if not, initialize it
           if [ -d ".git" ]; then
@@ -39,6 +39,9 @@ jobs:
           
           # Pull latest changes from GitHub
           git pull origin main
+
+          # go to the auth service directory
+          cd backend/authentication-service
 
 
           # Stop & Remove existing container
