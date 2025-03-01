@@ -40,6 +40,7 @@ jobs:
           # Pull latest changes from GitHub
           git pull origin main
 
+          
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
