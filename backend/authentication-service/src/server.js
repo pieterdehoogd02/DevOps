@@ -12,6 +12,7 @@ const axios = require('axios');
 // Initialize Express app
 const app = express();
 app.use(express.json());
+app.disable('strict routing'); // This makes Express treat /test and /test/ as the same route
 app.use(cors({
     origin: '*', // or '*', but specify domain if possible for security
     methods: ['GET', 'POST'],
