@@ -33,6 +33,7 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "resource": process.env.KEYCLOAK_CLIENT_ID,
     "bearer-only": true
 });
+app.use(keycloak.middleware());
 
 // Use Keycloak middleware to protect routes
 
@@ -45,7 +46,6 @@ app.post('/test', (req, res) => {
     // console.log("query parameters = " + req.query)
     res.send('Test working');
 });
-
 
 // ✅ User Login Endpoint
 app.post('/auth/login', async (req, res) => {
@@ -99,7 +99,6 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-app.use(keycloak.middleware());
 
 // ✅ Protected route: Retrieve user info 
 app.get('/user', keycloak.protect(), (req, res) => {
