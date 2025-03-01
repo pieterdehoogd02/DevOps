@@ -33,7 +33,7 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "resource": process.env.KEYCLOAK_CLIENT_ID,
     "bearer-only": true
 });
-app.use(keycloak.middleware());
+// app.use(keycloak.middleware());
 
 // Use Keycloak middleware to protect routes
 
