@@ -35,12 +35,12 @@ jobs:
           fi
 
           # Ensure the correct repository URL is used
-          git remote set-url origin ${{ secrets.DEPLOY_REPO_URL }}
+          git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           
           # Pull latest changes from GitHub
           git pull origin main
 
-          
+
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
