@@ -114,6 +114,7 @@ app.post('/auth/login', async (req, res) => {
             roles: userRoles // ✅ Send roles back to the frontend
         });
 
+        
     } catch (error) {
         res.status(401).json({ error: "Invalid credentials", details: error.response?.data || error.message });
     }
