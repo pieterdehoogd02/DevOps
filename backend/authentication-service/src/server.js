@@ -4,7 +4,7 @@ require('dotenv').config();
 // Import required modules
 const express = require('express');
 const session = require('express-session');
-// const Keycloak = require('keycloak-connect');
+const Keycloak = require('keycloak-connect');
 const cors = require('cors');
 const axios = require('axios');
 
@@ -27,13 +27,13 @@ app.use(session({
 }));
 
 // Configure Keycloak settings
-// const keycloak = new Keycloak({ store: memoryStore }, {
-//     "realm": process.env.KEYCLOAK_REALM,
-//     "auth-server-url": process.env.KEYCLOAK_URL,
-//     "resource": process.env.KEYCLOAK_CLIENT_ID,
-//     "bearer-only": true
-// });
-// app.use(keycloak.middleware());
+const keycloak = new Keycloak({ store: memoryStore }, {
+    "realm": process.env.KEYCLOAK_REALM,
+    "auth-server-url": process.env.KEYCLOAK_URL,
+    "resource": process.env.KEYCLOAK_CLIENT_ID,
+    "bearer-only": true
+});
+app.use(keycloak.middleware());
 
 // Use Keycloak middleware to protect routes
 
@@ -121,48 +121,48 @@ app.post('/auth/login', async (req, res) => {
 
 
 // ✅ Protected route: Retrieve user info 
-// app.get('/user', keycloak.protect(), (req, res) => {
-//     res.json({
-//         message: 'User Authenticated',
-//         user: req.kauth.grant.access_token.content // Return user data from Keycloak
-//     });
-// });
+app.get('/user', keycloak.protect(), (req, res) => {
+    res.json({
+        message: 'User Authenticated',
+        user: req.kauth.grant.access_token.content // Return user data from Keycloak
+    });
+});
  
 // ✅ Assign a user to a team (CIO only)
-// app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
-//     try {
-//         const roles = req.kauth.grant.access_token.content.realm_access.roles;
-//         if (!roles.includes("CIO")) {
-//             return res.status(403).json({ error: "Access Denied" });
-//         }
+app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
+    try {
+        const roles = req.kauth.grant.access_token.content.realm_access.roles;
+        if (!roles.includes("CIO")) {
+            return res.status(403).json({ error: "Access Denied" });
+        }
 
-//         const { userId, teamName } = req.body;
-//         if (!userId || !teamName) {
-//             return res.status(400).json({ error: "User ID and Team Name are required" });
-//         }
+        const { userId, teamName } = req.body;
+        if (!userId || !teamName) {
+            return res.status(400).json({ error: "User ID and Team Name are required" });
+        }
 
-//         const groupResponse = await axios.get(
-//             `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
-//             { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
-//         );
+        const groupResponse = await axios.get(
+            `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
+            { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+        );
 
-//         const team = groupResponse.data.find(group => group.name === teamName);
-//         if (!team) return res.status(404).json({ error: "Team not found" });
+        const team = groupResponse.data.find(group => group.name === teamName);
+        if (!team) return res.status(404).json({ error: "Team not found" });
 
-//         await axios.put(
-//             `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
-//             {},
-//             { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
-//         );
+        await axios.put(
+            `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
+            {},
+            { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+        );
 
-//         res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
-//     } catch (error) {
-//         res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
-//     }
-// });
+        res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
+    } catch (error) {
+        res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
+    }
+});
 
 // Start Express server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {
     console.log('Server running on port 5001');
 });
