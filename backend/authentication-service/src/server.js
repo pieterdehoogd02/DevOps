@@ -48,6 +48,7 @@ app.use(session({
 
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
+    console.log("In the default route")
     res.send('Authentication Service is Running');
 });
 
