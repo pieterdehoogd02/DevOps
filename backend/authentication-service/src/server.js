@@ -35,7 +35,6 @@ const keycloak = new Keycloak({ store: memoryStore }, {
 });
 
 // Use Keycloak middleware to protect routes
-app.use(keycloak.middleware());
 
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
@@ -93,6 +92,8 @@ app.post('/auth/login', async (req, res) => {
         res.status(401).json({ error: "Invalid credentials", details: error.response?.data || error.message });
     }
 });
+
+// app.use(keycloak.middleware());
 
 // ✅ Protected route: Retrieve user info 
 app.get('/user', keycloak.protect(), (req, res) => {

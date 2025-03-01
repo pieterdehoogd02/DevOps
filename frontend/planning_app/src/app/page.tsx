@@ -30,6 +30,7 @@ export default function Home() {
 
     const handleLogin = async (username: string, password: string) => {
       const url = `http://54.164.144.99:5001/auth/login`; // Your AuthService URL
+      // const url = `http://localhost:5001/auth/login`; // Your AuthService URL
 
       console.log("username = " + username + ", password = " + password);
 
@@ -39,7 +40,7 @@ export default function Home() {
               headers: {
                   "Content-Type": "application/json"
               },
-              body: JSON.stringify({ "username": username, "password": password })  // Sending JSON directly
+              body: JSON.stringify({ username, password })  // Sending JSON directly
           });
 
           if (!response.ok) {
