@@ -41,6 +41,12 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
+app.post('/test', (req, res) => {
+    console.log("body = " + req.body)
+    res.send('Test working');
+});
+
+
 // ✅ User Login Endpoint
 app.post('/auth/login', async (req, res) => {
 

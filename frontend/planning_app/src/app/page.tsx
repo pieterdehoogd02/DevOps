@@ -34,13 +34,18 @@ export default function Home() {
 
       console.log("username = " + username + ", password = " + password);
 
+      const payload = {
+        username,
+        password
+    };
+
       try {
           const response = await fetch(url, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
               },
-              body: JSON.stringify({ username, password })  // Sending JSON directly
+              body: JSON.stringify({ payload })  // Sending JSON directly
           });
 
           if (!response.ok) {
