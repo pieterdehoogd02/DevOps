@@ -24,7 +24,7 @@ jobs:
           
           # Go to project directory
           mkdir authentication-service 
-          cd /home/ubuntu/authentication-service
+          cd /home/ubuntu
 
           # Ensure the correct repository URL is used
           git remote set-url origin ${{ secrets.DEPLOY_REPO_URL }}
