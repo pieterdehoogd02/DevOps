@@ -19,6 +19,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
+
 // Add this before your route definitions
 app.use((req, res, next) => {
   // This will run for every request
