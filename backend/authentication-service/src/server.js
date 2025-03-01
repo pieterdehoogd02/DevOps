@@ -51,7 +51,7 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
-app.get('/test/', (req, res) => {
+app.get(['/test', '/test/'], (req, res) => {
     try {
         res.status(200).send("request working");
     } catch(error) {
