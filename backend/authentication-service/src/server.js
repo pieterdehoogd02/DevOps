@@ -38,7 +38,7 @@ app.use(session({
     store: memoryStore
 }));
 
-Configure Keycloak settings
+// Configure Keycloak settings
 const keycloak = new Keycloak({ store: memoryStore }, {
     "realm": process.env.KEYCLOAK_REALM,
     "auth-server-url": process.env.KEYCLOAK_URL,
@@ -134,7 +134,7 @@ app.post('/auth/login/', async (req, res) => {
 });
 
 
-✅ Protected route: Retrieve user info 
+// ✅ Protected route: Retrieve user info 
 app.get('/user', keycloak.protect(), (req, res) => {
     res.json({
         message: 'User Authenticated',
