@@ -45,7 +45,7 @@ export default function Home() {
               headers: {
                   "Content-Type": "application/json"
               },
-              body: JSON.stringify({ payload })  // Sending JSON directly
+              body: JSON.stringify({ username, password })  // Sending JSON directly
           });
 
           if (!response.ok) {

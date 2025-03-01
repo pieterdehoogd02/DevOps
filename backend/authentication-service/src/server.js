@@ -5,6 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const axios = require('axios');
 
@@ -42,7 +43,7 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
-app.get('/test', (req, res) => {
+app.get('/test2aaaa', (req, res) => {
     // console.log("query parameters = " + req.query)
     try {
         res.status(200).send("request working");
