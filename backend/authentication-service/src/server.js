@@ -44,12 +44,27 @@ app.get('/', (req, res) => {
 
 app.get('/test', (req, res) => {
     // console.log("query parameters = " + req.query)
-    res.send('Test working');
+    try {
+        res.status(200).send("request working");
+    } catch(error) {
+        res.status(404).send("message: " + error);
+    }
 });
 
 app.get('/test/test2', (req, res) => {
-    // console.log("query parameters = " + req.query)
-    res.send('Test2 working');
+    try {
+        res.status(200).send("request working");
+    } catch(error) {
+        res.status(404).send("message: " + error);
+    }
+});
+
+app.post('/test/sendShit', (req, res) => {
+    try {
+        res.status(200).send("request working");
+    } catch(error) {
+        res.status(404).send("message: " + error);
+    }
 });
 
 // ✅ User Login Endpoint
