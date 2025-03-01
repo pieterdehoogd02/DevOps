@@ -9,7 +9,8 @@ COPY package.json package-lock.json ./
 RUN npm install --only=production
 
 # Copy the rest of the application files
-COPY . .   # ✅ Make sure this copies `src/server.js` properly
+COPY . .  
+
 
 # Check if `server.js` exists inside `src`
 RUN ls -la src/
