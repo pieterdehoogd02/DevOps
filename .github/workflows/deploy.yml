@@ -49,14 +49,12 @@ jobs:
           docker rm auth-service || true
 
           # Create the logs directory if it doesn't exist
-          mkdir -p /home/ubuntu/auth-service-logs
+          mkdir -p ../../../auth-service-logs
 
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
 
-          
-
-          docker run -d -p 5001:5001 -v /home/ubuntu/auth-service-logs:/app --name auth-service authentication-service
+          docker run -d -p 5001:5001 --name auth-service authentication-service
 
           # check if server.js is in the /app/src directory
           docker exec -it auth-service /bin/bash
