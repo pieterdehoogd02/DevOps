@@ -50,7 +50,14 @@ jobs:
 
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
+
+          
+
           docker run -d -p 5001:5001 -v /home/ubuntu/auth-service-logs:/app --name auth-service authentication-service
+
+          # check if server.js is in the /app/src directory
+          docker exec -it auth-service /bin/bash
+          ls -la /app/src
 
           # Wait for container to be healthy (optional, but useful)
           sleep 5
