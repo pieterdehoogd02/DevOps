@@ -1,5 +1,3 @@
-// Test
-
 // Load environment variables from .env file
 require('dotenv').config();
 
@@ -45,39 +43,15 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "resource": process.env.KEYCLOAK_CLIENT_ID,
     "bearer-only": true
 });
-app.use(keycloak.middleware());
 
 // Use Keycloak middleware to protect routes
+app.use(keycloak.middleware());
 
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
     console.log("In the default route")
     process.stdout.write("Flushed log from default route\n");
     res.send('Authentication Service is Running');
-});
-
-app.get(['/test', '/test/'], (req, res) => {
-    try {
-        res.status(200).send("request working");
-    } catch(error) {
-        res.status(404).send("message: " + error);
-    }
-});
-
-app.get('/test/test2/', (req, res) => {
-    try {
-        res.status(200).send("request working");
-    } catch(error) {
-        res.status(404).send("message: " + error);
-    }
-});
-
-app.post('/test/sendShit/', (req, res) => {
-    try {
-        res.status(200).send("request working");
-    } catch(error) {
-        res.status(404).send("message: " + error);
-    }
 });
 
 // ✅ User Login Endpoint
@@ -179,4 +153,20 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
 const PORT = process.env.PORT || 5001;
 app.listen(5001, '0.0.0.0', () => {
     console.log('Server running on port 5001');
+});
+
+app.get(['/test', '/test/'], (req, res) => {
+    try {
+        res.status(200).send("request working");
+    } catch(error) {
+        res.status(404).send("message: " + error);
+    }
+});
+
+app.get('/test/test2/', (req, res) => {
+    try {
+        res.status(200).send("request working");
+    } catch(error) {
+        res.status(404).send("message: " + error);
+    }
 });
