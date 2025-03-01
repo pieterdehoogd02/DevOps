@@ -49,6 +49,7 @@ app.use(session({
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
     console.log("In the default route")
+    process.stdout.write("Flushed log from default route\n");
     res.send('Authentication Service is Running');
 });
 
@@ -173,6 +174,6 @@ app.post('/auth/login/', async (req, res) => {
 
 // Start Express server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(5001, '0.0.0.0', () => {
     console.log('Server running on port 5001');
 });

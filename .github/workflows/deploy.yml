@@ -3,7 +3,7 @@ name: Deploy to AWS EC2
 on:
   push:
     branches:
-      - main  # Change this if necessary
+      - main
 
 jobs:
   deploy:
@@ -34,10 +34,14 @@ jobs:
           docker stop auth-service || true
           docker rm auth-service || true
 
-          # Build and Run New Container
+          # Build and Run New Container with logs enabled
           docker build -t authentication-service .
           docker run -d -p 5001:5001 --name auth-service authentication-service
 
-          # Clean up unused Docker images
-          docker system prune -f
+          # Wait for container to be healthy (optional, but useful)
+          sleep 5
+          docker ps -a
+
+          # Show logs after startup
+          docker logs -f auth-service
         EOF
