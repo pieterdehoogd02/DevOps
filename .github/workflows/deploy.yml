@@ -23,7 +23,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           
           # Go to project directory
-          mkdir authentication-service 
+          mkdir /home/ubuntu/authentication-service 
           cd /home/ubuntu/authentication-service
 
           # Ensure the correct repository URL is used
