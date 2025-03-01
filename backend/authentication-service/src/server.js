@@ -51,7 +51,7 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
-app.get('/test', (req, res) => {
+app.get('/test/', (req, res) => {
     try {
         res.status(200).send("request working");
     } catch(error) {
@@ -59,7 +59,7 @@ app.get('/test', (req, res) => {
     }
 });
 
-app.get('/test/test2', (req, res) => {
+app.get('/test/test2/', (req, res) => {
     try {
         res.status(200).send("request working");
     } catch(error) {
@@ -67,7 +67,7 @@ app.get('/test/test2', (req, res) => {
     }
 });
 
-app.post('/test/sendShit', (req, res) => {
+app.post('/test/sendShit/', (req, res) => {
     try {
         res.status(200).send("request working");
     } catch(error) {
@@ -76,7 +76,7 @@ app.post('/test/sendShit', (req, res) => {
 });
 
 // ✅ User Login Endpoint
-app.post('/auth/login', async (req, res) => {
+app.post('/auth/login/', async (req, res) => {
 
     console.log('Login request received');
     // console.log('Body:', req.body); // <-- log this to see exactly what arrives
