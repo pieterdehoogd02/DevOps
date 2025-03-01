@@ -23,8 +23,8 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           
           # Go to project directory
-          mkdir /home/ubuntu/authentication-service 
-          cd /home/ubuntu/authentication-service
+          mkdir authentication-service 
+          cd /home/ubuntu
 
           # Ensure the correct repository URL is used
           git remote set-url origin ${{ secrets.DEPLOY_REPO_URL }}
