@@ -36,7 +36,7 @@ jobs:
 
           # Build and Run New Container
           docker build -t authentication-service .
-          docker run -d -p 5001:5001 --name auth-service authentication-service
+          docker run -d -p 5000:5000 --name auth-service authentication-service
 
           # Clean up unused Docker images
           docker system prune -f
