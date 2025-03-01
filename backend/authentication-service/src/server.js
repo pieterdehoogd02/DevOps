@@ -93,7 +93,7 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-// app.use(keycloak.middleware());
+app.use(keycloak.middleware());
 
 // ✅ Protected route: Retrieve user info 
 app.get('/user', keycloak.protect(), (req, res) => {
