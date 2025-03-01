@@ -9,7 +9,10 @@ COPY package.json package-lock.json ./
 RUN npm install --only=production
 
 # Copy the rest of the application files
-COPY . .
+COPY . .   # ✅ Make sure this copies `src/server.js` properly
+
+# Check if `server.js` exists inside `src`
+RUN ls -la src/
 
 # Expose port 5001 to the outside world
 EXPOSE 5001
