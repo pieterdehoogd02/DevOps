@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/test', (req, res) => {
-    console.log("body = " + req.body)
+    console.log("query parameters = " + req.query)
     res.send('Test working');
 });
 
@@ -51,12 +51,12 @@ app.post('/test', (req, res) => {
 app.post('/auth/login', async (req, res) => {
 
     console.log('Login request received');
-    console.log('Body:', req.body); // <-- log this to see exactly what arrives
+    // console.log('Body:', req.body); // <-- log this to see exactly what arrives
     
     try {
         console.log("here?")
 
-        const { username, password } = req.body;
+        const { username, password } = req.query;
 
         console.log("username = " + username + " pswd = " + password)
         
