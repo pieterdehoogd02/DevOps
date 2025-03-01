@@ -24,7 +24,15 @@ jobs:
           
           # Go to project directory
           mkdir authentication-service 
-          cd /home/ubuntu
+          cd /home/ubuntu/authentication-service
+  
+          # Test if the .git directory exists and if not, initialize it
+          if [ -d ".git" ]; then
+            echo ".git folder exists"
+          else 
+            git init .
+            echo ".git folder created"
+          fi
 
           # Ensure the correct repository URL is used
           git remote set-url origin ${{ secrets.DEPLOY_REPO_URL }}
