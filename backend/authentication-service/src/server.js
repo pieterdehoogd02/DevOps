@@ -19,6 +19,13 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
+// Add this before your route definitions
+app.use((req, res, next) => {
+  // This will run for every request
+  res.setHeader('Content-Security-Policy', "default-src 'self'");
+  next();
+});
+
 // Set up session storage for Keycloak
 const memoryStore = new session.MemoryStore();
 app.use(session({
@@ -41,17 +48,10 @@ app.use(session({
 
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
-    res.removeHeader('Content-Security-Policy');
-    // Set a more permissive one if needed
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
     res.send('Authentication Service is Running');
 });
 
 app.get('/test', (req, res) => {
-    res.removeHeader('Content-Security-Policy');
-    // Set a more permissive one if needed
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
-    // console.log("query parameters = " + req.query)
     try {
         res.status(200).send("request working");
     } catch(error) {
