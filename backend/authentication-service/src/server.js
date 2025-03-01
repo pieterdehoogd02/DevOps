@@ -42,9 +42,14 @@ app.get('/', (req, res) => {
     res.send('Authentication Service is Running');
 });
 
-app.post('/test', (req, res) => {
+app.get('/test', (req, res) => {
     // console.log("query parameters = " + req.query)
     res.send('Test working');
+});
+
+app.get('/test/test2', (req, res) => {
+    // console.log("query parameters = " + req.query)
+    res.send('Test2 working');
 });
 
 // ✅ User Login Endpoint
@@ -56,7 +61,7 @@ app.post('/auth/login', async (req, res) => {
     try {
         console.log("here?")
 
-        const { username, password } = req.query;
+        const { username, password } = req.body;
 
         console.log("username = " + username + " pswd = " + password)
         
