@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 
 app.post('/test', (req, res) => {
     // console.log("query parameters = " + req.query)
-    // res.send('Test working');
+    res.send('Test working');
 });
 
 
