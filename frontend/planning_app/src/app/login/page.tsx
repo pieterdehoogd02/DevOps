@@ -1,3 +1,4 @@
+"use client";
 // import react, { useState, useEffect } from 'react';
 
 function Login(props : any) {
