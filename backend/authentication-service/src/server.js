@@ -9,6 +9,10 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const axios = require('axios');
 
+const fs = require('fs');
+const https = require('https');
+
+
 // Initialize Express app
 const app = express();
 app.use(express.json());
@@ -148,6 +152,7 @@ const options = {
     cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
 };
 
+// ✅ Ensure HTTPS is correctly used
 https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Secure Authentication Service running on port ${PORT}`);
+    console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
 });
