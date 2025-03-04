@@ -6,8 +6,8 @@ const Keycloak = require('keycloak-connect');
 const { v4: uuidv4 } = require('uuid');
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
 }));
 
 
