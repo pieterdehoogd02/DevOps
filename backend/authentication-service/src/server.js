@@ -13,10 +13,11 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 app.disable('strict routing'); // This makes Express treat /test and /test/ as the same route
+
 app.use(cors({
     origin: '*', // or '*', but specify domain if possible for security
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
@@ -49,8 +50,6 @@ app.use(keycloak.middleware());
 
 // ✅ Basic health check endpoint
 app.get('/', (req, res) => {
-    console.log("In the default route")
-    process.stdout.write("Flushed log from default route\n");
     res.send('Authentication Service is Running');
 });
 
@@ -58,15 +57,9 @@ app.get('/', (req, res) => {
 app.post('/auth/login/', async (req, res) => {
 
     console.log('Login request received');
-    // console.log('Body:', req.body); // <-- log this to see exactly what arrives
     
     try {
-        console.log("here?")
-
         const { username, password } = req.body;
-
-        console.log("username = " + username + " pswd = " + password)
-        
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
@@ -100,7 +93,6 @@ app.post('/auth/login/', async (req, res) => {
             expires_in: response.data.expires_in,
             roles: userRoles // ✅ Send roles back to the frontend
         });
-
 
     } catch (error) {
         res.status(401).json({ error: "Invalid credentials", details: error.response?.data || error.message });
@@ -149,24 +141,13 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
-// Start Express server
+// ✅ HTTPS Server Setup
 const PORT = process.env.PORT || 5001;
-app.listen(5001, '0.0.0.0', () => {
-    console.log('Server running on port 5001');
-});
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
+    cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+};
 
-app.get(['/test', '/test/'], (req, res) => {
-    try {
-        res.status(200).send("request working");
-    } catch(error) {
-        res.status(404).send("message: " + error);
-    }
-});
-
-app.get('/test/test2/', (req, res) => {
-    try {
-        res.status(200).send("request working");
-    } catch(error) {
-        res.status(404).send("message: " + error);
-    }
+https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Secure Authentication Service running on port ${PORT}`);
 });
