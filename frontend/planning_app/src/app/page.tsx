@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER; // ✅ Read from .env
+const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER; // ✅ Read from .env file
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -11,6 +11,12 @@ export default function Home() {
 
   useEffect(() => {
     console.log("Backend Authentication Server:", authServer);
+
+    // ✅ Check if already logged in
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setLoggedIn(true);
+    }
   }, []);
 
   const handleLogin = async () => {
@@ -33,14 +39,14 @@ export default function Home() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Login failed:", errorData);
-        alert("Login failed: " + errorData.error);
+        alert("Login failed: " + (errorData.error || "Unknown error"));
         return;
       }
 
       const data = await response.json();
       console.log("Login success! Token:", data.access_token);
 
-      // ✅ Store token for authentication
+      // ✅ Store token in localStorage
       localStorage.setItem("access_token", data.access_token);
       setLoggedIn(true);
       alert("Login successful!");
@@ -49,6 +55,11 @@ export default function Home() {
       console.error("Error logging in:", error);
       alert("An error occurred while logging in.");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    setLoggedIn(false);
   };
 
   return (
@@ -81,6 +92,12 @@ export default function Home() {
         <div className="text-center">
           <h2 className="text-xl font-bold">Welcome!</h2>
           <p>You are logged in.</p>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white p-2 w-full rounded mt-4"
+          >
+            Logout
+          </button>
         </div>
       )}
     </div>
