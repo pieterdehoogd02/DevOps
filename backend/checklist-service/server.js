@@ -4,7 +4,12 @@ const AWS = require('aws-sdk');
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
 const { v4: uuidv4 } = require('uuid');
-const cors = require('cors');
+app.use(cors({
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 // Initialize Express app
 const app = express();
