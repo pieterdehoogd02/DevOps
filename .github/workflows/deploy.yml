@@ -51,6 +51,8 @@ jobs:
           # Create the logs directory if it doesn't exist
           mkdir -p ../../../auth-service-logs
 
+          copy /etc/ssl/certs/selfsigned.crt .
+
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
 
