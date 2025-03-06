@@ -26,8 +26,11 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+const customCa = fs.readFileSync('/etc/ssl/certs/selfsigned.crt');
+
 const agent = new https.Agent({
-    rejectUnauthorized: false // ⚠️ Accept self-signed certificates (for development only)
+    // rejectUnauthorized: false // ⚠️ Accept self-signed certificates (for development only)
+    ca: customCa
 });
 
 
