@@ -10,7 +10,7 @@ const cors = require('cors');
 const axios = require('axios');
 
 const fs = require('fs');
-// const https = require('https');
+const https = require('https');
 
 const http = require('http');
 
@@ -25,6 +25,10 @@ app.use(cors({
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+const agent = new https.Agent({
+    rejectUnauthorized: false // ⚠️ Accept self-signed certificates (for development only)
+});
 
 
 // Add this before your route definitions
@@ -79,7 +83,8 @@ app.post('/auth/login/', async (req, res) => {
                 username,
                 password
             }),
-            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+            { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
+            {httpsAgent: agent} // <=== Add this line
         );
 
         // Decode access token to get user roles
@@ -161,6 +166,7 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
 
 // ✅ HTTP Server Setup (Replaces HTTPS)
 const PORT = process.env.PORT || 5001;
+// if listening on the same machine only listen to requests that are 127.0.0.1
 http.createServer(app).listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
 });
