@@ -33,7 +33,7 @@ const customCa = fs.readFileSync(`selfsigned.crt`);
 console.log("customCa = " + customCa)
 
 const agent = new https.Agent({
-    // rejectUnauthorized: false // ⚠️ Accept self-signed certificates (for development only)
+    rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
     ca: customCa
 });
 
@@ -75,7 +75,7 @@ app.post('/auth/login/', async (req, res) => {
 
     console.log('Login request received');
     console.log("customCa = " + customCa);
-    console.log("ls: " + fs.readdirSync('.'))
+    console.log("ls: " + fs.readdirSync('.'));
     
     try {
         const { username, password } = req.body;
