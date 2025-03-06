@@ -10,7 +10,9 @@ const cors = require('cors');
 const axios = require('axios');
 
 const fs = require('fs');
-const https = require('https');
+// const https = require('https');
+
+const http = require('http');
 
 
 // Initialize Express app
@@ -145,14 +147,20 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
-// ✅ HTTPS Server Setup
-const PORT = process.env.PORT || 5001;
-const options = {
-    key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
-    cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
-};
+// // ✅ HTTPS Server Setup
+// const PORT = process.env.PORT || 5001;
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
+//     cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+// };
 
-// ✅ Ensure HTTPS is correctly used
-https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+// // ✅ Ensure HTTPS is correctly used
+// https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+//     console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+// });
+
+// ✅ HTTP Server Setup (Replaces HTTPS)
+const PORT = process.env.PORT || 5001;
+http.createServer(app).listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
 });
