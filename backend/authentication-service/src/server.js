@@ -8,9 +8,13 @@ const Keycloak = require('keycloak-connect');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const axios = require('axios');
+const os = require('os');
+
 
 const fs = require('fs');
 const https = require('https');
+
+const http = require('http');
 
 
 // Initialize Express app
@@ -23,6 +27,13 @@ app.use(cors({
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+const customCa = fs.readFileSync(`${os.homedir()}/etc/ssl/certs/selfsigned.crt`);
+
+const agent = new https.Agent({
+    // rejectUnauthorized: false // ⚠️ Accept self-signed certificates (for development only)
+    ca: customCa
+});
 
 
 // Add this before your route definitions
@@ -77,7 +88,10 @@ app.post('/auth/login/', async (req, res) => {
                 username,
                 password
             }),
-            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+            { 
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              httpsAgent: agent 
+            },
         );
 
         // Decode access token to get user roles
@@ -145,14 +159,21 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
-// ✅ HTTPS Server Setup
-const PORT = process.env.PORT || 5001;
-const options = {
-    key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
-    cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
-};
+// // ✅ HTTPS Server Setup
+// const PORT = process.env.PORT || 5001;
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
+//     cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
+// };
 
-// ✅ Ensure HTTPS is correctly used
-https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+// // ✅ Ensure HTTPS is correctly used
+// https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+//     console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+// });
+
+// ✅ HTTP Server Setup (Replaces HTTPS)
+const PORT = process.env.PORT || 5001;
+// if listening on the same machine only listen to requests that are 127.0.0.1
+http.createServer(app).listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
 });
