@@ -9,7 +9,10 @@ COPY package.json package-lock.json ./
 RUN npm install --only=production
 
 # Copy the rest of the application files
-COPY . .  
+COPY . . 
+
+# Copy the certificate into the container
+COPY /etc/ssl/certs/selfsigned.crt /selfsigned.crt
 
 
 # Check if `server.js` exists inside `src`
