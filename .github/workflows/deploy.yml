@@ -42,14 +42,16 @@ jobs:
 
           # go to the auth service directory
           cd backend/authentication-service
+          
 
 
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
-
+          
           # Create the logs directory if it doesn't exist
           mkdir -p ../../../auth-service-logs
+
 
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
