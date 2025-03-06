@@ -83,8 +83,10 @@ app.post('/auth/login/', async (req, res) => {
                 username,
                 password
             }),
-            { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
-            {httpsAgent: agent} // <=== Add this line
+            { 
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              httpsAgent: agent 
+            },
         );
 
         // Decode access token to get user roles
