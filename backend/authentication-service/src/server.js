@@ -28,7 +28,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const customCa = fs.readFileSync(`selfsigned.crt`);
+const customCa = fs.readFileSync(`/app/selfsigned.crt`);
 
 console.log("customCa = " + customCa)
 
