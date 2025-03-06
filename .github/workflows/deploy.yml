@@ -56,7 +56,7 @@ jobs:
           ls -l home/ubuntu/etc/ssl/certs/selfsigned.crt
           
           # Copy the certificate from EC2 instance to the Docker build context
-          cp home/ubuntu/etc/ssl/certs/selfsigned.crt /home/ubuntu/backend/authentication-service
+          cp /etc/ssl/certs/selfsigned.crt /home/ubuntu/backend/authentication-service
 
 
           # Create the logs directory if it doesn't exist
