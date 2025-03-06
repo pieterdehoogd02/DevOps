@@ -48,6 +48,8 @@ jobs:
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
+
+          ls -l ../../../etc/ssl/certs/selfsigned.crt
           
           # Copy the certificate from EC2 instance to the Docker build context
           cp ../../../etc/ssl/certs/selfsigned.crt .
