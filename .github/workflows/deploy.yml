@@ -53,7 +53,7 @@ jobs:
           pwd
 
           # Listing the self signed certificate
-          ls -l home/ubuntu/etc/ssl/certs/selfsigned.crt
+          ls -l /etc/ssl/certs/selfsigned.crt
           
           # Copy the certificate from EC2 instance to the Docker build context
           cp /etc/ssl/certs/selfsigned.crt /home/ubuntu/backend/authentication-service
