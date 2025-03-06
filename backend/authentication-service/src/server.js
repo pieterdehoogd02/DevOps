@@ -74,7 +74,8 @@ app.get('/', (req, res) => {
 app.post('/auth/login/', async (req, res) => {
 
     console.log('Login request received');
-    console.log("customCa = " + customCa)
+    console.log("customCa = " + customCa);
+    console.log("ls: " + fs.readdirSync('.'))
     
     try {
         const { username, password } = req.body;
