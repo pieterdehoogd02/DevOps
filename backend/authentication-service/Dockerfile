@@ -12,7 +12,7 @@ RUN npm install --only=production
 COPY . . 
 
 # Copy the certificate into the container
-COPY selfsigned.crt /etc/ssl/certs/selfsigned.crt
+COPY /etc/ssl/certs/selfsigned.crt /etc/ssl/certs/selfsigned.crt
 
 # Check if `server.js` exists inside `src`
 RUN ls -la src/
