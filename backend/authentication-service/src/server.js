@@ -172,13 +172,13 @@ const options = {
 };
 
 // ✅ Ensure HTTPS is correctly used
-https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
-});
+// https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+//     console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+// });
 
 // ✅ HTTP Server Setup (Replaces HTTPS)
 // const PORT = process.env.PORT || 5001;
 // // if listening on the same machine only listen to requests that are 127.0.0.1
-// http.createServer(app).listen(PORT, '0.0.0.0', () => {
-//     console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
-// });
+http.createServer(app).listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
+});
