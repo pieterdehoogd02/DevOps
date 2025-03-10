@@ -12,11 +12,7 @@ const os = require('os');
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
-
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
+const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 
 // AWS Secrets Manager Client
 const client = new SecretsManagerClient({
