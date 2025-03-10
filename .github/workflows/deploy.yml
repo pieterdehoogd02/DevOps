@@ -61,7 +61,7 @@ jobs:
           ls -l .
 
           # Copy the certificate into the container
-          cp fullchain.pem /home/ubuntu/app/backend/authentication-service
+          cp ../../../fullchain.pem /home/ubuntu/app/backend/authentication-service
 
           chmod 644 /home/ubuntu/app/backend/authentication-service/fullchain.pem
 
