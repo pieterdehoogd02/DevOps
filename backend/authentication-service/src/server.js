@@ -151,7 +151,6 @@ app.get('/', (req, res) => {
 // ✅ User Login Endpoint
 app.post('/auth/login/', async (req, res) => {
 
-    
     try {
         const keycloakUrl = await getKeycloakUrl();  // Fetch inside the handler
         const keycloakRealm = await getKeycloakRealm();
