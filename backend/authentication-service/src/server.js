@@ -9,12 +9,105 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const axios = require('axios');
 const os = require('os');
-
-
 const fs = require('fs');
 const https = require('https');
-
 const http = require('http');
+
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
+
+// AWS Secrets Manager Client
+const client = new SecretsManagerClient({
+  region: "us-east-1",
+});
+
+async function getKeycloakUrl() {
+  try {
+    const data = await client.send(
+      new GetSecretValueCommand({
+        SecretId: "KEYCLOAK_URL",
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
+    );
+
+    // Secrets Manager returns the value as a string
+    if (data.SecretString) {
+      const secret = JSON.parse(data.SecretString);
+      return secret.KEYCLOAK_URL; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
+    } else {
+      const buff = Buffer.from(data.SecretBinary, "base64");
+      return buff.toString("ascii");
+    }
+  } catch (error) {
+    console.error("Error retrieving secret from AWS Secrets Manager", error);
+    throw error; // Re-throw the error to handle it higher up if necessary
+  }
+}
+
+let keycloakUrl;
+getKeycloakUrl().then(url => {
+  keycloakUrl = url;
+});
+
+
+async function getKeycloakRealm() {
+  try {
+    const data = await client.send(
+      new GetSecretValueCommand({
+        SecretId: "KEYCLOAK_REALM",
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
+    );
+
+    // Secrets Manager returns the value as a string
+    if (data.SecretString) {
+      const secret = JSON.parse(data.SecretString);
+      return secret.KEYCLOAK_REALM; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
+    } else {
+      const buff = Buffer.from(data.SecretBinary, "base64");
+      return buff.toString("ascii");
+    }
+  } catch (error) {
+    console.error("Error retrieving secret from AWS Secrets Manager", error);
+    throw error; // Re-throw the error to handle it higher up if necessary
+  }
+}
+
+let keycloakRealm;
+getKeycloakRealm().then(realm => {
+  keycloakRealm = realm;
+});
+
+async function getKeycloakClientID() {
+  try {
+    const data = await client.send(
+      new GetSecretValueCommand({
+        SecretId: "KeycloakClientID",
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
+    );
+
+    // Secrets Manager returns the value as a string
+    if (data.SecretString) {
+      const secret = JSON.parse(data.SecretString);
+      return secret.KeycloakClientID; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
+    } else {
+      const buff = Buffer.from(data.SecretBinary, "base64");
+      return buff.toString("ascii");
+    }
+  } catch (error) {
+    console.error("Error retrieving secret from AWS Secrets Manager", error);
+    throw error; // Re-throw the error to handle it higher up if necessary
+  }
+}
+
+let keycloakClientID;
+getKeycloakClientID().then(clientID => {
+  keycloakClientID = clientID;
+});
+
 
 
 // Initialize Express app
@@ -59,9 +152,9 @@ app.use(session({
 
 // Configure Keycloak settings
 const keycloak = new Keycloak({ store: memoryStore }, {
-    "realm": process.env.KEYCLOAK_REALM,
-    "auth-server-url": process.env.KEYCLOAK_URL,
-    "resource": process.env.KEYCLOAK_CLIENT_ID,
+    "realm": keycloakRealm, // process.env.KEYCLOAK_REALM,
+    "auth-server-url": keycloakUrl,
+    "resource": keycloakClientID,
     "bearer-only": true
 });
 
@@ -77,8 +170,6 @@ app.get('/', (req, res) => {
 app.post('/auth/login/', async (req, res) => {
 
     console.log('Login request received');
-    console.log("customCa = " + customCa);
-    console.log("ls: " + fs.readdirSync('.'));
     
     try {
         const { username, password } = req.body;
@@ -88,9 +179,9 @@ app.post('/auth/login/', async (req, res) => {
 
         // Request a token from Keycloak
         const response = await axios.post(
-            `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+            `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
             new URLSearchParams({
-                client_id: process.env.KEYCLOAK_CLIENT_ID,
+                client_id: keycloakClientID,
                 grant_type: 'password',
                 username,
                 password
