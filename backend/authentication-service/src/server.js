@@ -28,7 +28,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const letsEncryptCA = fs.readFileSync(`/etc/letsencrypt/live/planmeet.net/fullchain.pem`);
+const letsEncryptCA = fs.readFileSync(`/etc/ssl/certs/fullchain.pem`);
 
 console.log("letsEncryptCA = " + letsEncryptCA)
 
