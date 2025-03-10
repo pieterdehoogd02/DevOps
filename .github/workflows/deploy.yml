@@ -58,6 +58,12 @@ jobs:
           # Copy the certificate from EC2 instance to the Docker build context
           # cp /etc/ssl/certs/selfsigned.crt /home/ubuntu/app/backend/authentication-service
 
+          
+          # Copy the certificate into the container
+          cp fullchain.pem /home/ubuntu/app/backend/authentication-service
+
+          chmod 644 /home/ubuntu/app/backend/authentication-service/fullchain.pem
+
 
           # Create the logs directory if it doesn't exist
           mkdir -p ../../../auth-service-logs
