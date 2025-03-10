@@ -27,7 +27,7 @@ async function getKeycloakUrl() {
   try {
     const data = await client.send(
       new GetSecretValueCommand({
-        SecretId: "KEYCLOAK_URL",
+        SecretId: "KEYCLOAK_URL1",
         VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
       })
     );
@@ -35,7 +35,7 @@ async function getKeycloakUrl() {
     // Secrets Manager returns the value as a string
     if (data.SecretString) {
       const secret = JSON.parse(data.SecretString);
-      return secret.KEYCLOAK_URL; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
+      return secret.KEYCLOAK_URL1; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
     } else {
       const buff = Buffer.from(data.SecretBinary, "base64");
       return buff.toString("ascii");
