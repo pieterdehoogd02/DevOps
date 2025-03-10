@@ -34,11 +34,16 @@ jobs:
             echo ".git folder created"
           fi
 
+
           # Ensure the correct repository URL is used
           git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
+
+          git rm --cached backend/authentication-service/.env
           
           # Pull latest changes from GitHub
           git pull origin main
+
+          git rm --cached backend/authentication-service/.env
 
           # go to the auth service directory
           cd backend/authentication-service
