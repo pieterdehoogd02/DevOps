@@ -58,7 +58,7 @@ jobs:
           # Copy the certificate from EC2 instance to the Docker build context
           # cp /etc/ssl/certs/selfsigned.crt /home/ubuntu/app/backend/authentication-service
 
-          
+          ls -l .
 
           # Copy the certificate into the container
           cp fullchain.pem /home/ubuntu/app/backend/authentication-service
