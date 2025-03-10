@@ -30,6 +30,7 @@ app.use(cors({
 
 const letsEncryptCA = fs.readFileSync(`/etc/ssl/certs/fullchain.pem`);
 
+
 console.log("letsEncryptCA = " + letsEncryptCA)
 
 const agent = new https.Agent({
