@@ -28,7 +28,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const letsEncryptCA = fs.readFileSync(`/etc/ssl/certs/fullchain.pem`);
+const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
 
 
 console.log("letsEncryptCA = " + letsEncryptCA)
@@ -166,10 +166,10 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
 
 // // ✅ HTTPS Server Setup
 const PORT = process.env.PORT || 5001;
-const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/privkey.pem'), // ✅ Ensure correct SSL certificate path
-    cert: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/fullchain.pem')
-};
+// const options = {
+//     key: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/privkey.pem'), // ✅ Ensure correct SSL certificate path
+//     cert: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/fullchain.pem')
+// };
 
 // ✅ Ensure HTTPS is correctly used
 // https.createServer(options, app).listen(PORT, '0.0.0.0', () => {

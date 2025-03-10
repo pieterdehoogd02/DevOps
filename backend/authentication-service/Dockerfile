@@ -12,7 +12,9 @@ RUN npm install --only=production
 COPY . . 
 
 # Copy the certificate into the container
-COPY selfsigned.crt /app/selfsigned.crt
+COPY fullchain.pem /app/fullchain.pem
+
+RUN chmod 644 /app/fullchain.pem
 
 # Check if `server.js` exists inside `src`
 RUN ls -la src/
