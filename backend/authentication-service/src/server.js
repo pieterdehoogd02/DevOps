@@ -169,7 +169,7 @@ app.get('/', (req, res) => {
 // ✅ User Login Endpoint
 app.post('/auth/login/', async (req, res) => {
 
-    console.log('Login request received');
+    console.log('Login request received, keycloak_url = ' + keycloakUrl );
     
     try {
         const { username, password } = req.body;
