@@ -28,13 +28,13 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-const customCa = fs.readFileSync(`/app/selfsigned.crt`);
+const letsEncryptCA = fs.readFileSync(`/etc/letsencrypt/live/planmeet.net/fullchain.pem`);
 
-console.log("customCa = " + customCa)
+console.log("letsEncryptCA = " + letsEncryptCA)
 
 const agent = new https.Agent({
-    rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
-    ca: customCa
+    // rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
+    ca: letsEncryptCA
 });
 
 
@@ -164,20 +164,20 @@ app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
 });
 
 // // ✅ HTTPS Server Setup
-// const PORT = process.env.PORT || 5001;
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/selfsigned.key'), // ✅ Ensure correct SSL certificate path
-//     cert: fs.readFileSync('/etc/ssl/certs/selfsigned.crt')
-// };
+const PORT = process.env.PORT || 5001;
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/privkey.pem'), // ✅ Ensure correct SSL certificate path
+    cert: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/fullchain.pem')
+};
 
-// // ✅ Ensure HTTPS is correctly used
-// https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-//     console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
-// });
+// ✅ Ensure HTTPS is correctly used
+https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
+});
 
 // ✅ HTTP Server Setup (Replaces HTTPS)
-const PORT = process.env.PORT || 5001;
-// if listening on the same machine only listen to requests that are 127.0.0.1
-http.createServer(app).listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
-});
+// const PORT = process.env.PORT || 5001;
+// // if listening on the same machine only listen to requests that are 127.0.0.1
+// http.createServer(app).listen(PORT, '0.0.0.0', () => {
+//     console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
+// });
