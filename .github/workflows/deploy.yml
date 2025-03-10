@@ -44,7 +44,6 @@ jobs:
           cd backend/authentication-service
           
 
-
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
