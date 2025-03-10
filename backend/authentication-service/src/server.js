@@ -46,12 +46,6 @@ async function getKeycloakUrl() {
   }
 }
 
-let keycloakUrl;
-getKeycloakUrl().then(url => {
-  keycloakUrl = url;
-});
-
-
 async function getKeycloakRealm() {
   try {
     const data = await client.send(
@@ -75,11 +69,6 @@ async function getKeycloakRealm() {
   }
 }
 
-let keycloakRealm;
-getKeycloakRealm().then(realm => {
-  keycloakRealm = realm;
-});
-
 async function getKeycloakClientID() {
   try {
     const data = await client.send(
@@ -102,13 +91,6 @@ async function getKeycloakClientID() {
     throw error; // Re-throw the error to handle it higher up if necessary
   }
 }
-
-let keycloakClientID;
-getKeycloakClientID().then(clientID => {
-  keycloakClientID = clientID;
-});
-
-
 
 // Initialize Express app
 const app = express();
@@ -169,9 +151,14 @@ app.get('/', (req, res) => {
 // ✅ User Login Endpoint
 app.post('/auth/login/', async (req, res) => {
 
-    console.log('Login request received, keycloak_url = ' + keycloakUrl );
     
     try {
+        const keycloakUrl = await getKeycloakUrl();  // Fetch inside the handler
+        const keycloakRealm = await getKeycloakRealm();
+        const keycloakClientID = await getKeycloakClientID();
+        
+        console.log('Login request received, keycloak_url = ' + keycloakUrl );
+
         const { username, password } = req.body;
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
