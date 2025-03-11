@@ -53,7 +53,8 @@ app.use(session({
     secret: 'my-secret',
     resave: false,
     saveUninitialized: true,
-    store: memoryStore
+    store: memoryStore,
+    cookie: { secure: true } // ensure it is set to true when using HTTPS
 }));
 
 async function getSecretValue(secretId) {
