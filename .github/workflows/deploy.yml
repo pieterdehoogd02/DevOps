@@ -39,7 +39,7 @@ jobs:
           git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
 
           git rm --cached backend/authentication-service/.env
-          
+
           # Pull latest changes from GitHub
           git pull origin main
 
@@ -67,6 +67,8 @@ jobs:
           # Copy the certificate into the container
           cp ../../../fullchain.pem /home/ubuntu/app/backend/authentication-service
 
+          cp ../../../.env /home/ubuntu/app/backend/authentication-service
+
           chmod 644 /home/ubuntu/app/backend/authentication-service/fullchain.pem
 
           # Create the logs directory if it doesn't exist
@@ -76,7 +78,7 @@ jobs:
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
 
-          docker run -d -p 5001:5001 --name auth-service authentication-service
+          docker run -d -p 5001:5001 --env-file /home/ubuntu/app/backend/authentication-service/.env --name auth-service authentication-service
 
           # check if server.js is in the /app/src directory
           docker exec -it auth-service /bin/bash

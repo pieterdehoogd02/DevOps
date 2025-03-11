@@ -14,12 +14,15 @@ const https = require('https');
 const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
+require('dotenv').config(); // Load environment variables from .env
 
 // AWS Secrets Manager Client
 const client = new SecretsManagerClient({
   region: "us-east-1",
   credentials: fromEnv()
 });
+
+// console.log(client.credentials)
 
 
 // Initialize Express app
