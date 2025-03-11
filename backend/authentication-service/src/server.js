@@ -137,6 +137,8 @@ async function initializeApp() {
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
+        
+        console.log("trying to get keycloak configurations");
 
         const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
 
