@@ -116,7 +116,11 @@ async function initializeApp() {
     });
 
     // Use Keycloak middleware to protect routes
-    app.use(keycloak.middleware());
+    app.use(keycloak.middleware({
+        logout: '/logout',
+        admin: '/',
+    }));
+
 
     // ✅ Basic health check endpoint
     app.get('/', (req, res) => {
@@ -130,6 +134,8 @@ async function initializeApp() {
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
+
+        const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
 
         console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
 
