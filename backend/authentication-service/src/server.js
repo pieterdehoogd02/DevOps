@@ -52,7 +52,7 @@ const memoryStore = new session.MemoryStore();
 app.use(session({
     secret: 'my-secret',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: memoryStore,
     cookie: { secure: true } // ensure it is set to true when using HTTPS
 }));
@@ -93,6 +93,7 @@ async function getKeycloakConfig() {
       keycloakRealm: keycloakRealm.KEYCLOAK_REALM,
       keycloakClientID: keycloakClientID.KEYCLOAK_CLIENT_ID,
     };
+
   } catch (error) {
     console.error("Error fetching Keycloak config", error);
     throw error;
@@ -138,7 +139,10 @@ async function initializeApp() {
             grant_type: 'password',
             username,
             password
-            })
+            }), {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                httpsAgent: agent  // ✅ Use HTTPS agent
+            }
         );
 
         return res.json(response.data);
