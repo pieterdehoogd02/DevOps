@@ -21,6 +21,7 @@ const client = new SecretsManagerClient({
   credentials: fromEnv()
 });
 
+
 // Initialize Express app
 const app = express();
 app.use(express.json());
