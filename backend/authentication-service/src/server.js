@@ -157,10 +157,12 @@ async function getKeycloakConfig() {
     const keycloakRealm = await getSecretValue('KEYCLOAK_REALM');
     const keycloakClientID = await getSecretValue('KeycloakClientID');
 
+    console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
       keycloakRealm: keycloakRealm.KEYCLOAK_REALM,
-      keycloakClientID: keycloakClientID.KeycloakClientID,
+      keycloakClientID: keycloakClientID.KEYCLOAK_CLIENT_ID,
     };
   } catch (error) {
     console.error("Error fetching Keycloak config", error);
