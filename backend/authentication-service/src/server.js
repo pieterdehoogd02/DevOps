@@ -131,6 +131,8 @@ async function initializeApp() {
             return res.status(400).json({ error: "Username and password are required" });
         }
 
+        console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
+
         // Request a token from Keycloak
         const response = await axios.post(
             `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
