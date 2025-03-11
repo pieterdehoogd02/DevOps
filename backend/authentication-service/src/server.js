@@ -86,9 +86,6 @@ async function getKeycloakConfig() {
 
     console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
     console.log("✅ Keycloak Secrets Fetched:");
-    console.log("KEYCLOAK_URL1:", keycloakUrl);
-    console.log("KEYCLOAK_REALM:", keycloakRealm);
-    console.log("KEYCLOAK_CLIENT_ID:", keycloakClientID);
 
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
