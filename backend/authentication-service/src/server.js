@@ -35,13 +35,11 @@ app.use(cors({
 
 const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
 
-
-// console.log("letsEncryptCA = " + letsEncryptCA)
-
 const agent = new https.Agent({
     // rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
     ca: letsEncryptCA
 });
+
 
 console.log("keycloak url = " + process.env.KEYCLOAK_URL)
 
