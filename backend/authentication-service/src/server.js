@@ -131,13 +131,14 @@ app.use(session({
 
 async function getSecretValue(secretId) {
   try {
+    console.log("secretID = " + secretId)
     const data = await client.send(
       new GetSecretValueCommand({
         SecretId: secretId,
         VersionStage: "AWSCURRENT",
       })
     );
-
+    console.log("after getting the secret")
     if (data.SecretString) {
       return JSON.parse(data.SecretString);
     } else {
