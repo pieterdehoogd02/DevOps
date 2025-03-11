@@ -13,80 +13,13 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
+const { fromEnv } = require('@aws-sdk/credential-provider-env');
 
 // AWS Secrets Manager Client
 const client = new SecretsManagerClient({
   region: "us-east-1",
+  credentials: fromEnv()
 });
-
-async function getKeycloakUrl() {
-  try {
-    const data = await client.send(
-      new GetSecretValueCommand({
-        SecretId: "KEYCLOAK_URL1",
-        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
-      })
-    );
-
-    // Secrets Manager returns the value as a string
-    if (data.SecretString) {
-      const secret = JSON.parse(data.SecretString);
-      return secret.KEYCLOAK_URL1; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
-    } else {
-      const buff = Buffer.from(data.SecretBinary, "base64");
-      return buff.toString("ascii");
-    }
-  } catch (error) {
-    console.error("Error retrieving secret from AWS Secrets Manager", error);
-    throw error; // Re-throw the error to handle it higher up if necessary
-  }
-}
-
-async function getKeycloakRealm() {
-  try {
-    const data = await client.send(
-      new GetSecretValueCommand({
-        SecretId: "KEYCLOAK_REALM",
-        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
-      })
-    );
-
-    // Secrets Manager returns the value as a string
-    if (data.SecretString) {
-      const secret = JSON.parse(data.SecretString);
-      return secret.KEYCLOAK_REALM; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
-    } else {
-      const buff = Buffer.from(data.SecretBinary, "base64");
-      return buff.toString("ascii");
-    }
-  } catch (error) {
-    console.error("Error retrieving secret from AWS Secrets Manager", error);
-    throw error; // Re-throw the error to handle it higher up if necessary
-  }
-}
-
-async function getKeycloakClientID() {
-  try {
-    const data = await client.send(
-      new GetSecretValueCommand({
-        SecretId: "KeycloakClientID",
-        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
-      })
-    );
-
-    // Secrets Manager returns the value as a string
-    if (data.SecretString) {
-      const secret = JSON.parse(data.SecretString);
-      return secret.KeycloakClientID; // Assuming your secret is a JSON object with the key KEYCLOAK_URL
-    } else {
-      const buff = Buffer.from(data.SecretBinary, "base64");
-      return buff.toString("ascii");
-    }
-  } catch (error) {
-    console.error("Error retrieving secret from AWS Secrets Manager", error);
-    throw error; // Re-throw the error to handle it higher up if necessary
-  }
-}
 
 // Initialize Express app
 const app = express();
