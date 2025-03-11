@@ -1,4 +1,4 @@
-// Load environment variables from .env file
+// Load environment variables from AWS Secrets Manager
 require('dotenv').config();
 
 // Import required modules
@@ -14,7 +14,6 @@ const https = require('https');
 const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
-require('dotenv').config(); // Load environment variables from .env
 
 // AWS Secrets Manager Client
 const client = new SecretsManagerClient({
@@ -25,28 +24,21 @@ const client = new SecretsManagerClient({
 // Initialize Express app
 const app = express();
 app.use(express.json());
-app.disable('strict routing'); // This makes Express treat /test and /test/ as the same route
+app.disable('strict routing'); // Treat /test and /test/ as the same route
 
 app.use(cors({
-    origin: '*', // or '*', but specify domain if possible for security
+    origin: '*', 
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Load SSL certificates
 const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
 // console.log('Loaded certificate chain:', letsEncryptCA.toString());
 
 const agent = new https.Agent({
-    // rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
     ca: letsEncryptCA
 });
-
-// Add this before your route definitions
-// app.use((req, res, next) => {
-//   // This will run for every request
-//   res.setHeader('Content-Security-Policy', "default-src 'self'");
-//   next();
-// });
 
 // Set up session storage for Keycloak
 const memoryStore = new session.MemoryStore();
@@ -55,19 +47,20 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: memoryStore,
-    cookie: { secure: false } // ensure it is set to true when using HTTPS
+    cookie: { secure: false } 
 }));
 
+// Function to fetch secrets from AWS Secrets Manager
 async function getSecretValue(secretId) {
   try {
-    console.log("secretID = " + secretId)
+    console.log(`Fetching secret: ${secretId}`);
     const data = await client.send(
       new GetSecretValueCommand({
         SecretId: secretId,
         VersionStage: "AWSCURRENT",
       })
     );
-    console.log("after getting the secret")
+    // console.log("after getting the secret")
     if (data.SecretString) {
       return JSON.parse(data.SecretString);
     } else {
@@ -80,32 +73,34 @@ async function getSecretValue(secretId) {
   }
 }
 
-// Fetch Keycloak configurations asynchronously
+// Fetch Keycloak and Authentication Service Configurations
 async function getKeycloakConfig() {
   try {
     const keycloakUrl = await getSecretValue('KEYCLOAK_URL1');
     const keycloakRealm = await getSecretValue('KEYCLOAK_REALM');
     const keycloakClientID = await getSecretValue('KeycloakClientID');
+    const authService = await getSecretValue('AUTH_SERVICE_SECRET');
 
-    console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+    // console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
 
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
       keycloakRealm: keycloakRealm.KEYCLOAK_REALM,
       keycloakClientID: keycloakClientID.KEYCLOAK_CLIENT_ID,
+      authServiceUrl: authService.AUTH_SERVICE_URL,
     };
-
   } catch (error) {
-    console.error("Error fetching Keycloak config", error);
+    console.error("Error fetching Keycloak/Auth config", error);
     throw error;
   }
 }
 
 // Initialize the application and Keycloak middleware
 async function initializeApp() {
-    const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
+    const { keycloakUrl, keycloakRealm, keycloakClientID, authServiceUrl } = await getServiceConfig();
 
-    console.log(`keycloakUrl = ${keycloakUrl}, keycloakRealm = ${keycloakRealm}, keycloakClientID = ${keycloakClientID}`)
+    console.log(`🔹 Keycloak URL: ${keycloakUrl}, Realm: ${keycloakRealm}, Client ID: ${keycloakClientID}`);
+    console.log(`🔹 Auth Service URL: ${authServiceUrl}`);
 
     // Configure Keycloak instance
     const keycloak = new Keycloak({ store: memoryStore }, {
@@ -115,7 +110,7 @@ async function initializeApp() {
         "bearer-only": true,
     });
 
-    console.log(`keycloak = ${keycloak}`)
+    console.log("🔹 Keycloak initialized");
 
     // Use Keycloak middleware to protect routes
     app.use(keycloak.middleware({
@@ -156,7 +151,7 @@ async function initializeApp() {
 
         return res.json(response.data);
         } catch (error) {
-        console.error("Login error", error);
+        console.error("❌ Login error", error);
         res.status(500).json({ error: "Failed to authenticate" });
         }
     });
@@ -204,7 +199,7 @@ async function initializeApp() {
 
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
-        console.log("Authentication service running on http://54.164.144.99:5001");
+        console.log(`✅ Authentication service running on ${authServiceUrl}`);
     });
 }
 
