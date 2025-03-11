@@ -41,11 +41,11 @@ const agent = new https.Agent({
 });
 
 // Add this before your route definitions
-app.use((req, res, next) => {
-  // This will run for every request
-  res.setHeader('Content-Security-Policy', "default-src 'self'");
-  next();
-});
+// app.use((req, res, next) => {
+//   // This will run for every request
+//   res.setHeader('Content-Security-Policy', "default-src 'self'");
+//   next();
+// });
 
 // Set up session storage for Keycloak
 const memoryStore = new session.MemoryStore();
