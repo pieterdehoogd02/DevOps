@@ -22,9 +22,6 @@ const client = new SecretsManagerClient({
   credentials: fromEnv()
 });
 
-// console.log(client.credentials)
-
-
 // Initialize Express app
 const app = express();
 app.use(express.json());
@@ -42,9 +39,6 @@ const agent = new https.Agent({
     // rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
     ca: letsEncryptCA
 });
-
-
-console.log("keycloak url = " + process.env.KEYCLOAK_URL)
 
 // Add this before your route definitions
 app.use((req, res, next) => {
@@ -205,23 +199,3 @@ initializeApp().catch(error => {
   console.error("Error initializing app", error);
   process.exit(1); // Exit with an error if initialization fails
 });
-
-
-// // ✅ HTTPS Server Setup
-// const PORT = process.env.PORT || 5001;
-// const options = {
-//     key: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/privkey.pem'), // ✅ Ensure correct SSL certificate path
-//     cert: fs.readFileSync('/etc/letsencrypt/live/planmeet.net/fullchain.pem')
-// };
-
-// ✅ Ensure HTTPS is correctly used
-// https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-//     console.log(`✅ Secure Authentication Service running on https://54.164.144.99`);
-// });
-
-// ✅ HTTP Server Setup (Replaces HTTPS)
-// const PORT = process.env.PORT || 5001;
-// // if listening on the same machine only listen to requests that are 127.0.0.1
-// http.createServer(app).listen(PORT, '0.0.0.0', () => {
-//     console.log(`✅ Authentication Service running on http://54.164.144.99:${PORT}`);
-// });
