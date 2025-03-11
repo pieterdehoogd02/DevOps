@@ -76,12 +76,19 @@ async function getSecretValue(secretId) {
 // Fetch Keycloak and Authentication Service Configurations
 async function getKeycloakConfig() {
   try {
+
+    console.log("🔍 Fetching Keycloak URL from AWS Secrets Manager...");
+
     const keycloakUrl = await getSecretValue('KEYCLOAK_URL1');
     const keycloakRealm = await getSecretValue('KEYCLOAK_REALM');
     const keycloakClientID = await getSecretValue('KeycloakClientID');
     const authService = await getSecretValue('AUTH_SERVICE_SECRET');
 
-    // console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+    console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+    console.log("✅ Keycloak Secrets Fetched:");
+    console.log("KEYCLOAK_URL1:", keycloakUrl);
+    console.log("KEYCLOAK_REALM:", keycloakRealm);
+    console.log("KEYCLOAK_CLIENT_ID:", keycloakClientID);
 
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
@@ -163,7 +170,8 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
-    
+
+/*    
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -178,7 +186,7 @@ async function initializeApp() {
             }
 
             const groupResponse = await axios.get(
-                `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
+                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
                 { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
             );
 
@@ -186,7 +194,7 @@ async function initializeApp() {
             if (!team) return res.status(404).json({ error: "Team not found" });
 
             await axios.put(
-                `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
+                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
                 {},
                 { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
             );
@@ -202,6 +210,7 @@ async function initializeApp() {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
     });
 }
+*/
 
 // Run the initialization function to set up the app
 initializeApp().catch(error => {
