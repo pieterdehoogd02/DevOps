@@ -104,8 +104,7 @@ async function getKeycloakConfig() {
 async function initializeApp() {
     const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
 
-    // Create Express app
-    const app = express();
+    console.log(`keycloakUrl = ${keycloakUrl}, keycloakRealm = ${keycloakRealm}, keycloakClientID = ${keycloakClientID}`)
 
     // Configure Keycloak instance
     const keycloak = new Keycloak({ store: memoryStore }, {
@@ -114,6 +113,8 @@ async function initializeApp() {
         "resource": keycloakClientID,
         "bearer-only": true,
     });
+
+    console.log(`keycloak = ${keycloak}`)
 
     // Use Keycloak middleware to protect routes
     app.use(keycloak.middleware({
