@@ -34,6 +34,7 @@ app.use(cors({
 }));
 
 const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
+console.log('Loaded certificate chain:', letsEncryptCA.toString());
 
 const agent = new https.Agent({
     // rejectUnauthorized: false, // ⚠️ Accept self-signed certificates (for development only)
@@ -121,7 +122,6 @@ async function initializeApp() {
         logout: '/logout',
         admin: '/',
     }));
-
 
     // ✅ Basic health check endpoint
     app.get('/', (req, res) => {
