@@ -62,7 +62,6 @@ app.use(session({
     store: memoryStore
 }));
 
-
 async function getSecretValue(secretId) {
   try {
     console.log("secretID = " + secretId)
