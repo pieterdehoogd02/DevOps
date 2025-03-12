@@ -138,7 +138,7 @@ async function initializeApp() {
         
         console.log("trying to get keycloak configurations");
 
-        const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
+        // const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
 
         console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
 
@@ -209,7 +209,7 @@ async function initializeApp() {
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
-    });
+    });*/
 }
 
 
