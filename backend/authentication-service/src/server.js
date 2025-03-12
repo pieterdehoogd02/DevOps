@@ -75,7 +75,7 @@ async function getSecretValue(secretId) {
 }
 
 // Fetch Keycloak and Authentication Service Configurations
-async function getKeycloakConfig() {
+async function getServiceConfig() {
   try {
 
     console.log("🔍 Fetching Keycloak URL from AWS Secrets Manager...");
