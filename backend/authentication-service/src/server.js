@@ -27,9 +27,10 @@ app.use(express.json());
 app.disable('strict routing'); // Treat /test and /test/ as the same route
 
 app.use(cors({
-    origin: '*', 
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://auth.planmeet.net'], // ✅ Allow only trusted origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Allow necessary methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Allow these headers
+    credentials: true, // ✅ Allow cookies if needed
 }));
 
 // Load SSL certificates
@@ -76,12 +77,16 @@ async function getSecretValue(secretId) {
 // Fetch Keycloak and Authentication Service Configurations
 async function getKeycloakConfig() {
   try {
+
+    console.log("🔍 Fetching Keycloak URL from AWS Secrets Manager...");
+
     const keycloakUrl = await getSecretValue('KEYCLOAK_URL1');
     const keycloakRealm = await getSecretValue('KEYCLOAK_REALM');
     const keycloakClientID = await getSecretValue('KeycloakClientID');
     const authService = await getSecretValue('AUTH_SERVICE_SECRET');
 
-    // console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+    console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
+    console.log("✅ Keycloak Secrets Fetched:");
 
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
@@ -130,6 +135,8 @@ async function initializeApp() {
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
+        
+        console.log("trying to get keycloak configurations");
 
         const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
 
@@ -163,7 +170,8 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
-    
+
+/*    
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -178,7 +186,7 @@ async function initializeApp() {
             }
 
             const groupResponse = await axios.get(
-                `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
+                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
                 { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
             );
 
@@ -186,7 +194,7 @@ async function initializeApp() {
             if (!team) return res.status(404).json({ error: "Team not found" });
 
             await axios.put(
-                `${process.env.KEYCLOAK_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
+                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
                 {},
                 { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
             );
@@ -202,6 +210,7 @@ async function initializeApp() {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
     });
 }
+*/
 
 // Run the initialization function to set up the app
 initializeApp().catch(error => {
