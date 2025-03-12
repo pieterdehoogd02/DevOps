@@ -71,15 +71,15 @@ export default function Home() {
             type="text"
             placeholder="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 w-full rounded mb-2"
+            onChange={(e) => {setUsername(e.target.value) ; console.log("username = " + username)}}
+            className="border p-2 w-full rounded mb-2 text-black text-lg indent-[20px]"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 w-full rounded mb-2"
+            onChange={(e) => {setPassword(e.target.value); console.log("password = " + password)}}
+            className="border p-2 w-full rounded mb-2 text-black text-lg indent-[20px]"
           />
           <button
             onClick={handleLogin}
