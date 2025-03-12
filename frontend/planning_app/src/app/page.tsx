@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER; // ✅ Read from .env file
+// const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER; // ✅ Read from .env file
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -28,7 +28,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch(`${authServer}/auth/login`, {
+      const response = await fetch("https://54.164.144.99:5001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
