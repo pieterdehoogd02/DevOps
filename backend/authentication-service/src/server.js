@@ -208,12 +208,12 @@ async function initializeApp() {
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
-    });
+    });*/
 }
-*/
+
 
 // Run the initialization function to set up the app
 initializeApp().catch(error => {
   console.error("Error initializing app", error);
   process.exit(1); // Exit with an error if initialization fails
-});
+})
