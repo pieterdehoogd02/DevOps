@@ -28,7 +28,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch("https://54.164.144.99:5001/auth/login", {
+      const response = await fetch("https://auth.planmeet.net/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
