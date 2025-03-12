@@ -27,9 +27,10 @@ app.use(express.json());
 app.disable('strict routing'); // Treat /test and /test/ as the same route
 
 app.use(cors({
-    origin: '*', 
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://auth.planmeet.net'], // ✅ Allow only trusted origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Allow necessary methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Allow these headers
+    credentials: true, // ✅ Allow cookies if needed
 }));
 
 // Load SSL certificates
