@@ -101,7 +101,7 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex">
-      {/* !loggedIn ? (
+      {!loggedIn ? (
         <div className="flex justify-center items-center w-full h-full">
           <div className="border p-6 rounded shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Login</h2>
@@ -124,7 +124,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-      ) : ( */}
+      ):
         <div className="w-full h-full flex">
           <div className="w-3/4 p-6">
             <h2 className="text-2xl font-bold">Dashboard</h2>
@@ -175,7 +175,7 @@ export default function Home() {
             </ul>
           </div>
         </div>
-      {/* )} */}
+      }
     </div>
   );
 }
