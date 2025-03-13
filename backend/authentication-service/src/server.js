@@ -121,7 +121,9 @@ async function initializeApp() {
     app.use(keycloak.middleware({
         logout: '/logout',
         admin: '/',
-    }));
+    }))
+
+    console.log("after keycloak middleware")
 
     // ✅ Basic health check endpoint
     app.get('/', (req, res) => {
