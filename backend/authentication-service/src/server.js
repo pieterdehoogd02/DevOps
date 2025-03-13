@@ -145,7 +145,6 @@ async function initializeApp() {
 
         console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
 
-        
         // Request a token from Keycloak
         const response = await axios.post(
             `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
