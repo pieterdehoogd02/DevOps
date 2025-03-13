@@ -33,6 +33,7 @@ app.use(cors({
     credentials: true, // ✅ Allow cookies if needed
 }));
 
+
 // Load SSL certificates
 const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
 // console.log('Loaded certificate chain:', letsEncryptCA.toString());
