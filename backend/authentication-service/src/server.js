@@ -141,8 +141,6 @@ async function initializeApp() {
         
         console.log("trying to get keycloak configurations");
 
-        // const { keycloakUrl, keycloakRealm, keycloakClientID } = await getKeycloakConfig();
-
         console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
 
         // Request a token from Keycloak
