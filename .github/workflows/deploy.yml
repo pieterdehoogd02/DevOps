@@ -65,7 +65,7 @@ jobs:
         EOF
     - name: Connect to Keycloak Instance & start Keycloak + DB
       run: |
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@54.164.144.99 << 'EOF'
          
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
