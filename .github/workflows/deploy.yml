@@ -62,6 +62,11 @@ jobs:
           docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
 
         EOF
+
+    - name: Set up SSH
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
     - name: Connect to Keycloak Instance & start Keycloak + DB
       run: |
         ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
