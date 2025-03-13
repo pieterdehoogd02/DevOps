@@ -23,29 +23,19 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           
           # Go to project directory
-          mkdir app
+          mkdir -p app
           cd /home/ubuntu/app
-  
-          # Test if the .git directory exists and if not, initialize it
-          if [ -d ".git" ]; then
-            echo ".git folder exists"
-          else 
+
+          # Ensure repository is initialized correctly
+          if [ ! -d ".git" ]; then 
             git init .
-            echo ".git folder created"
+            git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           fi
 
-
-          # Ensure the correct repository URL is used
-          git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
-
-          git rm --cached backend/authentication-service/.env
-
-          # Pull latest changes from GitHub
+          # Pull latest changes
           git pull origin main
 
-          git rm --cached backend/authentication-service/.env
-
-          # go to the auth service directory
+          # Deploy Authentication Service
           cd backend/authentication-service
           
           # Stop & Remove existing container
@@ -66,17 +56,52 @@ jobs:
 
           # Build and Run New Container with logs enabled
           docker build -t authentication-service .
-
           docker run -d -p 5001:5001 --env-file /home/ubuntu/app/backend/authentication-service/.env --name auth-service authentication-service
 
-          # check if server.js is in the /app/src directory
-          docker exec -it auth-service /bin/bash
-          ls -la /app/src
+          ls ../checklist-service
 
-          # Wait for container to be healthy (optional, but useful)
-          sleep 5
+
+          # Display running containers
           docker ps -a
 
-          # Show logs after startup
-          docker logs -f auth-service
+          # Show logs
+          docker logs -f checklist-service
         EOF
+    - name: Connect to Keycloak Instance & start Keycloak + DB
+      run: |
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
+         
+          # Ensure repository is initialized correctly
+          if [ ! -d ".git" ]; then 
+            git init .
+            git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
+          fi
+        
+          # stop the keycloak and remove it
+          sudo docker stop keycloak && sudo docker rm keycloak
+
+          # start the keycloak and db service
+          sudo docker compose -f compose1.yaml up -d
+
+          # see if the keycloak and keycloak DB are running
+          sudo docker ps
+        EOF
+    # - name: Make checklist service 
+    #   run: | 
+    #     ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.90.240 << 'EOF'
+          
+    #       # Pull latest changes
+    #       git pull origin main
+
+    #       # Deploy Checklist Service
+    #       cd backend/checklist-service
+
+    #       docker stop checklist-service || true
+    #       docker rm checklist-service || true
+
+    #       # Build and start checklist-service (only if not already running)
+    #       docker build -t checklist-service .
+    #       docker run -d -p 5002:5002 --env-file /home/ubuntu/app/backend/checklist-service/.env --name checklist-service checklist-service || echo "Checklist service container already running or failed to start"
+
+    #     EOF
+        
