@@ -37,4 +37,4 @@ ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 EXPOSE 5001
 
 # Start application
-CMD ["node", "./server.js"]
+CMD ["node", "./src/server.js"]
