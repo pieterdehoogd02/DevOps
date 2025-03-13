@@ -100,73 +100,80 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center p-4">
+    <div className="w-full h-screen flex">
       {/* !loggedIn ? (
-        <div className="border p-6 rounded shadow-lg w-96">
-          <h2 className="text-xl font-bold mb-4">Login</h2>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 w-full rounded mb-2 text-black"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 w-full rounded mb-2 text-black"
-          />
-          <button onClick={handleLogin} className="bg-blue-500 text-white p-2 w-full rounded">
-            Login
-          </button>
-        </div>
-      ) : ( */}
-        <div className="w-full max-w-md">
-          <h2 className="text-xl font-bold">Checklists</h2>
-          <div className="flex flex-col space-y-2 my-4">
+        <div className="flex justify-center items-center w-full h-full">
+          <div className="border p-6 rounded shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Login</h2>
             <input
               type="text"
-              placeholder="Title"
-              value={newChecklist.title}
-              onChange={(e) => setNewChecklist({ ...newChecklist, title: e.target.value })}
-              className="border p-2 rounded text-black"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="border p-2 w-full rounded mb-2 text-black"
             />
             <input
-              type="text"
-              placeholder="Description"
-              value={newChecklist.description}
-              onChange={(e) => setNewChecklist({ ...newChecklist, description: e.target.value })}
-              className="border p-2 rounded text-black"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border p-2 w-full rounded mb-2 text-black"
             />
-            <input
-              type="text"
-              placeholder="Assigned Team"
-              value={newChecklist.assignedTeam}
-              onChange={(e) => setNewChecklist({ ...newChecklist, assignedTeam: e.target.value })}
-              className="border p-2 rounded text-black"
-            />
-            <button onClick={createChecklist} className="bg-green-500 text-white p-2 rounded">
-              Add Checklist
+            <button onClick={handleLogin} className="bg-blue-500 text-white p-2 w-full rounded">
+              Login
             </button>
           </div>
-          <ul>
-            {checklists.map((checklist) => (
-              <li key={checklist.id} className="flex justify-between p-2 border-b">
-                <div>
-                  <strong>{checklist.title}</strong> ({checklist.assignedTeam})
-                  <p className="text-sm">{checklist.description}</p>
-                </div>
-                <button onClick={() => deleteChecklist(checklist.id)} className="text-red-500">
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button onClick={handleLogout} className="bg-red-500 text-white p-2 w-full rounded mt-4">
-            Logout
-          </button>
+        </div>
+      ) : ( */}
+        <div className="w-full h-full flex">
+          <div className="w-3/4 p-6">
+            <h2 className="text-2xl font-bold">Dashboard</h2>
+            <button onClick={handleLogout} className="bg-red-500 text-white p-2 rounded mt-4">
+              Logout
+            </button>
+          </div>
+          <div className="w-1/4 p-6 bg-gray-100 border-l">
+            <h2 className="text-xl font-bold">Checklists</h2>
+            <div className="flex flex-col space-y-2 my-4">
+              <input
+                type="text"
+                placeholder="Title"
+                value={newChecklist.title}
+                onChange={(e) => setNewChecklist({ ...newChecklist, title: e.target.value })}
+                className="border p-2 rounded text-black"
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={newChecklist.description}
+                onChange={(e) => setNewChecklist({ ...newChecklist, description: e.target.value })}
+                className="border p-2 rounded text-black"
+              />
+              <input
+                type="text"
+                placeholder="Assigned Team"
+                value={newChecklist.assignedTeam}
+                onChange={(e) => setNewChecklist({ ...newChecklist, assignedTeam: e.target.value })}
+                className="border p-2 rounded text-black"
+              />
+              <button onClick={createChecklist} className="bg-green-500 text-white p-2 rounded">
+                Add Checklist
+              </button>
+            </div>
+            <ul>
+              {checklists.map((checklist) => (
+                <li key={checklist.id} className="flex justify-between p-2 border-b">
+                  <div>
+                    <strong>{checklist.title}</strong> ({checklist.assignedTeam})
+                    <p className="text-sm">{checklist.description}</p>
+                  </div>
+                  <button onClick={() => deleteChecklist(checklist.id)} className="text-red-500">
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       {/* )} */}
     </div>
