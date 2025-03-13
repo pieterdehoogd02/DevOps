@@ -22,41 +22,51 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           
-          # Go to project directory
-          mkdir -p app
+          # Ensure the project directory exists
+          mkdir -p /home/ubuntu/app
           cd /home/ubuntu/app
 
-          # Ensure repository is initialized correctly
-          if [ ! -d ".git" ]; then 
-            git init .
+          # Initialize git if needed
+          if [ ! -d ".git" ]; then
+            git init
             git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           fi
 
           # Pull latest changes
+          git reset --hard
           git pull origin main
 
-          # Deploy Authentication Service
+          # -------- Deploy Authentication Service --------
           cd backend/authentication-service
-          
+
+          # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
 
+          # Build & Run authentication-service
           docker build -t authentication-service .
-          docker run -d -p 5001:5001 --env-file /home/ubuntu/app/backend/authentication-service/.env --name auth-service authentication-service
+          docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
 
-          # Deploy Checklist Service
+          # Wait for it to start
+          sleep 5
+          docker ps -a
+
+          # -------- Deploy Checklist Service --------
           cd ../checklist-service
 
+          # Stop & Remove existing container
           docker stop checklist-service || true
           docker rm checklist-service || true
 
-          # Build and start checklist-service (only if not already running)
+          # Build & Run checklist-service
           docker build -t checklist-service .
-          docker run -d -p 5002:5002 --env-file /home/ubuntu/app/backend/checklist-service/.env --name checklist-service checklist-service || echo "Checklist service container already running or failed to start"
+          docker run -d -p 5002:5002 --env-file .env --name checklist-service checklist-service
 
-          # Display running containers
+          # Wait for it to start
+          sleep 5
           docker ps -a
 
-          # Show logs
+          # Show logs after startup
+          docker logs -f auth-service
           docker logs -f checklist-service
         EOF
