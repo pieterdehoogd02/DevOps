@@ -69,25 +69,25 @@ jobs:
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
         chmod 600 private_key.pem
-    # - name: Connect to Keycloak Instance & start Keycloak + DB
-    #   run: |
-    #     ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
+    - name: Connect to Keycloak Instance & start Keycloak + DB
+      run: |
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
          
-    #       # Ensure repository is initialized correctly
-    #       if [ ! -d ".git" ]; then 
-    #         git init .
-    #         git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
-    #       fi
+          # Ensure repository is initialized correctly
+          if [ ! -d ".git" ]; then 
+            git init .
+            git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
+          fi
         
-    #       # stop the keycloak and remove it
-    #       sudo docker stop keycloak && sudo docker rm keycloak
+          # stop the keycloak and remove it
+          sudo docker stop keycloak && sudo docker rm keycloak
 
-    #       # start the keycloak and db service
-    #       sudo docker compose -f compose1.yaml up -d
+          # start the keycloak and db service
+          sudo docker compose -f compose1.yaml up -d
 
-    #       # see if the keycloak and keycloak DB are running
-    #       sudo docker ps
-    #     EOF
+          # see if the keycloak and keycloak DB are running
+          sudo docker ps
+        EOF
     # - name: Make checklist service 
     #   run: | 
     #     ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.90.240 << 'EOF'

@@ -41,7 +41,12 @@ export default function Home() {
         return;
       }
 
+      console.log("Logged in!!!")
+
       const data = await response.json();
+
+      console.log("access token = " + data.access_token)
+      
       localStorage.setItem("access_token", data.access_token);
       setLoggedIn(true);
       fetchChecklists(data.access_token);
