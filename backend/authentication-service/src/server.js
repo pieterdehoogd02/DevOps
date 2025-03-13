@@ -207,12 +207,12 @@ async function initializeApp() {
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
         }
-    });
+    }); */
 
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
-    });*/
+    });
 }
 
 
