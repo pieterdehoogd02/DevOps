@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 
 const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER;
-const apiServer = process.env.NEXT_PUBLIC_API_SERVER;
+const apiServer = process.env.NEXT_PUBLIC_CHECKLIST_SERVER;
+
+console.log("authServer = " + authServer)
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -20,7 +22,7 @@ export default function Home() {
     }
   }, []);
 
-  
+
   const handleLogin = async () => {
     if (!username || !password) {
       alert("Please enter both username and password");
