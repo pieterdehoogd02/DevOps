@@ -61,14 +61,6 @@ jobs:
           docker build -t authentication-service .
           docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
 
-          # Deploy Checklist Service
-          cd ../checklist-service
-
-          # Display running containers
-          # docker ps -a
-
-          # Show logs
-          docker logs -f checklist-service
         EOF
     - name: Connect to Keycloak Instance & start Keycloak + DB
       run: |
