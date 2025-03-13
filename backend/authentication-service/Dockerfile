@@ -31,7 +31,7 @@ RUN wget -O /usr/local/share/ca-certificates/ISRG_Root_X1.crt https://letsencryp
 RUN update-ca-certificates
 
 # Create a cron job to update certificates automatically every year
-RUN echo "0 0 1 1 * root apt update && apt install -y ca-certificates && update-ca-certificates" > /etc/cron.d/cert-update
+RUN echo "0 0 1 1 * root apt update && apt install -y ca-certificates && update-ca-certificates" > /etc/cron.d/cert-update \
     && chmod 0644 /etc/cron.d/cert-update \
     && crontab /etc/cron.d/cert-update
 
