@@ -61,6 +61,8 @@ jobs:
           docker build -t authentication-service .
           docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
 
+          docker logs -f auth-service
+
         EOF
 
     - name: Set up SSH

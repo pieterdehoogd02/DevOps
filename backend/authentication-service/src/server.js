@@ -36,7 +36,7 @@ app.use(cors({
 
 // Load SSL certificates
 const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
-// console.log('Loaded certificate chain:', letsEncryptCA.toString());
+console.log('Loaded certificate chain:', letsEncryptCA.toString());
 
 const agent = new https.Agent({
     ca: letsEncryptCA
