@@ -15,12 +15,12 @@ app.use(express.json());
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
 app.use(cors({
-    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify URL
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Set up DynamoDB client (AWS SDK v3)
+// Set up DynamoDB client
 const dynamoDB = new DynamoDBClient({
     region: process.env.AWS_REGION,
     credentials: {
@@ -72,30 +72,34 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
 });
 
 // ✅ PO & Devs: View checklists assigned to their team
-app.get('/checklists', keycloak.protect(), async (req, res) => {
-    const roles = req.kauth.grant.access_token.content.realm_access.roles;
-
+app.get("/checklists", keycloak.protect(), async (req, res) => {
     try {
-        let result = await dynamoDB.send(new ScanCommand({ TableName: TABLE_NAME }));
-        let checklists = result.Items.map(item => ({
-            id: item.id.S,
-            title: item.title.S,
-            description: item.description.S,
-            assignedTeam: item.assignedTeam.S,
-            createdAt: item.createdAt.S,
-            updatedAt: item.updatedAt.S,
-            status: item.status.S
-        }));
+        const userToken = req.kauth.grant.access_token.content;
+        const userGroups = userToken.groups || [];
 
-        // PO & Devs should only see their own team's checklists
-        if (!roles.includes("CIO")) {
-            const userTeam = req.kauth.grant.access_token.content.team; // Assume `team` is in Keycloak claims
-            checklists = checklists.filter(cl => cl.assignedTeam === userTeam);
+        console.log("User groups:", userGroups);
+
+        // ✅ CIOs can see all checklists
+        if (userGroups.includes("/cio")) {
+            const allChecklists = await getAllChecklists();
+            return res.json(allChecklists);
         }
 
-        res.json(checklists);
+        // ✅ Identify user's team
+        const userTeam = userGroups.find(group => group !== "/cio");
+        if (!userTeam) {
+            return res.status(403).json({ error: "User has no assigned team" });
+        }
+
+        // ✅ Remove leading "/" from group name
+        const formattedTeam = userTeam.replace("/", "");
+
+        // ✅ Fetch checklists assigned to this team
+        const teamChecklists = await getChecklistsByTeam(formattedTeam);
+        res.json(teamChecklists);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch checklists", details: error.message });
+        console.error("Error fetching checklists:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -136,6 +140,32 @@ app.delete('/checklists/:id', keycloak.protect('realm:CIO'), async (req, res) =>
         res.status(500).json({ error: "Failed to delete checklist", details: error.message });
     }
 });
+
+// ✅ Function to retrieve all checklists
+async function getAllChecklists() {
+    try {
+        const result = await dynamoDB.send(new ScanCommand({ TableName: TABLE_NAME }));
+        return result.Items || [];
+    } catch (error) {
+        console.error("Error fetching all checklists:", error);
+        return [];
+    }
+}
+
+// ✅ Function to retrieve checklists for a specific team
+async function getChecklistsByTeam(team) {
+    try {
+        const result = await dynamoDB.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: "assignedTeam = :team",
+            ExpressionAttributeValues: { ":team": { S: team } }
+        }));
+        return result.Items || [];
+    } catch (error) {
+        console.error("Error fetching checklists for team:", error);
+        return [];
+    }
+}
 
 // Start the server
 const PORT = process.env.PORT || 5002;

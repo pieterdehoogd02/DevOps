@@ -18,64 +18,90 @@ jobs:
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
         chmod 600 private_key.pem
 
-    - name: Connect to EC2 and Deploy
+    - name: Initialise the Authentication service
       run: |
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          
-          # Go to project directory
-          mkdir app
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@54.164.144.99 << 'EOF'
+
+          ls -la
+
           cd /home/ubuntu/app
-  
-          # Test if the .git directory exists and if not, initialize it
-          if [ -d ".git" ]; then
-            echo ".git folder exists"
-          else 
+
+          # Ensure repository is initialized correctly
+          if [ ! -d ".git" ]; then 
             git init .
-            echo ".git folder created"
+            git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           fi
 
-          # Ensure the correct repository URL is used
-          git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
-          
-          # Pull latest changes from GitHub
+          # Pull latest changes
           git pull origin main
 
-          # go to the auth service directory
+          # Deploy Authentication Service
           cd backend/authentication-service
           
-
+          # Stop & Remove existing container
 
           # Stop & Remove existing container
           docker stop auth-service || true
           docker rm auth-service || true
 
-          # print working directory
-          pwd
+          # Copy the certificate into the container
+          cp ../../../fullchain.pem /home/ubuntu/app/backend/authentication-service
 
-          # Listing the self signed certificate
-          ls -l home/ubuntu/etc/ssl/certs/selfsigned.crt
-          
-          # Copy the certificate from EC2 instance to the Docker build context
-          cp home/ubuntu/etc/ssl/certs/selfsigned.crt /home/ubuntu/backend/authentication-service
+          # copy the env file into auth service
+          cp ../../../.env /home/ubuntu/app/backend/authentication-service
 
+          chmod 644 /home/ubuntu/app/backend/authentication-service/fullchain.pem
 
           # Create the logs directory if it doesn't exist
           mkdir -p ../../../auth-service-logs
 
 
           # Build and Run New Container with logs enabled
+          # Build & Run authentication-service
           docker build -t authentication-service .
+          docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
 
-          docker run -d -p 5001:5001 --name auth-service authentication-service
-
-          # check if server.js is in the /app/src directory
-          docker exec -it auth-service /bin/bash
-          ls -la /app/src
-
-          # Wait for container to be healthy (optional, but useful)
-          sleep 5
-          docker ps -a
-
-          # Show logs after startup
-          docker logs -f auth-service
         EOF
+
+    - name: Set up SSH
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
+    # - name: Connect to Keycloak Instance & start Keycloak + DB
+    #   run: |
+    #     ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
+         
+    #       # Ensure repository is initialized correctly
+    #       if [ ! -d ".git" ]; then 
+    #         git init .
+    #         git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
+    #       fi
+        
+    #       # stop the keycloak and remove it
+    #       sudo docker stop keycloak && sudo docker rm keycloak
+
+    #       # start the keycloak and db service
+    #       sudo docker compose -f compose1.yaml up -d
+
+    #       # see if the keycloak and keycloak DB are running
+    #       sudo docker ps
+    #     EOF
+    # - name: Make checklist service 
+    #   run: | 
+    #     ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.90.240 << 'EOF'
+          
+    #       # Pull latest changes
+    #       git pull origin main
+
+    #       # Deploy Checklist Service
+    #       cd backend/checklist-service
+
+    #       docker stop checklist-service || true
+    #       docker rm checklist-service || true
+
+    #       # Build and start checklist-service (only if not already running)
+    #       docker build -t checklist-service .
+    #       docker run -d -p 5002:5002 --env-file /home/ubuntu/app/backend/checklist-service/.env --name checklist-service checklist-service || echo "Checklist service container already running or failed to start"
+
+    #     EOF
+        

@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.758.0",
+    "@aws-sdk/client-sts": "^3.758.0",
+    "@aws-sdk/credential-provider-env": "^3.758.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
