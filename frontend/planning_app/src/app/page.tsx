@@ -20,6 +20,7 @@ export default function Home() {
     }
   }, []);
 
+  
   const handleLogin = async () => {
     if (!username || !password) {
       alert("Please enter both username and password");
