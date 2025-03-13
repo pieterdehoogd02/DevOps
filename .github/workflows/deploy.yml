@@ -18,52 +18,7 @@ jobs:
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
         chmod 600 private_key.pem
 
-    - name: Connect to EC2 and Deploy
-      run: |
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          
-          # Move to the correct project directory
-          cd /home/ubuntu/checklist-service
-
-          # Pull latest changes from GitHub
-          git reset --hard
-          git pull origin main
-
-          # -------- Deploy Authentication Service --------
-          cd backend/authentication-service
-          
-          # Stop & Remove existing container
-          docker stop auth-service || true
-          docker rm auth-service || true
-
-          # Copy the certificate into the container
-          cp ../../../fullchain.pem /home/ubuntu/app/backend/authentication-service
-
-          # copy the env file into auth service
-          cp ../../../.env /home/ubuntu/app/backend/authentication-service
-
-          chmod 644 /home/ubuntu/app/backend/authentication-service/fullchain.pem
-
-          # Create the logs directory if it doesn't exist
-          mkdir -p ../../../auth-service-logs
-
-
-          # Build and Run New Container with logs enabled
-          docker build -t authentication-service .
-          docker run -d -p 5001:5001 --env-file .env --name auth-service authentication-service
-
-          ls ../checklist-service
-
-
-          # Wait for it to start
-          sleep 5
-          docker ps -a
-
-          # Show logs after startup
-          docker logs auth-service
-          docker logs checklist-service
-        EOF
-    - name: Connect to Keycloak Instance & start Keycloak + DB
+    - name: Initialise the Authentication service
       run: |
         ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@54.164.144.99 << 'EOF'
 
