@@ -1,21 +1,40 @@
-# Use Node.js base image (Use LTS version for stability)
-FROM node:18 
+# Use Ubuntu as base image
+FROM ubuntu:latest
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies first (for better caching)
+# Install dependencies including ca-certificates
+RUN apt update && apt install -y \
+    curl \
+    ca-certificates \
+    && update-ca-certificates
+
+# Install latest Node.js from NodeSource
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt install -y nodejs
+
+# Verify installation
+RUN node -v && npm -v
+
+# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
-RUN npm install --only=production
+RUN npm install --production
 
-# Copy the rest of the application files
-COPY . . 
+# Copy application files
+COPY . .
 
-# Check if `server.js` exists inside `src`
-RUN ls -la src/
+# Copy SSL certificates (if necessary)
+COPY fullchain.pem /usr/local/share/ca-certificates/fullchain.crt
 
-# Expose port 5001 to the outside world
+# Add the custom certificate to the system's trusted CA store
+RUN update-ca-certificates
+
+# Set environment variable to explicitly trust this certificate
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+# Expose port
 EXPOSE 5001
 
-# Define the command to start the service
-CMD ["node", "./src/server.js"]
+# Start application
+CMD ["node", "server.js"]
