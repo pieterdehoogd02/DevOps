@@ -8,9 +8,22 @@ const { DynamoDBClient, PutItemCommand, ScanCommand, GetItemCommand, UpdateItemC
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
 const { v4: uuidv4 } = require('uuid');
+const fs = require("fs");
+const https = require("https");
+const path = require("path");
+const PORT = 5002;
 
 // Initialize Express app
 const app = express();
+
+
+// Load SSL Certificates
+const options = {
+    key: fs.readFileSync("/etc/letsencrypt/live/checklist.planmeet.net/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/checklist.planmeet.net/fullchain.pem"),
+  };
+
+
 app.use(express.json());
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
@@ -18,7 +31,7 @@ app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));
+})); 
 
 // Set up DynamoDB client
 const dynamoDB = new DynamoDBClient({
@@ -167,6 +180,7 @@ async function getChecklistsByTeam(team) {
     }
 }
 
-// Start the server
-const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => console.log(`✅ Checklist Service running on port ${PORT}`));
+// Start HTTPS Server
+https.createServer(options, app).listen(PORT, () => {
+    console.log(`✅ Checklist Service is running on HTTPS at https://checklist.planmeet.net:${PORT}`);
+});
