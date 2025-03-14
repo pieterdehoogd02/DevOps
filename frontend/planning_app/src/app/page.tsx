@@ -22,6 +22,13 @@ export default function Home() {
     }
   }, []);
 
+  function decodeJWT(token : any) {
+      const [header, payload] = token.split('.').slice(0, 2); // Ignore signature
+      return {
+          header: JSON.parse(atob(header.replace(/-/g, '+').replace(/_/g, '/'))),
+          payload: JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')))
+      };
+  }
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -47,7 +54,7 @@ export default function Home() {
 
       console.log("access token = " + data.access_token)
       
-      const decrypted = atob(data.access_token)
+      const decrypted = decodeJWT(data.access_token)
       console.log("decrypted access token = " + JSON.stringify(decrypted))
 
       localStorage.setItem("access_token", data.access_token);
