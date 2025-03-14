@@ -178,26 +178,33 @@ function Dashboard(props: any) {
     return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
   }
 
-  async function getPeopleAllocatedToProject() {
+  async function getProjectMembers() {
     try {
-      const response = await fetch(`${authServer}/project/members`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
-      })
+      const token = localStorage.getItem("access_token");
 
-      if(!response.ok) {
-        console.error("Request to get project members failed:" + response.status)
+      if (!token) {
+        throw new Error("No access token found");
       }
 
-      const data = response.json()
+      const response = await fetch(`${authServer}/project/members`, {
+        method: "GET", // Explicitly set the method
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-      console.log("data = " + JSON.stringify(data))
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
 
-      setMembersAsync(data)
-    }
-    catch (error: any) {
-      console.error("Error! Could not retrieve project members: " + JSON.stringify(error))
+      return await response.json(); // Convert response to JSON
+    } catch (error) {
+      console.error("Error fetching project members:", error);
+      return null; // Return null or handle errors appropriately
     }
   }
+
 
   return (
     <div className="left-0 top-0 w-full h-full">
