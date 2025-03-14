@@ -143,8 +143,32 @@ export default function Home() {
           </div>
         </div>
       ):
-        <div className="w-full h-full flex">
-          <div className="w-3/4 p-6">
+        <Dashboard></Dashboard>
+      }
+    </div>
+  );
+}
+
+function Dashboard() {
+
+  return (
+    <div className="left-0 top-0 w-full h-full">
+      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500">
+        <div className="left-[78%] top-0 w-[20%] h-full flex flex-row items-center justify-center">
+          <div className="flex flex-row h-[50%] w-[25%] rounded-xl bg-red-600">Logout</div>
+        </div>
+      </div>
+      <div className="absolute top-[14%] h-[84%] left-[2%] w-[18%] bg-blue-500"></div>
+    </div>
+  );
+
+}
+
+function OldDashboard() {
+
+  return (
+    <div className="w-full h-full flex">
+          {/* <div className="w-3/4 p-6">
             <h2 className="text-2xl font-bold">Dashboard</h2>
             <button onClick={handleLogout} className="bg-red-500 text-white p-2 rounded mt-4">
               Logout
@@ -191,9 +215,7 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
-      }
-    </div>
   );
 }
