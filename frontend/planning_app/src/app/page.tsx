@@ -157,6 +157,7 @@ function Dashboard(props: any) {
   useEffect(() => {
     console.log("localStorage has changed")
     if(localStorage.getItem("access_token") !== null) {
+      console.log("decoded access_token = " + props.decodeJWT(localStorage.getItem("access_token")))
       setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
       console.log("roles = " + roles)
     }
