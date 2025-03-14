@@ -159,6 +159,7 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
     }
 });
 
+// tested
 // ✅ CIO: Delete a checklist
 app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async (req, res) => {
     const { id, assignedTeam } = req.params;
@@ -177,6 +178,7 @@ app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async
     }
 });
 
+// tested
 // ✅ Function to retrieve all checklists
 async function getAllChecklists() {
     try {
@@ -188,20 +190,24 @@ async function getAllChecklists() {
     }
 }
 
-// ✅ Function to retrieve checklists for a specific team
-async function getChecklistsByTeam(team) {
+
+// ✅ Get Checklists for a Specific Team
+app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
+    const { team } = req.params;
+
     try {
+        console.log(`Fetching checklists for team: ${team}`);
         const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
             FilterExpression: "assignedTeam = :team",
             ExpressionAttributeValues: { ":team": { S: team } }
         }));
-        return result.Items || [];
+        res.json(result.Items || []);
     } catch (error) {
         console.error("Error fetching checklists for team:", error);
-        return [];
+        res.status(500).json({ error: "Internal Server Error" });
     }
-}
+});
 
 // Start HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
