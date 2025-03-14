@@ -119,7 +119,7 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
     }
 });
 
-// 
+// tested
 // ✅ PO: Update checklist status
 app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
     const { id } = req.params;
@@ -160,11 +160,17 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
 });
 
 // ✅ CIO: Delete a checklist
-app.delete('/checklists/:id', keycloak.protect('realm:CIO'), async (req, res) => {
+app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async (req, res) => {
     const { id } = req.params;
 
     try {
-        await dynamoDB.send(new DeleteItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        await dynamoDB.send(new DeleteItemCommand({ 
+            TableName: TABLE_NAME, 
+            Key: { 
+                id: { S: id } 
+                assignedTeam: { S: assignedTeam }  // ✅ Added assignedTeam as part of the key
+            }
+        }));
         res.json({ message: "Checklist deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: "Failed to delete checklist", details: error.message });
