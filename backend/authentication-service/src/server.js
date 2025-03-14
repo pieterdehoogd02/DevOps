@@ -185,23 +185,25 @@ async function initializeApp() {
     app.get('/project/members', keycloak.protect(), async (req, res) => {
       try {
 
-        // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
-        // let body = req.body
-        // let client_req = body.client
+          // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
+          // let body = req.body
+          // let client_req = body.client
 
 
-        // Step 1: Get Admin Token
-        const tokenResponse = await axios.post(
-            `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
-            new URLSearchParams({
-                grant_type: "client_credentials",
-                client_id: clientId,
-                client_secret: clientSecret,
-            }),
-            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-        );
+          // Step 1: Get Admin Token
+          const tokenResponse = await axios.post(
+              `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
+              new URLSearchParams({
+                  grant_type: "client_credentials",
+                  client_id: clientId,
+                  client_secret: clientSecret,
+              }),
+              { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+          );
 
-        const adminToken = tokenResponse.data.access_token;
+          const adminToken = tokenResponse.data.access_token;
+
+          
 
           // Step 2: Get Client ID
           const clientsResponse = await axios.get(
