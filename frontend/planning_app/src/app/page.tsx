@@ -153,7 +153,9 @@ export default function Home() {
 function Dashboard(props: any) {
 
   const [roles, setRoles] : any = useState([])
+  const [members, setMembers] : any = useState([])
 
+  // once we get the token update roles
   useEffect(() => {
     console.log("localStorage has changed")
     if(localStorage.getItem("access_token") !== null) {
@@ -169,7 +171,7 @@ function Dashboard(props: any) {
 
 
   function getRoles(token: any) {
-    return token?.resource_access?.DevOpsAuthService?.roles || []
+    return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
   }
 
   function getPeopleAllocatedToProject(projectName: string) {
