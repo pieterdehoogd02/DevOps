@@ -59,6 +59,7 @@ app.use(keycloak.middleware());
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
 
+// tested
 // ✅ CIO: Create a new checklist
 app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     const { title, description, assignedTeam } = req.body;
@@ -84,6 +85,7 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
+// tested
 // ✅ PO & Devs: View checklists assigned to their team
 app.get("/checklists", keycloak.protect(), async (req, res) => {
     try {
@@ -117,8 +119,9 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
     }
 });
 
+// 
 // ✅ PO: Update checklist status
-app.put('/checklists/:id', keycloak.protect('realm:PO'), async (req, res) => {
+app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
