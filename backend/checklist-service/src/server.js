@@ -93,13 +93,13 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
         console.log("User groups:", userGroups);
 
         // ✅ CIOs can see all checklists
-        if (userGroups.includes("/cio")) {
+        if (userGroups.includes("CIO") || userGroups.includes("/CIO")) {
             const allChecklists = await getAllChecklists();
             return res.json(allChecklists);
         }
 
         // ✅ Identify user's team
-        const userTeam = userGroups.find(group => group !== "/cio");
+        const userTeam = userGroups.find(group => group !== "/CIO");
         if (!userTeam) {
             return res.status(403).json({ error: "User has no assigned team" });
         }
