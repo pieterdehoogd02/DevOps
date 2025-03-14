@@ -203,13 +203,15 @@ async function initializeApp() {
 
           const adminToken = tokenResponse.data.access_token;
 
-          
+          console.log("after keycloak initial request")
 
           // Step 2: Get Client ID
           const clientsResponse = await axios.get(
               `${keycloakServerUrl}/admin/realms/${realmName}/clients`,
               { headers: { Authorization: `Bearer ${adminToken}` } }
           );
+          
+          console.log("after keycloak clients request")
 
           const client = clientsResponse.data.find(c => c.clientId === clientId);
           if (!client) {
@@ -221,6 +223,8 @@ async function initializeApp() {
               `${keycloakServerUrl}/admin/realms/${realmName}/users`,
               { headers: { Authorization: `Bearer ${adminToken}` } }
           );
+           
+          console.log("after getting users from realm")
 
           // Step 4: Filter Users Who Have Roles in This Client
           // let clientUsers = [];
