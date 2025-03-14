@@ -47,6 +47,9 @@ export default function Home() {
 
       console.log("access token = " + data.access_token)
       
+      const decrypted = atob(data.access_token)
+      console.log("decrypted access token = " + decrypted)
+
       localStorage.setItem("access_token", data.access_token);
       setLoggedIn(true);
       fetchChecklists(data.access_token);

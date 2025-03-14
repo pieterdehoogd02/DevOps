@@ -53,4 +53,3 @@ CMD service cron start && node ./src/server.js
 
 
 # Start application
-CMD ["node", "./src/server.js"]
