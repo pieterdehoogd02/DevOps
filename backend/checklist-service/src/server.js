@@ -126,12 +126,25 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
     const { status } = req.body;
 
     try {
-        let result = await dynamoDB.send(new GetItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        // let result = await dynamoDB.send(new GetItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        
+        let result = await dynamoDB.send(new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: req.params.assignedTeam }  // ✅ Add assignedTeam in the Key
+            }
+        }));        
+
         if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
 
         await dynamoDB.send(new UpdateItemCommand({
             TableName: TABLE_NAME,
-            Key: { id: { S: id } },
+            Key: { 
+                id: { S: id },
+                assignedTeam: { S: req.params.assignedTeam }  // ✅ Add assignedTeam in the Key
+            },
+
             UpdateExpression: "SET #s = :s, updatedAt = :u",
             ExpressionAttributeNames: { "#s": "status" },
             ExpressionAttributeValues: {
