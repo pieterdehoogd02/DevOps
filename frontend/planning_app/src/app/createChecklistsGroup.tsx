@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://checklist.planmeet.net:5002";
+
 function Checklist(props: { title: string; assignedTeam: string; userRole: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
-  const API_URL = "https://checklist.planmeet.net:5002"; // Backend API
 
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
-        let response;
-        
-        // 🛠 CIO sees all checklists, others see only their assigned team
-        if (props.userRole === "CIO") {
-          response = await fetch(`${API_URL}/checklists`);
-        } else {
-          response = await fetch(`${API_URL}/checklists/team/${props.assignedTeam}`);
+        let endpoint = `${API_URL}/checklists`;
+
+        // ✅ CIO sees all checklists, others see only their assigned team
+        if (props.userRole !== "CIO") {
+          endpoint = `${API_URL}/checklists/team/${props.assignedTeam}`;
         }
 
+        const response = await fetch(endpoint);
         const data = await response.json();
 
         if (!Array.isArray(data)) {
@@ -23,11 +23,8 @@ function Checklist(props: { title: string; assignedTeam: string; userRole: strin
           return;
         }
 
-        // 🎯 Filter checklists based on status
-        const filteredChecklists = data.filter(
-          (item: any) => item.status?.S === props.title
-        );
-
+        // ✅ Filter checklists by status
+        const filteredChecklists = data.filter((item: any) => item.status?.S === props.title);
         setChecklists(filteredChecklists);
       } catch (error) {
         console.error("Error fetching checklists:", error);
@@ -35,15 +32,18 @@ function Checklist(props: { title: string; assignedTeam: string; userRole: strin
     };
 
     fetchChecklists();
-  }, [props.title, props.assignedTeam, props.userRole]); // ✅ Rerun if role or team changes
+  }, [props.title, props.assignedTeam, props.userRole]); // ✅ React updates UI when role or team changes
 
   return (
     <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
       <div className="relative flex left-[5%] w-[90%] top-[1%] h-[5%] flex-row items-center">
         <div
           className={`relative flex top-0 left-0 h-[20px] w-[20px] justify-center items-center rounded-full 
-                    ${props.title === "Todo" ? "bg-green-600" : props.title === "In progress" ? "bg-orange-600"
-              : props.title === "In review" ? "bg-yellow-600" : props.title === "Done" ? "bg-green-800" : "bg-red-600"
+                    ${props.title === "Todo" ? "bg-green-600" 
+                    : props.title === "In progress" ? "bg-orange-600"
+                    : props.title === "In review" ? "bg-yellow-600" 
+                    : props.title === "Done" ? "bg-green-800" 
+                    : "bg-red-600"
             } `}
         >
           <div className="flex top-0 left-0 w-[15px] h-[15px] justify-center items-center rounded-full bg-black"></div>
@@ -68,4 +68,4 @@ function Checklist(props: { title: string; assignedTeam: string; userRole: strin
   );
 }
 
-export default Checklist; // ✅ Default export to fix AWS Amplify error
+export default Checklist; // ✅ Fixes AWS Amplify build issues
