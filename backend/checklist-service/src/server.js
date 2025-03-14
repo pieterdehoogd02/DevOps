@@ -161,7 +161,7 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
 
 // ✅ CIO: Delete a checklist
 app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async (req, res) => {
-    const { id } = req.params;
+    const { id, assignedTeam } = req.params;
 
     try {
         await dynamoDB.send(new DeleteItemCommand({ 
