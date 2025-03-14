@@ -153,12 +153,12 @@ function Dashboard() {
 
   return (
     <div className="left-0 top-0 w-full h-full">
-      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500">
+      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500 rounded-xl">
         <div className="left-[78%] top-0 w-[20%] h-full flex flex-row items-center justify-center">
-          <div className="flex flex-row h-[50%] w-[25%] rounded-xl bg-red-600">Logout</div>
+          <div className="flex flex-row h-[50%] w-[25%] rounded-xl bg-red-600 items-center justify-center font-semibold font-sans text-lg">Logout</div>
         </div>
       </div>
-      <div className="absolute top-[14%] h-[84%] left-[2%] w-[18%] bg-blue-500"></div>
+      <div className="absolute top-[14%] h-[84%] left-[2%] w-[18%] bg-blue-500 rounded-xl"></div>
     </div>
   );
 
