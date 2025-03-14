@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Checklists from "./createChecklistsGroup"
 
 const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER;
 const apiServer = process.env.NEXT_PUBLIC_CHECKLIST_SERVER;
@@ -8,7 +9,7 @@ const apiServer = process.env.NEXT_PUBLIC_CHECKLIST_SERVER;
 console.log("authServer = " + authServer)
 
 export default function Home() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [checklists, setChecklists] = useState<{ id: string; title: string; description: string; assignedTeam: string }[]>([]);
@@ -187,7 +188,7 @@ function Dashboard(props: any) {
       </div>
 
       {/* Main Content Area */}
-      <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-white rounded-xl"></div>
+      <Checklists></Checklists>
     </div>
   );
 }
