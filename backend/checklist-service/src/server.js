@@ -42,7 +42,7 @@ const dynamoDB = new DynamoDBClient({
     }
 });
 
-const TABLE_NAME = process.env.DYNAMO_TABLE;
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 
 // Keycloak setup
 const memoryStore = new session.MemoryStore();
