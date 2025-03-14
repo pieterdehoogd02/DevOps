@@ -143,26 +143,55 @@ export default function Home() {
           </div>
         </div>
       ):
-        <Dashboard></Dashboard>
+        <Dashboard handleLogout={handleLogout}></Dashboard>
       }
     </div>
   );
 }
 
-function Dashboard() {
-
+function Dashboard(props: any) {
   return (
     <div className="left-0 top-0 w-full h-full">
-      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500 rounded-xl">
-        <div className="left-[78%] top-0 w-[20%] h-full flex flex-row items-center justify-center">
-          <div className="flex flex-row h-[50%] w-[25%] rounded-xl bg-red-600 items-center justify-center font-semibold font-sans text-lg">Logout</div>
+      {/* Top Navigation Bar */}
+      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500 rounded-xl flex flex-row">
+        <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>People</div>
+          <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {}}>Create</div>
         </div>
+        <div className="relative left-[46%] top-0 w-[14%] h-full flex flex-row items-center justify-center">
+          <div className="flex flex-row h-[50%] w-[25%] items-center justify-start font-semibold font-sans text-base hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+            onClick={() => { props.handleLogout() }}>Logout</div>
+        </div>
+      </div>  
+
+      {/* Sidebar */}
+      <div className="absolute top-[14%] h-[84%] left-[2%] w-[16%] bg-blue-500 rounded-xl flex flex-col gap-[12%] py-6">
+        {/* Project Section */}
+        <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
+          <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
+            <div className="w-[60%] h-[80%] flex bg-blue-700 rounded-md justify-center items-center"></div>
+          </div>
+          <div className="flex flex-col w-[70%] h-full">
+            <div className="flex h-[50%] w-full text-md justify-start items-center indent-[10px] font-sans font-semibold">Project name</div>
+            <div className="flex h-[50%] w-full text-sm justify-start items-center indent-[10px] font-sans font-medium">Software Engineering</div>
+          </div>
+        </div>
+
+        {/* Sidebar Menu Items */}
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold" 
+          onClick={() => {}}>Backlog</div>
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold" 
+          onClick={() => {}}>Roles</div>
       </div>
-      <div className="absolute top-[14%] h-[84%] left-[2%] w-[18%] bg-blue-500 rounded-xl"></div>
+
+      {/* Main Content Area */}
+      <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-white rounded-xl"></div>
     </div>
   );
-
 }
+
 
 function OldDashboard() {
 
