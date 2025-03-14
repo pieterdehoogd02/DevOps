@@ -155,7 +155,11 @@ function Dashboard(props: any) {
   const [roles, setRoles] : any = useState([])
 
   useEffect(() => {
-    if(localStorage.getItem("access_token") !== null) setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
+    console.log("localStorage has changed")
+    if(localStorage.getItem("access_token") !== null) {
+      setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
+      console.log("roles = " + roles)
+    }
   }, [localStorage])
 
   const setRolesAsync = async (roles : any) => {
