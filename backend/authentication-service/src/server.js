@@ -15,7 +15,7 @@ const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
 
-// AWS Secrets Manager Client
+// AWS Secrets Manager Client 
 const client = new SecretsManagerClient({
   region: "us-east-1",
   credentials: fromEnv()
@@ -139,6 +139,12 @@ async function initializeApp() {
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
+
+
+        console.log("🔍 Fetching Keycloak client secret from AWS Secrets Manager...");
+        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
         
         console.log("trying to get keycloak configurations");
 
@@ -148,10 +154,11 @@ async function initializeApp() {
         const response = await axios.post(
             `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
             new URLSearchParams({
-            client_id: keycloakClientID,
-            grant_type: 'password',
-            username,
-            password
+              client_id: keycloakClientID,
+              client_secret: clientSecret,  // ✅ Include the client_secret
+              grant_type: 'password',
+              username,
+              password
             }), {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 httpsAgent: agent  // ✅ Use HTTPS agent
@@ -160,8 +167,8 @@ async function initializeApp() {
 
         return res.json(response.data);
         } catch (error) {
-        console.error("❌ Login error", error);
-        res.status(500).json({ error: "Failed to authenticate" });
+          console.error("❌ Login error", error);
+          res.status(500).json({ error: "Failed to authenticate" });
         }
     });
 
