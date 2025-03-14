@@ -1,4 +1,4 @@
-import react from 'react';
+import react, {useState} from 'react';
 
 export default function Checklists(props: any) {    
     return (
@@ -13,8 +13,18 @@ export default function Checklists(props: any) {
 }
 
 function Checklist(props : any) {
-    return (
 
+    // function addingChecklist() {
+
+    // }
+
+    const [checklists, setChecklists] = useState<any[]>([]);
+
+    const setChecklistsAsync = async (checklist: any) => {
+        setChecklists((prevChecklists) => [...prevChecklists, checklist]);
+    };
+
+    return (
         <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
             <div className="relative flex left-[5%] w-[90%] top-[1%] h-[5%] flex-row items-center">
                 <div className={`relative flex top-0 left-0 h-[20px] w-[20px] justify-center items-center rounded-full 
@@ -25,10 +35,18 @@ function Checklist(props : any) {
                      </div>
                 <div className="relative flex top-0 left-[5%] h-[1/2] w-[50%] items-center rounded-full font-sans font-medium text-white">{props.title}</div>
             </div>
+            <div className="relative flex left-[5%] w-[90%] top-[2%] h-[85%] flex-col items-center overflow-y-scroll scrollbar-hide gap-2">
+                {checklists.map((checklist, index) => (
+                    <div key={index} className="w-full h-[10%] bg-gray-300 rounded-md flex flex-col">
+                        <div className="flex flex-row top-0 left-[2%] h-[48%] w-[96%]"></div>
+                        <div className="flex flex-row top-0 left-[2%] h-[48%] w-[96%]">{checklist.task_name}</div>
+                    </div>
+                ))}
+            </div>
             <div className="flex flex-col justify-center items-center w-[90%] h-full relative">
                 {/* Plus Icon and Add Item Text Wrapper */}
                 <div className="absolute top-[93%] left-[10%] transform w-[90%] h-[5%] flex justify-between items-center hover:bg-gray-500 rounded-md" 
-                    onClick={() => {}}> {/* add checklists */}
+                    onClick={async () => {setChecklistsAsync({})}}> {/* add checklists */}
                     {/* Plus Icon */}
                     <div className="w-[10%] h-full flex justify-center items-center">
                         <img src="./plus_icon.png" className="h-[60%] w-auto flex flex-row justify-center items-center" alt="plus icon" />

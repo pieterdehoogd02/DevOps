@@ -154,7 +154,7 @@ function Dashboard(props: any) {
   return (
     <div className="left-0 top-0 w-full h-full">
       {/* Top Navigation Bar */}
-      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-blue-500 rounded-xl flex flex-row">
+      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-row">
         <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>People</div>
@@ -168,7 +168,7 @@ function Dashboard(props: any) {
       </div>  
 
       {/* Sidebar */}
-      <div className="absolute top-[14%] h-[84%] left-[2%] w-[16%] bg-blue-500 rounded-xl flex flex-col gap-[12%] py-6">
+      <div className="absolute top-[14%] h-[84%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%] py-6">
         {/* Project Section */}
         <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
           <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
@@ -181,9 +181,9 @@ function Dashboard(props: any) {
         </div>
 
         {/* Sidebar Menu Items */}
-        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold" 
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={() => {}}>Backlog</div>
-        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold" 
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={() => {}}>Roles</div>
       </div>
 
