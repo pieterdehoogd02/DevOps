@@ -179,6 +179,61 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
+    
+    // ✅ Protected route: Retrieve user info 
+    app.get('/project/members', keycloak.protect(), async (req, res) => {
+      try {
+
+        // Step 1: Get Admin Token
+        const tokenResponse = await axios.post(
+            `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
+            new URLSearchParams({
+                grant_type: "client_credentials",
+                client_id: clientId,
+                client_secret: clientSecret,
+            }),
+            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        );
+
+        const adminToken = tokenResponse.data.access_token;
+
+          // Step 2: Get Client ID
+          const clientsResponse = await axios.get(
+              `${keycloakServerUrl}/admin/realms/${realmName}/clients`,
+              { headers: { Authorization: `Bearer ${adminToken}` } }
+          );
+
+          const client = clientsResponse.data.find(c => c.clientId === clientId);
+          if (!client) {
+              return res.status(404).json({ error: "Client not found" });
+          }
+
+          // Step 3: Get Users Assigned to This Client
+          const usersResponse = await axios.get(
+              `${keycloakServerUrl}/admin/realms/${realmName}/users`,
+              { headers: { Authorization: `Bearer ${adminToken}` } }
+          );
+
+          // Step 4: Filter Users Who Have Roles in This Client
+          // let clientUsers = [];
+
+          // for (const user of usersResponse.data) {
+          //     const rolesResponse = await axios.get(
+          //         `${keycloakServerUrl}/admin/realms/${realmName}/users/${user.id}/role-mappings/clients/${client.id}`,
+          //         { headers: { Authorization: `Bearer ${adminToken}` } }
+          //     );
+
+          //     if (rolesResponse.data.length > 0) {
+          //         clientUsers.push(user);
+          //     }
+          // }
+
+          return res.json(usersResponse);
+      } catch (error) {
+          console.error("Error fetching client users:", error);
+          res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 
     /*    
     // ✅ Assign a user to a team (CIO only)
