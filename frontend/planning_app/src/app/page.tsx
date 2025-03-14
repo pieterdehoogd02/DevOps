@@ -9,7 +9,7 @@ const apiServer = process.env.NEXT_PUBLIC_CHECKLIST_SERVER;
 console.log("authServer = " + authServer)
 
 export default function Home() {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [checklists, setChecklists] = useState<{ id: string; title: string; description: string; assignedTeam: string }[]>([]);
@@ -144,13 +144,18 @@ export default function Home() {
           </div>
         </div>
       ):
-        <Dashboard handleLogout={handleLogout}></Dashboard>
+        <Dashboard handleLogout={handleLogout} decodeJWT={decodeJWT}></Dashboard>
       }
     </div>
   );
 }
 
 function Dashboard(props: any) {
+
+  function getRoles(token: any) {
+    return token?.resource_access?.DevOpsAuthService?.roles || []
+  }
+
   return (
     <div className="left-0 top-0 w-full h-full">
       {/* Top Navigation Bar */}
@@ -158,8 +163,8 @@ function Dashboard(props: any) {
         <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>People</div>
-          <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
-            onClick={() => {}}>Create</div>
+          {getRoles(props.decodeJWT(localStorage.getItem("access_token"))).includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {}}>Create</div>}
         </div>
         <div className="relative left-[46%] top-0 w-[14%] h-full flex flex-row items-center justify-center">
           <div className="flex flex-row h-[50%] w-[25%] items-center justify-start font-semibold font-sans text-base hover:underline-offset-4 hover:underline hover:cursor-pointer" 

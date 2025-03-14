@@ -179,10 +179,15 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
-    
+
     // ✅ Protected route: Retrieve user info 
     app.get('/project/members', keycloak.protect(), async (req, res) => {
       try {
+
+        // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
+        let body = req.body
+        let client_req = body.client
+
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(
