@@ -23,7 +23,7 @@ const options = {
     cert: fs.readFileSync("/etc/letsencrypt/live/checklist.planmeet.net/fullchain.pem"),
   };
 
-
+// Middleware
 app.use(express.json());
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
@@ -91,6 +91,7 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
         const userGroups = userToken.groups || [];
 
         console.log("User groups:", userGroups);
+        console.log("User roles:", userToken.realm_access.roles);
 
         // ✅ CIOs can see all checklists
         if (userGroups.includes("CIO") || userGroups.includes("/CIO")) {
