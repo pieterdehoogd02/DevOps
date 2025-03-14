@@ -161,7 +161,7 @@ function Dashboard(props: any) {
     if(localStorage.getItem("access_token") !== null) {
       console.log("decoded access_token = " + JSON.stringify(props.decodeJWT(localStorage.getItem("access_token"))))
       setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
-      console.log("roles = " + roles)
+      console.log("roles = " + JSON.stringify(roles))
     }
   }, [localStorage])
 
@@ -169,13 +169,34 @@ function Dashboard(props: any) {
     setRoles(roles)
   }
 
+   const setMembersAsync = async (members : any) => {
+    setMembers(members)
+  }
+
 
   function getRoles(token: any) {
     return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
   }
 
-  function getPeopleAllocatedToProject(projectName: string) {
+  async function getPeopleAllocatedToProject() {
+    try {
+      const response = await fetch(`${authServer}/project/members`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
+      })
 
+      if(!response.ok) {
+        console.error("Request to get project members failed:" + response.status)
+      }
+
+      const data = response.json()
+
+      console.log("data = " + JSON.stringify(data))
+
+      setMembersAsync(data)
+    }
+    catch (error: any) {
+      console.error("Error! Could not retrieve project members: " + JSON.stringify(error))
+    }
   }
 
   return (
@@ -184,7 +205,7 @@ function Dashboard(props: any) {
       <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-row">
         <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
-          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>People</div>
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {getPeopleAllocatedToProject()}}>People</div>
           {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {}}>Create</div>}
         </div>
