@@ -213,19 +213,19 @@ async function initializeApp() {
         // Step 2: Use Promise.all to fetch user data, roles, and groups concurrently
         const [userResponse, rolesResponse, groupsResponse] = await Promise.all([
           axios.get(
-            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}`,
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}`,
             {
               headers: { Authorization: `Bearer ${adminToken}` },
             }
           ),
           axios.get(
-            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}/role-mappings`,
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings`,
             {
               headers: { Authorization: `Bearer ${adminToken}` },
             }
           ),
           axios.get(
-            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}/groups`,
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
             {
               headers: { Authorization: `Bearer ${adminToken}` },
             }
