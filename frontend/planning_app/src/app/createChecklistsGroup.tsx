@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
+// API URL for the backend server 
 const API_URL = process.env.NEXT_PUBLIC_CHECKLIST_SERVER || "https://checklist.planmeet.net:5002";
 
 interface DecodedToken {
@@ -10,12 +11,12 @@ interface DecodedToken {
 }
 
 export default function Checklists({ token }: { token: string }) {
-  const [userRole, setUserRole] = useState<string>("Other");
-  const [assignedTeam, setAssignedTeam] = useState<string | null>(null);
-  const [teams, setTeams] = useState<string[]>([]);
-  const [selectedTeam, setSelectedTeam] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("Other"); // State to track the user's role (CIO, PO, Dev)
+  const [assignedTeam, setAssignedTeam] = useState<string | null>(null); // State to track the assigned team for non-CIO users
+  const [teams, setTeams] = useState<string[]>([]); // State to track all teams (for CIO role)
+  const [selectedTeam, setSelectedTeam] = useState<string>(""); // State to track the currently selected team (for CIO role)
 
-  // Decode JWT and extract user role and assigned team
+  // Extract user role and assigned team from JWT token
   useEffect(() => {
     try {
       if (!token) return;
@@ -23,13 +24,15 @@ export default function Checklists({ token }: { token: string }) {
       const roles = decoded?.realm_access?.roles || [];
 
       if (roles.includes("CIO")) {
-        // CIO users can select any team
+        // CIOs can switch between teams
         setUserRole("CIO");
         setAssignedTeam(null);
         setTeams(roles.filter((role) => role.startsWith("dev_team_")) || []);
       } else {
-        // Non-CIO users are assigned to a specific team
+        // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
+
+        // Identify the team the user belongs to
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
           setAssignedTeam(groups[0]);
@@ -43,16 +46,16 @@ export default function Checklists({ token }: { token: string }) {
 
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
-      {/* CIO Team Selection Dropdown */}
+      {/* Dropdown for CIO to switch between teams */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2">
           <label className="text-white">Select Team:</label>
-          <select 
-            className="p-2 bg-gray-300 rounded-md" 
-            value={selectedTeam} 
+          <select
+            className="p-2 bg-gray-300 rounded-md"
+            value={selectedTeam}
             onChange={(e) => setSelectedTeam(e.target.value)}
           >
-            <option value="">-- Select Team --</option>
+            <option value="">{selectedTeam || "-- Select Team --"}</option>
             {teams.map((team) => (
               <option key={team} value={team}>{team}</option>
             ))}
@@ -60,7 +63,7 @@ export default function Checklists({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Render Checklist Columns */}
+      {/* Render columns for different checklist categories */}
       <div className="flex flex-row justify-between items-center">
         {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
           <Checklist
@@ -69,6 +72,7 @@ export default function Checklists({ token }: { token: string }) {
             assignedTeam={selectedTeam || assignedTeam}
             userRole={userRole}
             token={token}
+            teams={teams}
           />
         ))}
       </div>
@@ -76,17 +80,20 @@ export default function Checklists({ token }: { token: string }) {
   );
 }
 
-function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string | null; userRole: string; token: string }) {
+function Checklist({ title, assignedTeam, userRole, token, teams }: { title: string; assignedTeam: string | null; userRole: string; token: string; teams: string[] }) {
   const [checklists, setChecklists] = useState<any[]>([]);
+  const [menuOpen, setMenuOpen] = useState<{ [key: string]: boolean }>({});
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [newAssignedTeam, setNewAssignedTeam] = useState(assignedTeam || "");
 
+  // Fetch checklists for this category from the backend
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
         let endpoint = `${API_URL}/checklists`;
-
-        // Non-CIO users fetch only their assigned team's checklists
         if (userRole !== "CIO" && assignedTeam) {
           endpoint = `${API_URL}/checklists/team/${assignedTeam}`;
         }
@@ -104,9 +111,27 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     fetchChecklists();
   }, [title, assignedTeam, userRole, token]);
 
+  // CIO: Delete a checklist
+  const handleDeleteChecklist = async (id: string) => {
+    if (!assignedTeam) return;
+    try {
+      const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        setChecklists(checklists.filter((item) => item.id.S !== id));
+        setConfirmDeleteId(null);
+      }
+    } catch (error) {
+      console.error("Error deleting checklist:", error);
+    }
+  };
+
   // CIO: Add a new checklist
   const handleAddChecklist = async () => {
-    if (!newTitle || !assignedTeam) {
+    if (!newTitle || !newAssignedTeam) {
       alert("Title and Assigned Team are required.");
       return;
     }
@@ -120,33 +145,17 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          assignedTeam,
+          assignedTeam: newAssignedTeam,
         }),
       });
+
       if (response.ok) {
+        setShowAddModal(false);
         setNewTitle("");
         setNewDescription("");
       }
     } catch (error) {
       console.error("Error adding checklist:", error);
-    }
-  };
-
-  // CIO: Delete a checklist
-  const handleDeleteChecklist = async (id: string) => {
-    if (!assignedTeam) return;
-
-    try {
-      const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.ok) {
-        setChecklists(checklists.filter((item) => item.id.S !== id)); // Remove deleted item
-      }
-    } catch (error) {
-      console.error("Error deleting checklist:", error);
     }
   };
 
@@ -161,42 +170,49 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         <span className="ml-2 font-medium text-white">{title}</span>
       </div>
 
-      {/* Checklist Items */}
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
-        {checklists.length === 0 ? (
-          <div className="text-gray-400 text-sm">No checklists found.</div>
-        ) : (
-          checklists.map((checklist, index) => (
-            <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col break-words relative">
-              <div className="font-bold">{checklist.title?.S || "No Title"}</div>
-              <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
+        {checklists.map((checklist, index) => (
+          <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col relative">
+            <div className="font-bold">{checklist.title?.S || "No Title"}</div>
+            <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
 
-              {/* Three-dot menu for actions */}
-              {(userRole === "CIO" || userRole === "PO") && (
-                <div className="absolute top-2 right-2">
-                  <button className="text-gray-600">⋮</button>
+            {(userRole === "CIO" || userRole === "PO") && (
+              <div className="absolute top-2 right-2">
+                <button className="text-gray-600" onClick={() => setMenuOpen({ ...menuOpen, [checklist.id.S]: !menuOpen[checklist.id.S] })}>
+                  ⋮
+                </button>
+                {menuOpen[checklist.id.S] && (
                   <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
                     {userRole === "CIO" && (
-                      <button onClick={() => handleDeleteChecklist(checklist.id.S)} className="text-red-500">
+                      <button onClick={() => setConfirmDeleteId(checklist.id.S)} className="text-red-500">
                         Delete
                       </button>
                     )}
-                    {userRole === "PO" && (
-                      <button className="text-blue-500">Update</button>
-                    )}
                   </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Add Checklist Button for CIO */}
       {userRole === "CIO" && (
-        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={handleAddChecklist}>
+        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => setShowAddModal(true)}>
           + Add Item
         </button>
+      )}
+
+      {/* Add Item Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow">
+            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
+            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
+            <button onClick={handleAddChecklist}>Add</button>
+            <button onClick={() => setShowAddModal(false)}>Cancel</button>
+          </div>
+        </div>
       )}
     </div>
   );
