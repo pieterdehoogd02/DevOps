@@ -256,7 +256,7 @@ async function initializeApp() {
           //     }
           // }
 
-          return res.json(usersResponse);
+          return res.json({"users" : usersResponse});
       } catch (error) {
           console.error("Error fetching client users:", error);
           res.status(500).json({ error: "Internal Server Error" });
