@@ -48,13 +48,19 @@ export default function Checklists({ token }: { token: string }) {
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       {/* Dropdown for CIO to switch between teams */}
       {userRole === "CIO" && (
+<<<<<<< HEAD
         <div className="p-4 flex flex-row gap-2 items-center">
           <label className="text-white font-semibold">Viewing Team:</label>
+=======
+        <div className="p-4 flex flex-row gap-2">
+          <label className="text-white">Select Team:</label>
+>>>>>>> parent of 1a06615 (frontend .......)
           <select
             className="p-2 bg-gray-300 rounded-md"
             value={selectedTeam || (teams.length > 0 ? teams[0] : "")} // ✅ Always show the current team
             onChange={(e) => setSelectedTeam(e.target.value)}
           >
+<<<<<<< HEAD
             {teams.length === 0 ? (
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
             ) : (
@@ -64,6 +70,12 @@ export default function Checklists({ token }: { token: string }) {
                 </option>
               ))
             )}
+=======
+            <option value="">{selectedTeam || "-- Select Team --"}</option>
+            {teams.map((team) => (
+              <option key={team} value={team}>{team}</option>
+            ))}
+>>>>>>> parent of 1a06615 (frontend .......)
           </select>
         </div>
       )}
@@ -214,6 +226,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
 
       {/* Add Item Modal */}
       {showAddModal && (
+<<<<<<< HEAD
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-xl">
             <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
@@ -235,6 +248,14 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
               <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
             </div>
+=======
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow">
+            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
+            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
+            <button onClick={handleAddChecklist}>Add</button>
+            <button onClick={() => setShowAddModal(false)}>Cancel</button>
+>>>>>>> parent of 1a06615 (frontend .......)
           </div>
         </div>
       )}
