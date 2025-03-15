@@ -49,6 +49,7 @@ export default function Home() {
         return;
       }
 
+      
       console.log("Logged in!!!")
 
       const data = await response.json();
