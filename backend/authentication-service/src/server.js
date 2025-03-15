@@ -237,6 +237,8 @@ async function initializeApp() {
                 httpsAgent: agent
               }
           );
+
+          console.log("usersResponse = " + JSON.stringify(usersResponse.data))
            
           console.log("after getting users from realm")
 
