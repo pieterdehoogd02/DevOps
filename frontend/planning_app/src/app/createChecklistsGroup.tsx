@@ -11,7 +11,9 @@ interface DecodedToken {
 
 export default function Checklists({ token }: { token: string }) {
   const [userRole, setUserRole] = useState<string>("Other");
-  const [assignedTeam, setAssignedTeam] = useState<string | null>(null); // CIO sees all
+  const [assignedTeam, setAssignedTeam] = useState<string | null>(null);
+  const [teams, setTeams] = useState<string[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<string>("");
 
   useEffect(() => {
     try {
@@ -21,13 +23,14 @@ export default function Checklists({ token }: { token: string }) {
 
       if (roles.includes("CIO")) {
         setUserRole("CIO");
-        setAssignedTeam(null); // CIO can see all checklists
+        setAssignedTeam(null);
+        setTeams(roles.filter((role) => role.startsWith("dev_team_")) || []);
       } else {
         setUserRole("Other");
-
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
-          setAssignedTeam(groups[0]); // Assign team for Dev/PO
+          setAssignedTeam(groups[0]);
+          setSelectedTeam(groups[0]);
         }
       }
     } catch (error) {
@@ -36,36 +39,49 @@ export default function Checklists({ token }: { token: string }) {
   }, [token]);
 
   return (
-    <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-row justify-between items-center px-[0.67%] bg-opacity-70">
-      <Checklist title="Todo" assignedTeam={assignedTeam} userRole={userRole} token={token} />
-      <Checklist title="In progress" assignedTeam={assignedTeam} userRole={userRole} token={token} />
-      <Checklist title="In review" assignedTeam={assignedTeam} userRole={userRole} token={token} />
-      <Checklist title="Done" assignedTeam={assignedTeam} userRole={userRole} token={token} />
-      <Checklist title="Backlog" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+    <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
+      {userRole === "CIO" && (
+        <div className="p-4 flex flex-row gap-2">
+          <label className="text-white">Select Team:</label>
+          <select 
+            className="p-2 bg-gray-300 rounded-md" 
+            value={selectedTeam} 
+            onChange={(e) => setSelectedTeam(e.target.value)}
+          >
+            <option value="">-- Select Team --</option>
+            {teams.map((team) => (
+              <option key={team} value={team}>{team}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      <div className="flex flex-row justify-between items-center">
+        <Checklist title="Todo" assignedTeam={selectedTeam || assignedTeam} userRole={userRole} token={token} />
+        <Checklist title="In progress" assignedTeam={selectedTeam || assignedTeam} userRole={userRole} token={token} />
+        <Checklist title="In review" assignedTeam={selectedTeam || assignedTeam} userRole={userRole} token={token} />
+        <Checklist title="Done" assignedTeam={selectedTeam || assignedTeam} userRole={userRole} token={token} />
+        <Checklist title="Backlog" assignedTeam={selectedTeam || assignedTeam} userRole={userRole} token={token} />
+      </div>
     </div>
   );
 }
 
 function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string | null; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
 
-  // Fetch checklists from backend
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
         let endpoint = `${API_URL}/checklists`;
-
         if (userRole !== "CIO" && assignedTeam) {
           endpoint = `${API_URL}/checklists/team/${assignedTeam}`;
         }
-
         const response = await fetch(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         const data = await response.json();
         const filteredChecklists = data.filter((item: any) => item.status?.S === title);
         setChecklists(filteredChecklists);
@@ -73,17 +89,14 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         console.error("Error fetching checklists:", error);
       }
     };
-
     fetchChecklists();
   }, [title, assignedTeam, userRole, token]);
 
-  // Handle adding a new checklist item
   const handleAddChecklist = async () => {
     if (!newTitle || !assignedTeam) {
       alert("Title and Assigned Team are required.");
       return;
     }
-
     try {
       const response = await fetch(`${API_URL}/checklists`, {
         method: "POST",
@@ -97,34 +110,24 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           assignedTeam,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to add checklist item.");
+      if (response.ok) {
+        setNewTitle("");
+        setNewDescription("");
       }
-
-      const newItem = await response.json();
-      setChecklists([...checklists, newItem.checklist]); // Update state with the new item
-      setShowModal(false); // Close modal after adding
-      setNewTitle(""); // Clear input fields
-      setNewDescription("");
     } catch (error) {
       console.error("Error adding checklist:", error);
-      alert("Failed to add checklist.");
     }
   };
 
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
-      {/* Column Header */}
       <div className="flex items-center mb-2">
         <div className={`h-[20px] w-[20px] rounded-full 
           ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" :
-            title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"
-          }`}></div>
+            title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"}`}>
+        </div>
         <span className="ml-2 font-medium text-white">{title}</span>
       </div>
-
-      {/* Checklist Items */}
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
         {checklists.length === 0 ? (
           <div className="text-gray-400 text-sm">No checklists found.</div>
@@ -137,53 +140,10 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           ))
         )}
       </div>
-
-      {/* Add Item Button for CIO */}
       {userRole === "CIO" && (
-        <>
-          <button
-            className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={() => setShowModal(true)}
-          >
-            + Add Item
-          </button>
-
-          {/* Modal for Adding New Checklist */}
-          {showModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-[300px]">
-                <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="border p-2 w-full rounded mb-2"
-                />
-                <textarea
-                  placeholder="Description"
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  className="border p-2 w-full rounded mb-2"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="bg-gray-500 text-white px-3 py-1 rounded"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-green-500 text-white px-3 py-1 rounded"
-                    onClick={handleAddChecklist}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={handleAddChecklist}>
+          + Add Item
+        </button>
       )}
     </div>
   );
