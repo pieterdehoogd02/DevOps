@@ -190,7 +190,7 @@ async function initializeApp() {
 
         console.log("Before getting searchedId")
 
-        const searchedId = req.headers.id
+        const searchedId = req.headers.userId
 
         console.log("SearchedId = " + JSONl.stringify(searchedId))
 
@@ -228,7 +228,7 @@ async function initializeApp() {
 
         res.json(searchedUser);
       } catch(err) {
-        console.error("Error: " + JSON.stringify(err))
+        console.error("Error: " + err)
       }
     });
 
