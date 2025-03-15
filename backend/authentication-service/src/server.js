@@ -193,10 +193,10 @@ async function initializeApp() {
           console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
           // Step 1: Get Admin Token
           const tokenResponse = await axios.post(
-              `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
+              `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
               new URLSearchParams({
                   grant_type: "client_credentials",
-                  client_id: clientId,
+                  client_id: keycloakClientID,
                   client_secret: clientSecret,
               }),
               { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
@@ -208,20 +208,20 @@ async function initializeApp() {
 
           // Step 2: Get Client ID
           const clientsResponse = await axios.get(
-              `${keycloakServerUrl}/admin/realms/${realmName}/clients`,
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
               { headers: { Authorization: `Bearer ${adminToken}` } }
           );
           
           console.log("after keycloak clients request")
 
-          const client = clientsResponse.data.find(c => c.clientId === clientId);
+          const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
           if (!client) {
               return res.status(404).json({ error: "Client not found" });
           }
 
           // Step 3: Get Users Assigned to This Client
           const usersResponse = await axios.get(
-              `${keycloakServerUrl}/admin/realms/${realmName}/users`,
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users`,
               { headers: { Authorization: `Bearer ${adminToken}` } }
           );
            
