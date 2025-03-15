@@ -153,7 +153,7 @@ function Dashboard(props: any) {
 
       const data = await response.json()    
       console.log("data = " + JSON.stringify(data))
-      setMembersAsync(data)
+      setMembersAsync(data.users)
 
       return data; // Convert response to JSON
     } catch (error) {
