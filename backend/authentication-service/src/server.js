@@ -222,7 +222,7 @@ async function initializeApp() {
               }
           );
           
-          console.log("after keycloak clients request")
+          console.log("after keycloak clients request w data = " + JSON.stringify(clientsResponse.data))
 
           const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
           if (!client) {
