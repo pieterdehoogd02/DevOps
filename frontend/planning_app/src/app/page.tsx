@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Checklists from "./createChecklistsGroup";
+import Users from "./Users";
+
 import { jwtDecode } from "jwt-decode";
 
 const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER;
@@ -94,6 +96,8 @@ function Dashboard(props: any) {
 
   const [roles, setRoles] : any = useState([])
   const [members, setMembers] : any = useState([])
+  const [showChecklists, setShowChecklists] = useState(true)
+  const [showUsers, setShowUsers] = useState(false)
 
   // once we get the token update roles
   useEffect(() => {
@@ -112,6 +116,15 @@ function Dashboard(props: any) {
    const setMembersAsync = async (members : any) => {
     setMembers(members)
   }
+
+   const setShowChecklistsAsync = async () => {
+    setShowChecklists(!showChecklists)
+  }
+   
+  const setShowUsersAsync = async () => {
+    setShowUsers(!showUsers)
+  }
+  
 
 
   function getRoles(token: any) {
@@ -140,6 +153,7 @@ function Dashboard(props: any) {
 
       const data = await response.json()    
       console.log("data = " + JSON.stringify(data))
+      setMembersAsync(data)
 
       return data; // Convert response to JSON
     } catch (error) {
@@ -155,7 +169,8 @@ function Dashboard(props: any) {
       <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-row">
         <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
-          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={async () => {getProjectMembers()}}>People</div>
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+            onClick={async () => {await getProjectMembers(); await setShowUsersAsync(); await setShowChecklistsAsync();}}>People</div>
           {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {}}>Create</div>}
         </div>
@@ -180,13 +195,14 @@ function Dashboard(props: any) {
 
         {/* Sidebar Menu Items */}
         <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-          onClick={() => {}}>Backlog</div>
+          onClick={async () => {await setShowUsersAsync(); await setShowChecklistsAsync();}}>Backlog</div>
         <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={() => {}}>Roles</div>
       </div>
 
       {/* Main Content Area */}
-      <Checklists token={props.token}></Checklists>
+      {showChecklists && <Checklists token={props.token}></Checklists>}
+      {showUsers && <Users users={members}></Users>}
     </div>
   );
 }

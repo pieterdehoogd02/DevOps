@@ -179,6 +179,48 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
+    
+    app.get('/getUserData/', keycloak.protect(), async (req, res) => {
+      try {
+
+        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+        const searchedId = req.body.id
+
+        // Step 1: Get Admin Token
+        const tokenResponse = await axios.post(
+            `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+            new URLSearchParams({
+                grant_type: "client_credentials",
+                client_id: keycloakClientID,
+                client_secret: clientSecret,
+            }),
+            { 
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              httpsAgent: agent  // ✅ Use HTTPS agent }
+            }
+        );
+
+        const adminToken = tokenResponse.data.access_token;
+
+        const usersResponse = await axios.get(
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/users`,
+          { 
+            headers: { Authorization: `Bearer ${adminToken}` },
+            httpsAgent: agent
+          }
+        );
+
+        let searchedUser = {}
+        for(let user of usersResponse.data){
+          if(searchedId === user.id) searchedUser = user
+        }
+
+        res.json(searchedUser);
+      } catch(err) {
+        console.error("Error: " + JSON.stringify(err))
+      }
+    });
 
     
     // Assume we only have one client for now
@@ -212,22 +254,6 @@ async function initializeApp() {
           const adminToken = tokenResponse.data.access_token;
 
           console.log("after keycloak initial request")
-
-          // Step 2: Get Client ID
-          // const clientsResponse = await axios.get(
-          //     `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
-          //     { 
-          //       headers: { Authorization: `Bearer ${adminToken}` },
-          //       httpsAgent: agent 
-          //     }
-          // );
-          
-          // console.log("after keycloak clients request w data = " + JSON.stringify(clientsResponse.data))
-
-          // const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
-          // if (!client) {
-          //     return res.status(404).json({ error: "Client not found" });
-          // }
 
           // Step 3: Get Users Assigned to This Client
           const usersResponse = await axios.get(
