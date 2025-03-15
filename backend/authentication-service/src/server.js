@@ -221,6 +221,7 @@ async function initializeApp() {
       
         let searchedUser = {}
         for(let user of usersResponse.data){
+          console.log("user = " + JSON.stringify(user))
           if(searchedId === user.id) searchedUser = user
         }
 
