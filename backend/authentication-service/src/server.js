@@ -256,6 +256,10 @@ async function initializeApp() {
           //     }
           // }
 
+          let json_users = {"users": usersResponse.data}
+
+          console.log("json_users" + JSON.stringify(json_users))
+
           return res.json({"users" : usersResponse.data});
       } catch (error) {
           console.error("Error fetching client users:", error);
