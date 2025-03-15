@@ -214,20 +214,20 @@ async function initializeApp() {
           console.log("after keycloak initial request")
 
           // Step 2: Get Client ID
-          const clientsResponse = await axios.get(
-              `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
-              { 
-                headers: { Authorization: `Bearer ${adminToken}` },
-                httpsAgent: agent 
-              }
-          );
+          // const clientsResponse = await axios.get(
+          //     `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
+          //     { 
+          //       headers: { Authorization: `Bearer ${adminToken}` },
+          //       httpsAgent: agent 
+          //     }
+          // );
           
-          console.log("after keycloak clients request w data = " + JSON.stringify(clientsResponse.data))
+          // console.log("after keycloak clients request w data = " + JSON.stringify(clientsResponse.data))
 
-          const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
-          if (!client) {
-              return res.status(404).json({ error: "Client not found" });
-          }
+          // const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
+          // if (!client) {
+          //     return res.status(404).json({ error: "Client not found" });
+          // }
 
           // Step 3: Get Users Assigned to This Client
           const usersResponse = await axios.get(
