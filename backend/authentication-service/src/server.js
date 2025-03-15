@@ -210,24 +210,37 @@ async function initializeApp() {
 
         const adminToken = tokenResponse.data.access_token;
 
-        const usersResponse = await axios.get(
-          `${keycloakUrl}/admin/realms/${keycloakRealm}/users`,
-          { 
-            headers: { Authorization: `Bearer ${adminToken}` },
-            httpsAgent: agent
-          }
-        );
+        // Step 2: Use Promise.all to fetch user data, roles, and groups concurrently
+        const [userResponse, rolesResponse, groupsResponse] = await Promise.all([
+          axios.get(
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}`,
+            {
+              headers: { Authorization: `Bearer ${adminToken}` },
+            }
+          ),
+          axios.get(
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}/role-mappings`,
+            {
+              headers: { Authorization: `Bearer ${adminToken}` },
+            }
+          ),
+          axios.get(
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${userId}/groups`,
+            {
+              headers: { Authorization: `Bearer ${adminToken}` },
+            }
+          ),
+        ]);
 
-      
-        let searchedUser = {}
-        for(let user of usersResponse.data){
-          console.log("user = " + JSON.stringify(user))
-          if(searchedId === user.id) searchedUser = user
-        }
+        const user = userResponse.data;
+        const roles = rolesResponse.data;
+        const groups = groupsResponse.data;
 
-        console.log("searchedUser = " + JSON.stringify(searchedUser))
+        console.log('User Details:', user);
+        console.log('Roles:', roles);
+        console.log('Groups:', groups);
 
-        res.json(searchedUser);
+        return { user, roles, groups };
       } catch(err) {
         console.error("Error: " + err)
       }
