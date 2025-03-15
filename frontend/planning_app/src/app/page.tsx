@@ -82,17 +82,106 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        <Dashboard handleLogout={handleLogout} token={token} />
+        <Dashboard handleLogout={handleLogout} token={token}/>
       )}
     </div>
   );
 }
 
-function Dashboard(props: { handleLogout: () => void; token: string | null }) {
+function Dashboard(props: any) {
+
+  const [roles, setRoles] : any = useState([])
+  const [members, setMembers] : any = useState([])
+
+  // once we get the token update roles
+  useEffect(() => {
+    console.log("localStorage has changed")
+    if(localStorage.getItem("access_token") !== null) {
+      console.log("decoded access_token = " + JSON.stringify(props.decodeJWT(localStorage.getItem("access_token"))))
+      setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
+      console.log("roles = " + JSON.stringify(roles))
+    }
+  }, [localStorage])
+
+  const setRolesAsync = async (roles : any) => {
+    setRoles(roles)
+  }
+
+   const setMembersAsync = async (members : any) => {
+    setMembers(members)
+  }
+
+
+  function getRoles(token: any) {
+    return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
+  }
+
+  async function getProjectMembers() {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        throw new Error("No access token found");
+      }
+
+      const response = await fetch(`${authServer}/project/members`, {
+        method: "GET", // Explicitly set the method
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return await response.json(); // Convert response to JSON
+    } catch (error) {
+      console.error("Error fetching project members:", error);
+      return null; // Return null or handle errors appropriately
+    }
+  }
+
+
   return (
     <div className="left-0 top-0 w-full h-full">
-      {/* ✅ Pass `token` to `Checklists` */}
-      <Checklists token={props.token || ""} />
+      {/* Top Navigation Bar */}
+      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-row">
+        <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
+          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {getProjectMembers()}}>People</div>
+          {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {}}>Create</div>}
+        </div>
+        <div className="relative left-[46%] top-0 w-[14%] h-full flex flex-row items-center justify-center">
+          <div className="flex flex-row h-[50%] w-[25%] items-center justify-start font-semibold font-sans text-base hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+            onClick={() => { props.handleLogout() }}>Logout</div>
+        </div>
+      </div>  
+
+      {/* Sidebar */}
+      <div className="absolute top-[14%] h-[84%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%] py-6">
+        {/* Project Section */}
+        <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
+          <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
+            <div className="w-[60%] h-[80%] flex bg-blue-700 rounded-md justify-center items-center"></div>
+          </div>
+          <div className="flex flex-col w-[70%] h-full">
+            <div className="flex h-[50%] w-full text-md justify-start items-center indent-[10px] font-sans font-semibold">Project name</div>
+            <div className="flex h-[50%] w-full text-sm justify-start items-center indent-[10px] font-sans font-medium">Software Engineering</div>
+          </div>
+        </div>
+
+        {/* Sidebar Menu Items */}
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          onClick={() => {}}>Backlog</div>
+        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          onClick={() => {}}>Roles</div>
+      </div>
+
+      {/* Main Content Area */}
+      <Checklists token={props.token}></Checklists>
     </div>
   );
 }
