@@ -137,7 +137,10 @@ function Dashboard(props: any) {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      return await response.json(); // Convert response to JSON
+      const data = response.json()
+      console.log("data = " + JSON.stringify(data))
+
+      return data; // Convert response to JSON
     } catch (error) {
       console.error("Error fetching project members:", error);
       return null; // Return null or handle errors appropriately
