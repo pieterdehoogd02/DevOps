@@ -12,7 +12,7 @@ RUN apt update && apt install -y \
 
 # Install latest Node.js from NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt install -y nodejs && apt install wget
+    && apt install -y nodejs && apt install wget && apt install cron
 
 # Verify installation
 RUN node -v && npm -v
