@@ -49,6 +49,8 @@ export default function Users(props: any) {
 
                 let user_data = await response.json(); // Parse JSON
 
+                console.log("user data = " + JSON.stringify(user_data))
+
                 setUserDataAsync((prevUserData: any) => [...prevUserData, user_data]);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -67,7 +69,7 @@ export default function Users(props: any) {
                                 // if(userData.r)
                                 return(
                                     <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
-                                        <div className="">{elem.username}</div>
+                                        <div className="">A</div>
                                     </div>
                                 );
                             })
