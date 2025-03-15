@@ -1,9 +1,37 @@
 import { useEffect, useState } from "react";
+import jwtDecode from "jwt-decode"; // ✅ Ensure JWT decoding is available
 
+// ✅ Use environment variable for API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://checklist.planmeet.net:5002";
 
-function Checklist({ title, assignedTeam, userRole }: { title: string; assignedTeam?: string; userRole: string }) {
+interface DecodedToken {
+  realm_access?: {
+    roles?: string[];
+  };
+}
+
+function Checklist({ title, assignedTeam, token }: { title: string; assignedTeam?: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
+  const [userRole, setUserRole] = useState<string>("");
+
+  useEffect(() => {
+    const extractUserRole = () => {
+      try {
+        if (!token) return;
+        const decoded: DecodedToken = jwtDecode(token);
+        const roles = decoded?.realm_access?.roles || [];
+        if (roles.includes("CIO")) {
+          setUserRole("CIO");
+        } else {
+          setUserRole("Other"); // Non-CIO users
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    };
+
+    extractUserRole();
+  }, [token]); // ✅ Extracts role whenever token changes
 
   useEffect(() => {
     const fetchChecklists = async () => {
@@ -32,7 +60,7 @@ function Checklist({ title, assignedTeam, userRole }: { title: string; assignedT
     };
 
     fetchChecklists();
-  }, [title, assignedTeam, userRole]); // ✅ Ensure re-fetch when relevant props change
+  }, [title, assignedTeam, userRole]); // ✅ Re-fetch when relevant props change
 
   return (
     <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
