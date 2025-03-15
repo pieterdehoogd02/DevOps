@@ -33,7 +33,10 @@ export default function Users(props: any) {
             try {
                 let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
                     method: 'GET',
-                    headers: { "Content-Type": "application/json" }
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json"
+                    }, 
                 });
 
                 if (!response.ok) {
@@ -66,36 +69,7 @@ export default function Users(props: any) {
                     </div>
                 </div>
             }
-            {userData.length > 0 && 
-                <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
-                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">PO(s)</div>
-                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
-                        {
-                            userData.map((elem: any) => {
-                                // if(userData.r)
-                                <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
-                                    <div className="">{elem.username}</div>
-                                </div>
-                            })
-                        }
-                    </div>
-                </div>
-            }
-            {userData.length > 0 && 
-                <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
-                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
-                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
-                        {
-                            userData.map((elem: any) => {
-                                // if(userData.r)
-                                <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
-                                    <div className="">{elem.username}</div>
-                                </div>
-                            })
-                        }
-                    </div>
-                </div>
-            }
+            
         </div>
     );
 

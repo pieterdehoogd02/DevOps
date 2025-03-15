@@ -202,7 +202,7 @@ function Dashboard(props: any) {
 
       {/* Main Content Area */}
       {showChecklists && <Checklists token={props.token}></Checklists>}
-      {showUsers && <Users users={members}></Users>}
+      {showUsers && <Users users={members} token={props.token}></Users>}
     </div>
   );
 }
