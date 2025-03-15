@@ -192,7 +192,7 @@ async function initializeApp() {
 
         const searchedId = req.headers.userId
 
-        console.log("SearchedId = " + JSONl.stringify(searchedId))
+        console.log("SearchedId = " + JSON.stringify(searchedId))
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(
