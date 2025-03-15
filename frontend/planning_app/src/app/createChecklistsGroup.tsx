@@ -130,10 +130,14 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
 
   // CIO: Add a new checklist
   const handleAddChecklist = async () => {
-    if (!newTitle || !newAssignedTeam) {
+
+    const teamToAssign = assignedTeam || selectedTeam; // Ensure assignedTeam is not null
+
+    if (!newTitle || !teamToAssign) {
       alert("Title and Assigned Team are required.");
       return;
     }
+
     try {
       const response = await fetch(`${API_URL}/checklists`, {
         method: "POST",
@@ -144,12 +148,12 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          assignedTeam: newAssignedTeam,
+          assignedTeam: teamToAssign,
         }),
       });
 
       if (response.ok) {
-        setShowAddModal(false);
+        setShowAddModal(false); // Close the modal after adding successfully
         setNewTitle("");
         setNewDescription("");
       }
@@ -205,10 +209,37 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
       {/* Add Item Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-xl">
-            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="border p-2 w-full" />
-            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} className="border p-2 w-full mt-2"></textarea>
-            <div className="flex justify-end gap-2 mt-4">
+          <div className="bg-white p-6 rounded shadow-xl w-[400px]">
+            <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
+            <input 
+              type="text" 
+              placeholder="Title" 
+              value={newTitle} 
+              onChange={(e) => setNewTitle(e.target.value)} 
+              className="border p-2 w-full mb-2"
+            />
+            <textarea 
+              placeholder="Description" 
+              value={newDescription} 
+              onChange={(e) => setNewDescription(e.target.value)} 
+              className="border p-2 w-full mb-2"
+            ></textarea>
+
+            {/* Show Assigned Team selection for CIOs */}
+            {userRole === "CIO" && (
+              <select 
+                className="p-2 bg-gray-300 rounded-md w-full mb-2"
+                value={selectedTeam}
+                onChange={(e) => setSelectedTeam(e.target.value)}
+              >
+                <option value="">-- Select Team --</option>
+                {teams.map((team) => (
+                  <option key={team} value={team}>{team}</option>
+                ))}
+              </select>
+            )}
+
+            <div className="flex justify-end gap-2">
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
               <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
             </div>
