@@ -17,13 +17,16 @@ export default function Users(props: any) {
     }
 
     useEffect(() => {
+        console.log("users changed")
         if(props.users.length !== 0) {
+            console.log("changing users state = "+ JSON.stringify(props.users))
             setUsersAsync(props.users)
         }
     }, [props.users])
 
     useEffect(() => {
         if (users.length !== 0) {
+            console.log("changing user data = " + JSON.stringify(users))
             gettingAllUserData();
         }
     }, [users]); // Run when `users` changes
