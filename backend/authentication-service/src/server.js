@@ -183,7 +183,7 @@ async function initializeApp() {
     
     // Assume we only have one client for now
     // ✅ Protected route: Retrieve user info 
-    app.get('/project/members/', async (req, res) => {
+    app.get('/project/members/', keycloak.protect(), async (req, res) => {
       try {
 
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
@@ -191,6 +191,10 @@ async function initializeApp() {
           // let client_req = body.client
           console.log("In project members innit")
           console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
+
+          const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+          const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+          
           // Step 1: Get Admin Token
           const tokenResponse = await axios.post(
               `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
@@ -247,8 +251,7 @@ async function initializeApp() {
           res.status(500).json({ error: "Internal Server Error" });
       }
     });
-
-    /*    
+    
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -280,7 +283,7 @@ async function initializeApp() {
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
         }
-    }); */
+    }); 
 
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
