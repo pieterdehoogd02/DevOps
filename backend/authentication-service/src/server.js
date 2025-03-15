@@ -220,6 +220,8 @@ async function initializeApp() {
           if(searchedId === user.id) searchedUser = user
         }
 
+        console.log("searchedUser = " + JSON.stringify(searchUser))
+
         res.json(searchedUser);
       } catch(err) {
         console.error("Error: " + JSON.stringify(err))
