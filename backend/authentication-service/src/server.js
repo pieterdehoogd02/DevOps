@@ -187,6 +187,9 @@ async function initializeApp() {
 
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+        console.log("Before getting searchedId")
+
         const searchedId = req.headers.id
 
         console.log("SearchedId = " + JSONl.stringify(searchedId))
@@ -289,9 +292,9 @@ async function initializeApp() {
           //     }
           // }
 
-          let json_users = {"users": usersResponse.data}
+          // let json_users = {"users": usersResponse.data}
 
-          console.log("json_users" + JSON.stringify(json_users))
+          // console.log("json_users" + JSON.stringify(json_users))
 
           return res.json({"users" : usersResponse.data});
       } catch (error) {
