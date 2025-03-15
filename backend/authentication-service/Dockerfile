@@ -4,6 +4,9 @@ FROM ubuntu:latest
 # Set working directory
 WORKDIR /app
 
+# add this line to always accept installs
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies including ca-certificates
 RUN apt update && apt install -y \
     curl \
