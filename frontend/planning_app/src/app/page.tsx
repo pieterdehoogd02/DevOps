@@ -138,7 +138,7 @@ function Dashboard(props: any) {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      const data = response.json()    
+      const data = await response.json()    
       console.log("data = " + JSON.stringify(data))
 
       return data; // Convert response to JSON
