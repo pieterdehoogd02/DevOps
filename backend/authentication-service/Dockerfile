@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y \
     curl \
     ca-certificates \
-   && update-ca-certificates && apt install cron
+   && update-ca-certificates && apt install -y cron
 
 # Install latest Node.js from NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
