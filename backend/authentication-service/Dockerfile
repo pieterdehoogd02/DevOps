@@ -8,11 +8,11 @@ WORKDIR /app
 RUN apt update && apt install -y \
     curl \
     ca-certificates \
-    && update-ca-certificates
+   && update-ca-certificates && apt install cron
 
 # Install latest Node.js from NodeSource
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt install -y nodejs && apt install wget && apt install cron
+    && apt install -y nodejs && apt install wget
 
 # Verify installation
 RUN node -v && npm -v
