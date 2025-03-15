@@ -131,7 +131,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
   // CIO: Add a new checklist
   const handleAddChecklist = async () => {
 
-    const teamToAssign = assignedTeam || selectedTeam; // Ensure assignedTeam is not null
+    const teamToAssign = assignedTeam // || selectedTeam; // Ensure assignedTeam is not null
 
     if (!newTitle || !teamToAssign) {
       alert("Title and Assigned Team are required.");
