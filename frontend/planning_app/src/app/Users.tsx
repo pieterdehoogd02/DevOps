@@ -35,7 +35,7 @@ export default function Users(props: any) {
         for (let user of users) { // Remove `: any`
             try {
                 console.log("user id = " + user.id)
-                let response = await fetch(`${authServer}/getUserData?userId=${user.id}`, {
+                let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
                     method: 'GET',
                     headers: { 
                         "Authorization": `Bearer ${props.token}`,
