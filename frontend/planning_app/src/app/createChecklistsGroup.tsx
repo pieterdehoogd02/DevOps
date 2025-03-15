@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import jwtDecode from "jwt-decode"; // ✅ Ensure JWT decoding is available
+import { jwtDecode } from "jwt-decode"; // ✅ Ensure JWT decoding is available
 
 // ✅ Use environment variable for API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://checklist.planmeet.net:5002";
