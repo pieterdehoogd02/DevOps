@@ -49,13 +49,12 @@ export default function Checklists({ token }: { token: string }) {
       {/* Dropdown for CIO to switch between teams */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2">
-          <label className="text-white">Select Team:</label>
+          <label className="text-white">Viewing Team:</label>
           <select
             className="p-2 bg-gray-300 rounded-md"
             value={selectedTeam}
             onChange={(e) => setSelectedTeam(e.target.value)}
           >
-            <option value="">{selectedTeam || "-- Select Team --"}</option>
             {teams.map((team) => (
               <option key={team} value={team}>{team}</option>
             ))}
@@ -205,12 +204,14 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
 
       {/* Add Item Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow">
-            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
-            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
-            <button onClick={handleAddChecklist}>Add</button>
-            <button onClick={() => setShowAddModal(false)}>Cancel</button>
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-xl">
+            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="border p-2 w-full" />
+            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} className="border p-2 w-full mt-2"></textarea>
+            <div className="flex justify-end gap-2 mt-4">
+              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
+              <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
+            </div>
           </div>
         </div>
       )}
