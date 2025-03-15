@@ -74,22 +74,36 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   }, [title, assignedTeam, userRole, token]);
 
   return (
-    <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
-      <div className="relative flex left-[5%] w-[90%] top-[1%] h-[5%] flex-row items-center">
-        <div className={`relative flex top-0 left-0 h-[20px] w-[20px] justify-center items-center rounded-full 
-            ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" : title === "In review" ? "bg-blue-600" :
-              title === "Done" ? "bg-green-600" : "bg-red-600"
-             }`}></div>
-        <div className="relative flex top-0 left-[5%] h-[1/2] w-[50%] items-center font-medium text-white">{title}</div>
+    <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
+      {/* Column Header */}
+      <div className="flex items-center mb-2">
+        <div className={`h-[20px] w-[20px] rounded-full 
+          ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" :
+            title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"
+          }`}></div>
+        <span className="ml-2 font-medium text-white">{title}</span>
       </div>
-      <div className="relative flex left-[5%] w-[90%] top-[2%] h-[85%] flex-col items-center overflow-y-scroll gap-2">
-        {checklists.map((checklist, index) => (
-          <div key={index} className="w-full h-[10%] bg-gray-300 rounded-md flex flex-col p-2">
-            <div className="font-bold">{checklist.title?.S || "No Title"}</div>
-            <div className="text-sm">{checklist.description?.S || "No Description"}</div>
-          </div>
-        ))}
+
+      {/* Checklist Items */}
+      <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
+        {checklists.length === 0 ? (
+          <div className="text-gray-400 text-sm">No checklists found.</div>
+        ) : (
+          checklists.map((checklist, index) => (
+            <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col break-words">
+              <div className="font-bold">{checklist.title?.S || "No Title"}</div>
+              <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
+            </div>
+          ))
+        )}
       </div>
+
+      {/* Add Item Button for CIO */}
+      {userRole === "CIO" && (
+        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">
+          + Add Item
+        </button>
+      )}
     </div>
   );
 }
