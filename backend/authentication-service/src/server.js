@@ -183,14 +183,14 @@ async function initializeApp() {
     
     // Assume we only have one client for now
     // ✅ Protected route: Retrieve user info 
-    app.get('/project/members/', keycloak.protect(), async (req, res) => {
+    app.get('/project/members/', async (req, res) => {
       try {
 
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
           // let body = req.body
           // let client_req = body.client
           console.log("In project members innit")
-
+          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
           // Step 1: Get Admin Token
           const tokenResponse = await axios.post(
               `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
