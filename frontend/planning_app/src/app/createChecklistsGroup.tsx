@@ -48,7 +48,11 @@ export default function Checklists({ token }: { token: string }) {
 
 function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string | null; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
 
+  // Fetch checklists from backend
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
@@ -72,6 +76,42 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
     fetchChecklists();
   }, [title, assignedTeam, userRole, token]);
+
+  // Handle adding a new checklist item
+  const handleAddChecklist = async () => {
+    if (!newTitle || !assignedTeam) {
+      alert("Title and Assigned Team are required.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/checklists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDescription,
+          assignedTeam,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add checklist item.");
+      }
+
+      const newItem = await response.json();
+      setChecklists([...checklists, newItem.checklist]); // Update state with the new item
+      setShowModal(false); // Close modal after adding
+      setNewTitle(""); // Clear input fields
+      setNewDescription("");
+    } catch (error) {
+      console.error("Error adding checklist:", error);
+      alert("Failed to add checklist.");
+    }
+  };
 
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
@@ -100,9 +140,50 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
       {/* Add Item Button for CIO */}
       {userRole === "CIO" && (
-        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">
-          + Add Item
-        </button>
+        <>
+          <button
+            className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600"
+            onClick={() => setShowModal(true)}
+          >
+            + Add Item
+          </button>
+
+          {/* Modal for Adding New Checklist */}
+          {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-[300px]">
+                <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="border p-2 w-full rounded mb-2"
+                />
+                <textarea
+                  placeholder="Description"
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  className="border p-2 w-full rounded mb-2"
+                />
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="bg-gray-500 text-white px-3 py-1 rounded"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-green-500 text-white px-3 py-1 rounded"
+                    onClick={handleAddChecklist}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
