@@ -48,16 +48,22 @@ export default function Checklists({ token }: { token: string }) {
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       {/* Dropdown for CIO to switch between teams */}
       {userRole === "CIO" && (
-        <div className="p-4 flex flex-row gap-2">
-          <label className="text-white">Viewing Team:</label>
+        <div className="p-4 flex flex-row gap-2 items-center">
+          <label className="text-white font-semibold">Viewing Team:</label>
           <select
             className="p-2 bg-gray-300 rounded-md"
-            value={selectedTeam}
+            value={selectedTeam || (teams.length > 0 ? teams[0] : "")} // ✅ Always show the current team
             onChange={(e) => setSelectedTeam(e.target.value)}
           >
-            {teams.map((team) => (
-              <option key={team} value={team}>{team}</option>
-            ))}
+            {teams.length === 0 ? (
+              <option value="">No Teams Available</option> // ✅ Show message if no teams exist
+            ) : (
+              teams.map((team) => (
+                <option key={team} value={team}>
+                  {team} {/* ✅ Ensure team name is displayed */}
+                </option>
+              ))
+            )}
           </select>
         </div>
       )}
@@ -209,37 +215,23 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
       {/* Add Item Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-xl w-[400px]">
+          <div className="bg-white p-6 rounded shadow-xl">
             <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
             <input 
               type="text" 
               placeholder="Title" 
               value={newTitle} 
               onChange={(e) => setNewTitle(e.target.value)} 
-              className="border p-2 w-full mb-2"
+              className="border p-2 w-full" 
             />
             <textarea 
               placeholder="Description" 
               value={newDescription} 
               onChange={(e) => setNewDescription(e.target.value)} 
-              className="border p-2 w-full mb-2"
+              className="border p-2 w-full mt-2"
             ></textarea>
 
-            {/* Show Assigned Team selection for CIOs */}
-            {userRole === "CIO" && (
-              <select 
-                className="p-2 bg-gray-300 rounded-md w-full mb-2"
-                value={selectedTeam}
-                onChange={(e) => setSelectedTeam(e.target.value)}
-              >
-                <option value="">-- Select Team --</option>
-                {teams.map((team) => (
-                  <option key={team} value={team}>{team}</option>
-                ))}
-              </select>
-            )}
-
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
               <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
             </div>
