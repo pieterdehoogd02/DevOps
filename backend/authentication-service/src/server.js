@@ -189,7 +189,7 @@ async function initializeApp() {
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
           // let body = req.body
           // let client_req = body.client
-
+          console.log("In project members innit")
 
           // Step 1: Get Admin Token
           const tokenResponse = await axios.post(

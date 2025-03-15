@@ -44,6 +44,7 @@ export default function Home() {
 
       const data = await response.json();
       localStorage.setItem("access_token", data.access_token);
+      console.log("access token = " + JSON.stringify(jwtDecode(data.access_token)))
       setLoggedIn(true);
       setToken(data.access_token);
     } catch (error) {
