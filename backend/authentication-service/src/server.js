@@ -210,37 +210,42 @@ async function initializeApp() {
 
         const adminToken = tokenResponse.data.access_token;
 
-        // Step 2: Use Promise.all to fetch user data, roles, and groups concurrently
-        const [userResponse, /*rolesResponse,*/ /*groupsResponse*/] = await Promise.all([
-          axios.get(
-            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}`,
-            {
-              headers: { Authorization: `Bearer ${adminToken}` },
-            }
-          ),
-          // axios.get(
-          //   `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
-          //   {
-          //     headers: { Authorization: `Bearer ${adminToken}` },
-          //   }
-          // ),
-          // axios.get(
-          //   `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
-          //   {
-          //     headers: { Authorization: `Bearer ${adminToken}` },
-          //   }
-          // ),
-        ]);
+        const userResponse = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
 
+        console.log("userResponse data = " + userResponse.data)
+        
+        const rolesUser = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
+        
+        console.log("roles user = " + rolesUser.data)
+
+        const groupsUser = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
+        
+        console.log("groups user = " + groupsUser.data)
+        
         const user = userResponse.data;
-        // const roles = rolesResponse.data;
-        // const groups = groupsResponse.data;
+        const roles = rolesUser.data;
+        const groups = groupsUser.data;
 
         console.log('User Details:', user);
-        // console.log('Roles:', roles);
-        // console.log('Groups:', groups);
+        console.log('Roles:', roles);
+        console.log('Groups:', groups);
 
-        return { user /*roles,*/ /*groups*/ };
+        return { user, roles, groups };
       } catch(err) {
         console.error("Error: " + err)
       }
