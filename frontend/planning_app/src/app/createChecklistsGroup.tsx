@@ -167,7 +167,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
           ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" :
             title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"}`}>
         </div>
-        <span className="ml-2 font-medium text-black">{title}</span>
+        <span className="ml-2 font-medium text-white">{title}</span>
       </div>
 
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">

@@ -180,12 +180,12 @@ async function initializeApp() {
         });
     });
     
-    app.get('/getUserData/', keycloak.protect(), async (req, res) => {
+    app.get('/getUserData', keycloak.protect(), async (req, res) => {
       try {
 
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
-        const searchedId = req.body.id
+        const searchedId = req.headers.id
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(

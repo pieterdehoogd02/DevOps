@@ -31,11 +31,11 @@ export default function Users(props: any) {
     async function gettingAllUserData() {
         for (let user of users) { // Remove `: any`
             try {
-                let response = await fetch(`${authServer}/getUserData/`, {
+                let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
                     method: 'GET',
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user?.id }) // Fix JSON body format
+                    headers: { "Content-Type": "application/json" }
                 });
+
 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
