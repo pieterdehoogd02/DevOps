@@ -65,9 +65,11 @@ export default function Users(props: any) {
                         {
                             userData.map((elem: any) => {
                                 // if(userData.r)
-                                <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
-                                    <div className="">{elem.username}</div>
-                                </div>
+                                return(
+                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
+                                        <div className="">{elem.username}</div>
+                                    </div>
+                                );
                             })
                         }
                     </div>
