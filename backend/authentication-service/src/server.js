@@ -183,9 +183,13 @@ async function initializeApp() {
     app.get('/getUserData', keycloak.protect(), async (req, res) => {
       try {
 
+        console.log("In endpoint getUserData")
+
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
         const searchedId = req.headers.id
+
+        console.log("SearchedId = " + JSONl.stringify(searchedId))
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(

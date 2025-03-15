@@ -36,7 +36,6 @@ export default function Users(props: any) {
                     headers: { "Content-Type": "application/json" }
                 });
 
-
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
                 }
@@ -52,6 +51,36 @@ export default function Users(props: any) {
 
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
+            {userData.length > 0 && 
+                <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
+                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
+                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        {
+                            userData.map((elem: any) => {
+                                // if(userData.r)
+                                <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
+                                    <div className="">{elem.username}</div>
+                                </div>
+                            })
+                        }
+                    </div>
+                </div>
+            }
+            {userData.length > 0 && 
+                <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
+                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">PO(s)</div>
+                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        {
+                            userData.map((elem: any) => {
+                                // if(userData.r)
+                                <div className="w-[30%] h-auto bg-slate-500 flex flex-col">
+                                    <div className="">{elem.username}</div>
+                                </div>
+                            })
+                        }
+                    </div>
+                </div>
+            }
             {userData.length > 0 && 
                 <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
                     <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
