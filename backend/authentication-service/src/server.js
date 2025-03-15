@@ -190,7 +190,7 @@ async function initializeApp() {
 
         console.log("Before getting searchedId")
 
-        const searchedId = req.headers.userId
+        const searchedId = req.query.userId
 
         console.log("SearchedId = " + JSON.stringify(searchedId))
 
