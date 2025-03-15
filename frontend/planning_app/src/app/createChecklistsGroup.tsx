@@ -1,64 +1,93 @@
-import react, {useState} from 'react';
+"use client";
 
-export default function Checklists(props: any) {    
-    return (
-        <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-row justify-between items-center px-[0.67%] bg-opacity-70">
-            <Checklist title={"Todo"}></Checklist>
-            <Checklist title={"In progress"}></Checklist>
-            <Checklist title={"In review"}></Checklist>
-            <Checklist title={"Done"}></Checklist>
-            <Checklist title={"Backlog"}></Checklist>
-        </div>
-    );
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+
+const API_URL = process.env.NEXT_PUBLIC_CHECKLIST_SERVER || "https://checklist.planmeet.net:5002";
+
+interface DecodedToken {
+  realm_access?: {
+    roles?: string[];
+  };
 }
 
-function Checklist(props : any) {
+export default function Checklists({ token }: { token: string }) {
+  const [userRole, setUserRole] = useState<string>("Other");
+  const [assignedTeam, setAssignedTeam] = useState<string>("");
 
-    // function addingChecklist() {
+  useEffect(() => {
+    try {
+      if (!token) return;
+      const decoded: DecodedToken = jwtDecode(token);
+      const roles = decoded?.realm_access?.roles || [];
 
-    // }
+      if (roles.includes("CIO")) {
+        setUserRole("CIO");
+      } else {
+        setUserRole("Other");
+      }
 
-    const [checklists, setChecklists] = useState<any[]>([]);
+      const groups = decoded?.realm_access?.roles?.filter((role) => role.startsWith("dev_team_"));
+      if (groups.length > 0) {
+        setAssignedTeam(groups[0]);
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }, [token]);
 
-    const setChecklistsAsync = async (checklist: any) => {
-        setChecklists((prevChecklists) => [...prevChecklists, checklist]);
+  return (
+    <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-row justify-between items-center px-[0.67%] bg-opacity-70">
+      <Checklist title="Todo" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+      <Checklist title="In progress" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+      <Checklist title="In review" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+      <Checklist title="Done" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+      <Checklist title="Backlog" assignedTeam={assignedTeam} userRole={userRole} token={token} />
+    </div>
+  );
+}
+
+function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string; userRole: string; token: string }) {
+  const [checklists, setChecklists] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchChecklists = async () => {
+      try {
+        let endpoint = `${API_URL}/checklists`;
+
+        if (userRole !== "CIO" && assignedTeam) {
+          endpoint = `${API_URL}/checklists/team/${assignedTeam}`;
+        }
+
+        const response = await fetch(endpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await response.json();
+        const filteredChecklists = data.filter((item: any) => item.status?.S === title);
+        setChecklists(filteredChecklists);
+      } catch (error) {
+        console.error("Error fetching checklists:", error);
+      }
     };
 
-    return (
-        <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
-            <div className="relative flex left-[5%] w-[90%] top-[1%] h-[5%] flex-row items-center">
-                <div className={`relative flex top-0 left-0 h-[20px] w-[20px] justify-center items-center rounded-full 
-                    ${ props.title === 'Todo' ? 'bg-green-600' : props.title === 'In progress' ? 'bg-orange-600' 
-                     : props.title ===  'In review' ? 'bg-yellow-600' : props.title === 'Done' ? 'bg-green-800' : 'bg-red-600'} `}>
+    fetchChecklists();
+  }, [title, assignedTeam, userRole, token]);
 
-                        <div className="flex top-0 left-0 w-[15px] h-[15px] justify-center items-center rounded-full bg-black "></div>
-                     </div>
-                <div className="relative flex top-0 left-[5%] h-[1/2] w-[50%] items-center rounded-full font-sans font-medium text-white">{props.title}</div>
-            </div>
-            <div className="relative flex left-[5%] w-[90%] top-[2%] h-[85%] flex-col items-center overflow-y-scroll scrollbar-hide gap-2">
-                {checklists.map((checklist, index) => (
-                    <div key={index} className="w-full h-[10%] bg-gray-300 rounded-md flex flex-col">
-                        <div className="flex flex-row top-0 left-[2%] h-[48%] w-[96%]"></div>
-                        <div className="flex flex-row top-0 left-[2%] h-[48%] w-[96%]">{checklist.task_name}</div>
-                    </div>
-                ))}
-            </div>
-            <div className="flex flex-col justify-center items-center w-[90%] h-full relative">
-                {/* Plus Icon and Add Item Text Wrapper */}
-                <div className="absolute top-[93%] left-[10%] transform w-[90%] h-[5%] flex justify-between items-center hover:bg-gray-500 rounded-md" 
-                    onClick={async () => {setChecklistsAsync({})}}> {/* add checklists */}
-                    {/* Plus Icon */}
-                    <div className="w-[10%] h-full flex justify-center items-center">
-                        <img src="./plus_icon.png" className="h-[60%] w-auto flex flex-row justify-center items-center" alt="plus icon" />
-                    </div>
-
-                    {/* Add Item Text */}
-                    <div className="w-[90%] h-full flex justify-start items-center indent-[10px] hover:cursor-pointer">
-                        Add item
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    );
+  return (
+    <div className="flex flex-col top-[2%] w-[19%] h-[96%] bg-black rounded-xl bg-opacity-30">
+      <div className="relative flex left-[5%] w-[90%] top-[1%] h-[5%] flex-row items-center">
+        <div className="relative flex top-0 left-0 h-[20px] w-[20px] justify-center items-center rounded-full bg-green-600"></div>
+        <div className="relative flex top-0 left-[5%] h-[1/2] w-[50%] items-center font-medium text-white">{title}</div>
+      </div>
+      <div className="relative flex left-[5%] w-[90%] top-[2%] h-[85%] flex-col items-center overflow-y-scroll gap-2">
+        {checklists.map((checklist, index) => (
+          <div key={index} className="w-full h-[10%] bg-gray-300 rounded-md flex flex-col p-2">
+            <div className="font-bold">{checklist.title?.S || "No Title"}</div>
+            <div className="text-sm">{checklist.description?.S || "No Description"}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
