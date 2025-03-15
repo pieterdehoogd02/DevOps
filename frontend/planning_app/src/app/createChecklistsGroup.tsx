@@ -6,14 +6,12 @@ import { jwtDecode } from "jwt-decode";
 const API_URL = process.env.NEXT_PUBLIC_CHECKLIST_SERVER || "https://checklist.planmeet.net:5002";
 
 interface DecodedToken {
-  realm_access?: {
-    roles?: string[];
-  };
+  realm_access?: { roles?: string[] };
 }
 
 export default function Checklists({ token }: { token: string }) {
   const [userRole, setUserRole] = useState<string>("Other");
-  const [assignedTeam, setAssignedTeam] = useState<string>("");
+  const [assignedTeam, setAssignedTeam] = useState<string | null>(null); // CIO sees all
 
   useEffect(() => {
     try {
@@ -23,13 +21,14 @@ export default function Checklists({ token }: { token: string }) {
 
       if (roles.includes("CIO")) {
         setUserRole("CIO");
+        setAssignedTeam(null); // CIO can see all checklists
       } else {
         setUserRole("Other");
-      }
 
-      const groups = decoded?.realm_access?.roles?.filter((role) => role.startsWith("dev_team_"));
-      if (groups.length > 0) {
-        setAssignedTeam(groups[0]);
+        const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
+        if (groups.length > 0) {
+          setAssignedTeam(groups[0]); // Assign team for Dev/PO
+        }
       }
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -47,7 +46,7 @@ export default function Checklists({ token }: { token: string }) {
   );
 }
 
-function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string; userRole: string; token: string }) {
+function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string | null; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
 
   useEffect(() => {

@@ -20,14 +20,6 @@ export default function Home() {
     }
   }, []);
 
-  function decodeJWT(token: string) {
-    const [header, payload] = token.split(".").slice(0, 2);
-    return {
-      header: JSON.parse(atob(header.replace(/-/g, "+").replace(/_/g, "/"))),
-      payload: JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/"))),
-    };
-  }
-
   const handleLogin = async () => {
     if (!username || !password) {
       alert("Please enter both username and password");
@@ -87,7 +79,7 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        <Dashboard handleLogout={handleLogout} token={token} decodeJWT={decodeJWT} />
+        <Dashboard handleLogout={handleLogout} token={token} />
       )}
     </div>
   );
