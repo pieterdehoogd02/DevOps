@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Checklists from "./createChecklistsGroup";
+import { jwtDecode } from "jwt-decode";
 
 const authServer = process.env.NEXT_PUBLIC_AUTH_SERVER;
 const apiServer = process.env.NEXT_PUBLIC_CHECKLIST_SERVER;
@@ -96,12 +97,12 @@ function Dashboard(props: any) {
   // once we get the token update roles
   useEffect(() => {
     console.log("localStorage has changed")
-    if(localStorage.getItem("access_token") !== null) {
-      console.log("decoded access_token = " + JSON.stringify(props.decodeJWT(localStorage.getItem("access_token"))))
-      setRolesAsync(getRoles(props.decodeJWT(localStorage.getItem("access_token"))))
+    if(!props.token) {
+      console.log("decoded access_token = " + JSON.stringify(jwtDecode(props.token || "")))
+      setRolesAsync(getRoles(jwtDecode(props.token || "")))
       console.log("roles = " + JSON.stringify(roles))
     }
-  }, [localStorage])
+  }, [props.token])
 
   const setRolesAsync = async (roles : any) => {
     setRoles(roles)
@@ -118,7 +119,7 @@ function Dashboard(props: any) {
 
   async function getProjectMembers() {
     try {
-      const token = localStorage.getItem("access_token");
+      const token = props.token;
 
       if (!token) {
         throw new Error("No access token found");

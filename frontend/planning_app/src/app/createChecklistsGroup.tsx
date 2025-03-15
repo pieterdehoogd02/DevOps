@@ -16,7 +16,7 @@ export default function Checklists({ token }: { token: string }) {
   useEffect(() => {
     try {
       if (!token) return;
-      const decoded: DecodedToken = jwtDecode(token);
+      const decoded: DecodedToken = jwtDecode(token || "");
       const roles = decoded?.realm_access?.roles || [];
 
       if (roles.includes("CIO")) {
