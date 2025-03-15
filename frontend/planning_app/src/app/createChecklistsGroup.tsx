@@ -11,10 +11,9 @@ interface DecodedToken {
 }
 
 export default function Checklists({ token }: { token: string }) {
-  const [userRole, setUserRole] = useState<string>("Other"); // State to track the user's role (CIO, PO, Dev)
-  const [assignedTeam, setAssignedTeam] = useState<string | null>(null); // State to track the assigned team for non-CIO users
-  const [teams, setTeams] = useState<string[]>([]); // State to track all teams (for CIO role)
-  const [selectedTeam, setSelectedTeam] = useState<string>(""); // State to track the currently selected team (for CIO role)
+  const [userRole, setUserRole] = useState<string>("Other"); // Stores user's role (CIO, PO, Dev)
+  const [selectedTeam, setSelectedTeam] = useState<string>("dev_team_1"); // Default team for CIO
+  const [teams, setTeams] = useState<string[]>([]); // Stores available teams for CIO
 
   // Extract user role and assigned team from JWT token
   useEffect(() => {
@@ -26,17 +25,15 @@ export default function Checklists({ token }: { token: string }) {
       if (roles.includes("CIO")) {
         // CIOs can switch between teams
         setUserRole("CIO");
-        setAssignedTeam(null);
         setTeams(roles.filter((role) => role.startsWith("dev_team_")) || []);
       } else {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
 
-        // Identify the team the user belongs to
+        // Identify the assigned team for non-CIO users
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
-          setAssignedTeam(groups[0]);
-          setSelectedTeam(groups[0]);
+          setSelectedTeam(groups[0]); // Set their team
         }
       }
     } catch (error) {
@@ -46,6 +43,7 @@ export default function Checklists({ token }: { token: string }) {
 
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
+      
       {/* Dropdown for CIO to switch between teams */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2">
@@ -62,16 +60,15 @@ export default function Checklists({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Render columns for different checklist categories */}
+      {/* Render columns for the selected team's checklists */}
       <div className="flex flex-row justify-between items-center">
         {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
           <Checklist
             key={title}
             title={title}
-            assignedTeam={selectedTeam || assignedTeam}
+            assignedTeam={selectedTeam} // Always pass the selected team
             userRole={userRole}
             token={token}
-            teams={teams}
           />
         ))}
       </div>
@@ -81,25 +78,26 @@ export default function Checklists({ token }: { token: string }) {
 
 function Checklist({ title, assignedTeam, userRole, token, teams }: { title: string; assignedTeam: string | null; userRole: string; token: string; teams: string[] }) {
   const [checklists, setChecklists] = useState<any[]>([]);
+  
   const [menuOpen, setMenuOpen] = useState<{ [key: string]: boolean }>({});
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
-  const [newAssignedTeam, setNewAssignedTeam] = useState(assignedTeam || "");
+  
+  const [showUpdateModal, setShowUpdateModal] = useState<string | null>(null);
+  const [newStatus, setNewStatus] = useState<string>("");
 
-  // Fetch checklists for this category from the backend
+  // Fetch checklists **for the selected team**
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
-        let endpoint = `${API_URL}/checklists`;
-        if (userRole !== "CIO" && assignedTeam) {
-          endpoint = `${API_URL}/checklists/team/${assignedTeam}`;
-        }
 
-        const response = await fetch(endpoint, {
+        const response = await fetch(`${API_URL}/checklists/team/${assignedTeam}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const data = await response.json();
         const filteredChecklists = data.filter((item: any) => item.status?.S === title);
         setChecklists(filteredChecklists);
@@ -108,11 +106,13 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
       }
     };
     fetchChecklists();
-  }, [title, assignedTeam, userRole, token]);
+  }, [title, assignedTeam, token]);
 
-  // CIO: Delete a checklist
+  // CIO: Delete a checklist with confirmation
   const handleDeleteChecklist = async (id: string) => {
     if (!assignedTeam) return;
+    if (!window.confirm("Are you sure you want to delete this checklist?")) return; // Confirmation dialog
+
     try {
       const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
         method: "DELETE",
@@ -125,6 +125,34 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
       }
     } catch (error) {
       console.error("Error deleting checklist:", error);
+    }
+  };
+
+  // PO: Update checklist status
+  const handleUpdateStatus = async (id: string) => {
+    if (!assignedTeam || !newStatus) return;
+
+    try {
+      const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setShowUpdateModal(null);
+        setNewStatus("");
+        setChecklists((prevChecklists) =>
+          prevChecklists.map((item) =>
+            item.id.S === id ? { ...item, status: { S: newStatus } } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error updating checklist status:", error);
     }
   };
 
@@ -144,7 +172,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          assignedTeam: newAssignedTeam,
+          assignedTeam: assignedTeam, // Automatically set to the currently viewed team
         }),
       });
 
@@ -160,6 +188,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
 
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
+      
       {/* Column Header */}
       <div className="flex items-center mb-2">
         <div className={`h-[20px] w-[20px] rounded-full 
@@ -169,22 +198,39 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         <span className="ml-2 font-medium text-white">{title}</span>
       </div>
 
+      {/* Checklist Items */}
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
         {checklists.map((checklist, index) => (
           <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col relative">
             <div className="font-bold">{checklist.title?.S || "No Title"}</div>
             <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
 
+            {/* Three-dot menu for CIOs and POs */}
             {(userRole === "CIO" || userRole === "PO") && (
               <div className="absolute top-2 right-2">
-                <button className="text-gray-600" onClick={() => setMenuOpen({ ...menuOpen, [checklist.id.S]: !menuOpen[checklist.id.S] })}>
+                <button 
+                  className="text-gray-600" 
+                  onClick={() => setMenuOpen({ ...menuOpen, [checklist.id.S]: !menuOpen[checklist.id.S] })}
+                >
                   ⋮
                 </button>
+
                 {menuOpen[checklist.id.S] && (
                   <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
                     {userRole === "CIO" && (
-                      <button onClick={() => setConfirmDeleteId(checklist.id.S)} className="text-red-500">
+                      <button 
+                        onClick={() => handleDeleteChecklist(checklist.id.S)} 
+                        className="text-red-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
+                      >  
                         Delete
+                      </button>
+                    )}
+                    {userRole === "PO" && (
+                      <button 
+                        onClick={() => setShowUpdateModal(checklist.id.S)} 
+                        className="text-blue-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
+                      >
+                        Update Status
                       </button>
                     )}
                   </div>
@@ -200,6 +246,31 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => setShowAddModal(true)}>
           + Add Item
         </button>
+      )}
+
+      {/* Update Status Modal (for PO) */}
+      {showUpdateModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-xl">
+            <h2 className="text-lg font-semibold mb-4">Update Checklist Status</h2>
+            <select 
+              value={newStatus} 
+              onChange={(e) => setNewStatus(e.target.value)} 
+              className="border p-2 w-full"
+            >
+              <option value="">Select Status</option>
+              <option value="Todo">Todo</option>
+              <option value="In progress">In Progress</option>
+              <option value="In review">In Review</option>
+              <option value="Done">Done</option>
+              <option value="Backlog">Backlog</option>
+            </select>
+            <div className="flex justify-end gap-2 mt-4">
+              <button onClick={() => setShowUpdateModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
+              <button onClick={() => handleUpdateStatus(showUpdateModal)} className="p-2 bg-blue-500 text-white rounded">Update</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Add Item Modal */}
