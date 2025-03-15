@@ -173,14 +173,14 @@ async function initializeApp() {
     });
 
     // ✅ Protected route: Retrieve user info 
-    app.get('/user', keycloak.protect(), (req, res) => {
+    app.get('/user/', keycloak.protect(), (req, res) => {
         res.json({
             message: 'User Authenticated',
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
     
-    app.get('/getUserData', keycloak.protect(), async (req, res) => {
+    app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
 
         console.log("In endpoint getUserData")
@@ -215,6 +215,7 @@ async function initializeApp() {
           }
         );
 
+      
         let searchedUser = {}
         for(let user of usersResponse.data){
           if(searchedId === user.id) searchedUser = user
