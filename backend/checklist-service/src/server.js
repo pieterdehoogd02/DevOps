@@ -59,6 +59,7 @@ app.use(keycloak.middleware());
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
 
+// tested
 // ✅ CIO: Create a new checklist
 app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     const { title, description, assignedTeam } = req.body;
@@ -84,6 +85,7 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
+// tested
 // ✅ PO & Devs: View checklists assigned to their team
 app.get("/checklists", keycloak.protect(), async (req, res) => {
     try {
@@ -117,18 +119,32 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
     }
 });
 
+// tested
 // ✅ PO: Update checklist status
-app.put('/checklists/:id', keycloak.protect('realm:PO'), async (req, res) => {
+app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
     try {
-        let result = await dynamoDB.send(new GetItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        // let result = await dynamoDB.send(new GetItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        
+        let result = await dynamoDB.send(new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: req.params.assignedTeam }  // ✅ Add assignedTeam in the Key
+            }
+        }));        
+
         if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
 
         await dynamoDB.send(new UpdateItemCommand({
             TableName: TABLE_NAME,
-            Key: { id: { S: id } },
+            Key: { 
+                id: { S: id },
+                assignedTeam: { S: req.params.assignedTeam }  // ✅ Add assignedTeam in the Key
+            },
+
             UpdateExpression: "SET #s = :s, updatedAt = :u",
             ExpressionAttributeNames: { "#s": "status" },
             ExpressionAttributeValues: {
@@ -143,18 +159,26 @@ app.put('/checklists/:id', keycloak.protect('realm:PO'), async (req, res) => {
     }
 });
 
+// tested
 // ✅ CIO: Delete a checklist
-app.delete('/checklists/:id', keycloak.protect('realm:CIO'), async (req, res) => {
-    const { id } = req.params;
+app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async (req, res) => {
+    const { id, assignedTeam } = req.params;
 
     try {
-        await dynamoDB.send(new DeleteItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
+        await dynamoDB.send(new DeleteItemCommand({ 
+            TableName: TABLE_NAME, 
+            Key: { 
+                id: { S: id } 
+                assignedTeam: { S: assignedTeam }  // ✅ Added assignedTeam as part of the key
+            }
+        }));
         res.json({ message: "Checklist deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: "Failed to delete checklist", details: error.message });
     }
 });
 
+// tested
 // ✅ Function to retrieve all checklists
 async function getAllChecklists() {
     try {
@@ -166,20 +190,24 @@ async function getAllChecklists() {
     }
 }
 
-// ✅ Function to retrieve checklists for a specific team
-async function getChecklistsByTeam(team) {
+
+// ✅ Get Checklists for a Specific Team
+app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
+    const { team } = req.params;
+
     try {
+        console.log(`Fetching checklists for team: ${team}`);
         const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
             FilterExpression: "assignedTeam = :team",
             ExpressionAttributeValues: { ":team": { S: team } }
         }));
-        return result.Items || [];
+        res.json(result.Items || []);
     } catch (error) {
         console.error("Error fetching checklists for team:", error);
-        return [];
+        res.status(500).json({ error: "Internal Server Error" });
     }
-}
+});
 
 // Start HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
