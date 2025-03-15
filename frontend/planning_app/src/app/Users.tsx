@@ -31,6 +31,7 @@ export default function Users(props: any) {
     async function gettingAllUserData() {
         for (let user of users) { // Remove `: any`
             try {
+                console.log("user id = " + user.id)
                 let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
                     method: 'GET',
                     headers: { 
