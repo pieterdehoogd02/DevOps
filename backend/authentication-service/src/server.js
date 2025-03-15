@@ -183,7 +183,7 @@ async function initializeApp() {
     
     // Assume we only have one client for now
     // ✅ Protected route: Retrieve user info 
-    app.get('/project/members/', async (req, res) => {
+    app.get('/project/members/', keycloak.protect(), async (req, res) => {
       try {
 
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
@@ -191,15 +191,22 @@ async function initializeApp() {
           // let client_req = body.client
           console.log("In project members innit")
           console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
+
+          const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+          const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
           // Step 1: Get Admin Token
           const tokenResponse = await axios.post(
-              `${keycloakServerUrl}/realms/${realmName}/protocol/openid-connect/token`,
+              `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
               new URLSearchParams({
                   grant_type: "client_credentials",
-                  client_id: clientId,
+                  client_id: keycloakClientID,
                   client_secret: clientSecret,
               }),
-              { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+              { 
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                httpsAgent: agent  // ✅ Use HTTPS agent }
+              }
           );
 
           const adminToken = tokenResponse.data.access_token;
@@ -208,21 +215,27 @@ async function initializeApp() {
 
           // Step 2: Get Client ID
           const clientsResponse = await axios.get(
-              `${keycloakServerUrl}/admin/realms/${realmName}/clients`,
-              { headers: { Authorization: `Bearer ${adminToken}` } }
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
+              { 
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent 
+              }
           );
           
-          console.log("after keycloak clients request")
+          console.log("after keycloak clients request w data = " + JSON.stringify(clientsResponse.data))
 
-          const client = clientsResponse.data.find(c => c.clientId === clientId);
+          const client = clientsResponse.data.find(c => c.clientId === keycloakClientID);
           if (!client) {
               return res.status(404).json({ error: "Client not found" });
           }
 
           // Step 3: Get Users Assigned to This Client
           const usersResponse = await axios.get(
-              `${keycloakServerUrl}/admin/realms/${realmName}/users`,
-              { headers: { Authorization: `Bearer ${adminToken}` } }
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users`,
+              { 
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent
+              }
           );
            
           console.log("after getting users from realm")
@@ -247,8 +260,7 @@ async function initializeApp() {
           res.status(500).json({ error: "Internal Server Error" });
       }
     });
-
-    /*    
+    
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -264,7 +276,9 @@ async function initializeApp() {
 
             const groupResponse = await axios.get(
                 `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
-                { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+                { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
+                  httpsAgent: agent
+                }
             );
 
             const team = groupResponse.data.find(group => group.name === teamName);
@@ -272,15 +286,16 @@ async function initializeApp() {
 
             await axios.put(
                 `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
-                {},
-                { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` } }
+                { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
+                  httpsAgent: agent
+                }
             );
 
             res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
         }
-    }); */
+    }); 
 
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
