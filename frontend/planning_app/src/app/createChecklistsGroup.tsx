@@ -15,7 +15,6 @@ export default function Checklists({ token }: { token: string }) {
   const [teams, setTeams] = useState<string[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<string>("");
 
-  // Decode JWT and extract user role and assigned team
   useEffect(() => {
     try {
       if (!token) return;
@@ -23,12 +22,10 @@ export default function Checklists({ token }: { token: string }) {
       const roles = decoded?.realm_access?.roles || [];
 
       if (roles.includes("CIO")) {
-        // CIO users can select any team
         setUserRole("CIO");
         setAssignedTeam(null);
         setTeams(roles.filter((role) => role.startsWith("dev_team_")) || []);
       } else {
-        // Non-CIO users are assigned to a specific team
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
@@ -43,16 +40,15 @@ export default function Checklists({ token }: { token: string }) {
 
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
-      {/* CIO Team Selection Dropdown */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2">
           <label className="text-white">Select Team:</label>
-          <select 
-            className="p-2 bg-gray-300 rounded-md" 
-            value={selectedTeam} 
+          <select
+            className="p-2 bg-gray-300 rounded-md"
+            value={selectedTeam}
             onChange={(e) => setSelectedTeam(e.target.value)}
           >
-            <option value="">-- Select Team --</option>
+            <option value="">-- {selectedTeam || "Select Team"} --</option>
             {teams.map((team) => (
               <option key={team} value={team}>{team}</option>
             ))}
@@ -60,7 +56,6 @@ export default function Checklists({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Render Checklist Columns */}
       <div className="flex flex-row justify-between items-center">
         {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
           <Checklist
@@ -78,15 +73,17 @@ export default function Checklists({ token }: { token: string }) {
 
 function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string | null; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
+  const [menuOpen, setMenuOpen] = useState<{ [key: string]: boolean }>({});
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [updateStatusId, setUpdateStatusId] = useState<string | null>(null);
+  const [newStatus, setNewStatus] = useState("");
 
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
         let endpoint = `${API_URL}/checklists`;
-
-        // Non-CIO users fetch only their assigned team's checklists
         if (userRole !== "CIO" && assignedTeam) {
           endpoint = `${API_URL}/checklists/team/${assignedTeam}`;
         }
@@ -104,38 +101,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     fetchChecklists();
   }, [title, assignedTeam, userRole, token]);
 
-  // CIO: Add a new checklist
-  const handleAddChecklist = async () => {
-    if (!newTitle || !assignedTeam) {
-      alert("Title and Assigned Team are required.");
-      return;
-    }
-    try {
-      const response = await fetch(`${API_URL}/checklists`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: newTitle,
-          description: newDescription,
-          assignedTeam,
-        }),
-      });
-      if (response.ok) {
-        setNewTitle("");
-        setNewDescription("");
-      }
-    } catch (error) {
-      console.error("Error adding checklist:", error);
-    }
-  };
-
-  // CIO: Delete a checklist
   const handleDeleteChecklist = async (id: string) => {
     if (!assignedTeam) return;
-
     try {
       const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
         method: "DELETE",
@@ -143,16 +110,37 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       });
 
       if (response.ok) {
-        setChecklists(checklists.filter((item) => item.id.S !== id)); // Remove deleted item
+        setChecklists(checklists.filter((item) => item.id.S !== id));
+        setConfirmDeleteId(null);
       }
     } catch (error) {
       console.error("Error deleting checklist:", error);
     }
   };
 
+  const handleUpdateChecklist = async (id: string) => {
+    if (!assignedTeam || !newStatus) return;
+    try {
+      const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setChecklists(checklists.map((item) => (item.id.S === id ? { ...item, status: { S: newStatus } } : item)));
+        setUpdateStatusId(null);
+      }
+    } catch (error) {
+      console.error("Error updating checklist:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
-      {/* Column Header */}
       <div className="flex items-center mb-2">
         <div className={`h-[20px] w-[20px] rounded-full 
           ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" :
@@ -161,43 +149,36 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         <span className="ml-2 font-medium text-white">{title}</span>
       </div>
 
-      {/* Checklist Items */}
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
-        {checklists.length === 0 ? (
-          <div className="text-gray-400 text-sm">No checklists found.</div>
-        ) : (
-          checklists.map((checklist, index) => (
-            <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col break-words relative">
-              <div className="font-bold">{checklist.title?.S || "No Title"}</div>
-              <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
+        {checklists.map((checklist, index) => (
+          <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col relative">
+            <div className="font-bold">{checklist.title?.S || "No Title"}</div>
+            <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
 
-              {/* Three-dot menu for actions */}
-              {(userRole === "CIO" || userRole === "PO") && (
-                <div className="absolute top-2 right-2">
-                  <button className="text-gray-600">⋮</button>
+            {(userRole === "CIO" || userRole === "PO") && (
+              <div className="absolute top-2 right-2">
+                <button className="text-gray-600" onClick={() => setMenuOpen({ ...menuOpen, [checklist.id.S]: !menuOpen[checklist.id.S] })}>
+                  ⋮
+                </button>
+                {menuOpen[checklist.id.S] && (
                   <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
                     {userRole === "CIO" && (
-                      <button onClick={() => handleDeleteChecklist(checklist.id.S)} className="text-red-500">
+                      <button onClick={() => setConfirmDeleteId(checklist.id.S)} className="text-red-500">
                         Delete
                       </button>
                     )}
                     {userRole === "PO" && (
-                      <button className="text-blue-500">Update</button>
+                      <button onClick={() => setUpdateStatusId(checklist.id.S)} className="text-blue-500">
+                        Update
+                      </button>
                     )}
                   </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-
-      {/* Add Checklist Button for CIO */}
-      {userRole === "CIO" && (
-        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={handleAddChecklist}>
-          + Add Item
-        </button>
-      )}
     </div>
   );
 }
