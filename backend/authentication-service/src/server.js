@@ -219,7 +219,7 @@ async function initializeApp() {
             }
           ),
           axios.get(
-            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings`,
+            `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
             {
               headers: { Authorization: `Bearer ${adminToken}` },
             }
