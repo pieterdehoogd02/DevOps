@@ -47,9 +47,9 @@ export default function Users(props: any) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
                 }
                 
-                let user_data = response.json(); // Parse JSON
+                let user_data = await response.json(); // Parse JSON
 
-                console.log("response user = " + await JSON.stringify(user_data))
+                console.log("response user = " + JSON.stringify(user_data))
                 
                 setUserDataAsync((prevUserData: any) => [...prevUserData, user_data]);
             } catch (error) {
