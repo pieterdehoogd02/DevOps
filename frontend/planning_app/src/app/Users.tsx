@@ -35,20 +35,22 @@ export default function Users(props: any) {
         for (let user of users) { // Remove `: any`
             try {
                 console.log("user id = " + user.id)
-                let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
-                    method: 'GET',
-                    headers: { 
-                        "Authorization": `Bearer ${props.token}`,
-                        "Content-Type": "application/json"
-                    }, 
-                });
+                // let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
+                //     method: 'GET',
+                //     headers: { 
+                //         "Authorization": `Bearer ${props.token}`,
+                //         "Content-Type": "application/json"
+                //     }, 
+                // });
 
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch user data: ${response.status}`);
-                }
+                // if (!response.ok) {
+                //     throw new Error(`Failed to fetch user data: ${response.status}`);
+                // }
                 
-                console.log("response user = " + response.json())
+                // console.log("response user = " + response.json())
                 
+                console.log("before request role")
+
                 let responseRole = await fetch(`${authServer}/getUserGroups?userId=${encodeURIComponent(user.id)}`, {
                     method: 'GET',
                     headers: { 
@@ -77,11 +79,13 @@ export default function Users(props: any) {
                 
                 console.log("response group = " + responseGroup.json())
 
-                let user_data = await response.json(); // Parse JSON
+                let user_roles = await responseRole.json(); // Parse JSON
+                let user_groups = await responseGroup.json(); // Parse JSON
 
-                console.log("user data = " + JSON.stringify(user_data))
+                let user_full = {user, user_groups, user_roles}
+                console.log("user data = " + JSON.stringify(user_full))
 
-                setUserDataAsync((prevUserData: any) => [...prevUserData, user_data]);
+                setUserDataAsync((prevUserData: any) => [...prevUserData, user_full]);
             } catch (error) {
                 console.error("Error fetching user data:", error);
             }
