@@ -191,11 +191,9 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       if (response.ok) {
         setShowUpdateModal(null);
         setNewStatus("");
-        setChecklists((prevChecklists) =>
-          prevChecklists.map((item) =>
-            item.id.S === id ? { ...item, status: { S: newStatus } } : item
-          )
-        );
+
+        // ✅ Refresh the checklist data
+        fetchChecklists();
       }
     } catch (error) {
       console.error("Error updating checklist status:", error);
@@ -302,7 +300,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                         onClick={() => setShowUpdateModal(checklist.id.S)} 
                         className="text-blue-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
                       >
-                        Update Status
+                        Update 
                       </button>
                     )}
                   </div>
