@@ -130,6 +130,10 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   const [newStatus, setNewStatus] = useState<string>("");
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  
+  const [showEditModal, setShowEditModal] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
 
   // ✅ Stores the category for new checklists
   const [newChecklistStatus, setNewChecklistStatus] = useState<string>(""); 
@@ -258,6 +262,31 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       console.error("Error fetching checklists:", error);
     }
   }; 
+
+  const handleModifyChecklist = async (id: string) => {
+    if (!editTitle) {
+      alert("Title is required.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}/edit`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: editTitle, description: editDescription }),
+      });
+
+      if (response.ok) {
+        setShowEditModal(null);
+        fetchChecklistsForTeam(assignedTeam); 
+      }
+    } catch (error) {
+      console.error("Error modifying checklist:", error);
+    }
+  };
   
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
@@ -287,6 +316,16 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 >
                   ⋮
                 </button>
+                <button 
+                  onClick={() => {
+                    setShowEditModal(checklist.id.S);
+                    setEditTitle(checklist.title.S);
+                    setEditDescription(checklist.description.S);
+                  }} 
+                  className="text-yellow-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
+                >
+                  Modify
+                </button>
 
                 {menuOpen[checklist.id.S] && (
                   <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
@@ -306,6 +345,39 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                         Update 
                       </button>
                     )}
+                  </div>
+                )}
+                
+                {/* Edit Checklist Modal */}
+                {showEditModal && (
+                  <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded shadow-xl">
+                      <h2 className="text-lg font-semibold mb-4">Edit Checklist</h2>
+                      <input 
+                        type="text" 
+                        placeholder="Title" 
+                        value={editTitle} 
+                        onChange={(e) => setEditTitle(e.target.value)} 
+                        className="border p-2 w-full"
+                      />
+                      <textarea 
+                        placeholder="Description" 
+                        value={editDescription} 
+                        onChange={(e) => setEditDescription(e.target.value)} 
+                        className="border p-2 w-full mt-2"
+                      />
+                      <div className="flex justify-end gap-2 mt-4">
+                        <button onClick={() => setShowEditModal(null)} className="p-2 bg-gray-300 rounded">
+                          Cancel
+                        </button>
+                        <button 
+                          onClick={() => handleModifyChecklist(showEditModal)} 
+                          className="p-2 bg-yellow-500 text-white rounded"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
