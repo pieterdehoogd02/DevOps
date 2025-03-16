@@ -259,7 +259,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
           onClick={() => {
             setNewChecklistStatus(title);
-            setShowAddModal(true);
+            // setShowAddModal(true);
+            setTimeout(() => setShowAddModal(true), 100);
           }}
         >
           + Add Item

@@ -74,7 +74,7 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
         assignedTeam: { S: assignedTeam },
         createdAt: { S: new Date().toISOString() },
         updatedAt: { S: new Date().toISOString() },
-        status: { S: "pending" }
+        status: { S: status }
     };
 
     try {
