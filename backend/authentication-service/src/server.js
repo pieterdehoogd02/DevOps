@@ -213,7 +213,7 @@ async function initializeApp() {
         console.log("before request to get user roles")
         
         const rolesUser = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}/role-mappings/clients/${keycloakClientID}`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
@@ -261,9 +261,9 @@ async function initializeApp() {
         const adminToken = tokenResponse.data.access_token;
         
         console.log("before request to get user groups")
-        
+
         const groupsUser = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}groups`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
@@ -311,7 +311,7 @@ async function initializeApp() {
         const adminToken = tokenResponse.data.access_token;
 
         const userResponse = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}`,
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${encodeURIComponent(user.id)}`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
