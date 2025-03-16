@@ -74,8 +74,8 @@ export default function Users(props: any) {
                                             <div className="text-sm font-medium text-black indent-[10px]">Roles</div>
                                             <div className="text-sm font-medium text-black flex flex-col">
                                                 {
-                                                    elem.roles.map((role_name: string) => {
-                                                        return <div className="indent-[10px]">{role_name}</div>
+                                                    elem.roles.map((role: any) => {
+                                                        return <div className="indent-[10px]">{role.name}</div>
                                                     })
                                                 }
                                             </div>
@@ -84,8 +84,8 @@ export default function Users(props: any) {
                                             <div className="text-sm font-medium text-black indent-[10px]">Groups</div>
                                             <div className="flex flex-col w-full">
                                                 {
-                                                    elem.groups.map((group_name: string) => {
-                                                        return <div className="text-sm font-medium text-black indent-[10px]">{group_name}</div>
+                                                    elem.groups.map((group: any) => {
+                                                        return <div className="text-sm font-medium text-black indent-[10px]">{group.name}</div>
                                                     })
                                                 }
                                             </div>
