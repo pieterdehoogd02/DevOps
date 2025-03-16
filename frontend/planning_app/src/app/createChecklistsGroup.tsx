@@ -161,7 +161,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   };
 
   // CIO correctly adds a new checklist to the selected team
-  const handleAddChecklist = async (status: string) => {
+  const handleAddChecklist = async () => {
     if (!newTitle) {
       alert("Title is required.");
       return;
@@ -178,7 +178,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           title: newTitle,
           description: newDescription,
           assignedTeam, // Pass the currently viewed team
-          status, // Add the checklist category (column) to the request
+          status: newChecklistStatus, // Add the checklist category (column) to the request
         }),
       });
 
@@ -307,7 +307,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 Cancel
               </button>
               <button 
-                onClick={() => handleAddChecklist(newChecklistStatus)} 
+                onClick={() => handleAddChecklist()} 
                 className="p-2 bg-blue-500 text-white rounded"
               >
                 Add
