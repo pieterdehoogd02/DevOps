@@ -11,9 +11,9 @@ interface DecodedToken {
 }
 
 export default function Checklists({ token }: { token: string }) {
-  const [userRole, setUserRole] = useState<string>("Other"); // Stores user's role (CIO, PO, Dev)
+  const [userRole, setUserRole] = useState<string>("Other"); // Stores the role of the logged-in user
   const [selectedTeam, setSelectedTeam] = useState<string>("dev_team_1"); // Default team for CIO
-  const [teams, setTeams] = useState<string[]>([]); // Stores available teams for CIO
+  const [teams, setTeams] = useState<string[]>([]); // List of available teams (for CIOs)
 
   // Extract user role and assigned team from JWT token
   useEffect(() => {
@@ -30,10 +30,10 @@ export default function Checklists({ token }: { token: string }) {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
 
-        // Identify the assigned team for non-CIO users
+        // Assign the user to their respective team
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
-          setSelectedTeam(groups[0]); // Set their team
+          setSelectedTeam(groups[0]); // Set their assigned team
         }
       }
     } catch (error) {
@@ -44,7 +44,7 @@ export default function Checklists({ token }: { token: string }) {
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       
-      {/* Dropdown for CIO to switch between teams */}
+      {/* CIO Team Selection Dropdown */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2 items-center">
           <label className="text-white font-semibold">Viewing Team:</label>
@@ -66,7 +66,7 @@ export default function Checklists({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Render columns for the selected team's checklists */}
+      {/* Render Checklist Columns (For Selected Team) */}
       <div className="flex flex-row justify-between items-center">
         {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
           <Checklist
@@ -83,11 +83,10 @@ export default function Checklists({ token }: { token: string }) {
   );
 }
 
-function Checklist({ title, assignedTeam, userRole, token, teams }: { title: string; assignedTeam: string | null; userRole: string; token: string; teams: string[] }) {
+function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
   
   const [menuOpen, setMenuOpen] = useState<{ [key: string]: boolean }>({});
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -96,11 +95,15 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
   const [showUpdateModal, setShowUpdateModal] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>("");
 
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  // ✅ Stores the category for new checklists
+  const [newChecklistStatus, setNewChecklistStatus] = useState<string>(""); 
+
   // Fetch checklists **for the selected team**
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
-
         const response = await fetch(`${API_URL}/checklists/team/${assignedTeam}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -118,6 +121,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
   // CIO: Delete a checklist with confirmation
   const handleDeleteChecklist = async (id: string) => {
     if (!assignedTeam) return;
+
     if (!window.confirm("Are you sure you want to delete this checklist?")) return; // Confirmation dialog
 
     try {
@@ -163,13 +167,10 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
     }
   };
 
-  // CIO: Add a new checklist
-  const handleAddChecklist = async () => {
-
-    const teamToAssign = assignedTeam // || selectedTeam; // Ensure assignedTeam is not null
-
-    if (!newTitle || !teamToAssign) {
-      alert("Title and Assigned Team are required.");
+  // CIO correctly adds a new checklist to the selected team
+  const handleAddChecklist = async (status: string) => {
+    if (!newTitle) {
+      alert("Title is required.");
       return;
     }
 
@@ -183,7 +184,8 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          assignedTeam: assignedTeam, // Automatically set to the currently viewed team
+          assignedTeam, // Pass the currently viewed team
+          status, // Add the checklist category (column) to the request
         }),
       });
 
@@ -254,7 +256,13 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
 
       {/* Add Checklist Button for CIO */}
       {userRole === "CIO" && (
-        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => setShowAddModal(true)}>
+        <button 
+          className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
+          onClick={() => {
+            setNewChecklistStatus(title);
+            setShowAddModal(true);
+          }}
+        >
           + Add Item
         </button>
       )}
@@ -288,7 +296,6 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
       {showAddModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-xl">
-            <h2 className="text-lg font-bold mb-2">Add New Checklist</h2>
             <input 
               type="text" 
               placeholder="Title" 
@@ -300,12 +307,18 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
               placeholder="Description" 
               value={newDescription} 
               onChange={(e) => setNewDescription(e.target.value)} 
-              className="border p-2 w-full mt-2"
-            ></textarea>
-
+              className="border p-2 w-full mt-2">
+            </textarea>
             <div className="flex justify-end gap-2 mt-4">
-              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
-              <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
+              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">
+                Cancel
+              </button>
+              <button 
+                onClick={() => handleAddChecklist(newChecklistStatus)} 
+                className="p-2 bg-blue-500 text-white rounded"
+              >
+                Add
+              </button>
             </div>
           </div>
         </div>

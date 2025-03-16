@@ -168,7 +168,7 @@ app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async
         await dynamoDB.send(new DeleteItemCommand({ 
             TableName: TABLE_NAME, 
             Key: { 
-                id: { S: id }, 
+                id: { S: id } ,
                 assignedTeam: { S: assignedTeam }  // ✅ Added assignedTeam as part of the key
             }
         }));
