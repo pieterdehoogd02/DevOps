@@ -74,36 +74,7 @@ export default function Users(props: any) {
                                     }
                                 }
                                 if(!user_cio) return <div></div>;
-                                return(
-                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
-                                        <div className="flex w-full flex-row h-[100px]">
-                                            <div className="w-[40px] h-[40px] flex items-center">
-                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
-                                            </div>
-                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
-                                        </div>
-                                        <div className="flex flex-col w-full">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
-                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.roles.map((role: any) => {
-                                                        return <div className="text-sm indent-[20px]">{role.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="flex w-full flex-col">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
-                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.groups.map((group: any) => {
-                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
+                                <UserData elem={elem}></UserData>
                             })
                         }
                     </div>
@@ -119,36 +90,7 @@ export default function Users(props: any) {
                                     }
                                 }
                                 if(!user_po) return <div></div>;
-                                return(
-                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
-                                        <div className="flex w-full flex-row h-[100px]">
-                                            <div className="w-[40px] h-[40px] flex items-center">
-                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
-                                            </div>
-                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
-                                        </div>
-                                        <div className="flex flex-col w-full">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
-                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.roles.map((role: any) => {
-                                                        return <div className="text-sm indent-[20px]">{role.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="flex w-full flex-col">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
-                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.groups.map((group: any) => {
-                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
+                                <UserData elem={elem}></UserData>
                             })
                         }
                     </div>
@@ -160,40 +102,11 @@ export default function Users(props: any) {
                                 let user_dev = false
                                 if(elem.roles){
                                     for(let role of elem.roles){
-                                        if(role.name.includes("dev")) user_dev = true
+                                        if(role.name.includes("Dev")) user_dev = true
                                     }
                                 }
                                 if(!user_dev) return <div></div>;
-                                return(
-                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
-                                        <div className="flex w-full flex-row h-[100px]">
-                                            <div className="w-[40px] h-[40px] flex items-center">
-                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
-                                            </div>
-                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
-                                        </div>
-                                        <div className="flex flex-col w-full">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
-                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.roles.map((role: any) => {
-                                                        return <div className="text-sm indent-[20px]">{role.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="flex w-full flex-col">
-                                            <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
-                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
-                                                {
-                                                    elem.groups.map((group: any) => {
-                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
+                                <UserData elem={elem}></UserData>
                             })
                         }
                     </div>
@@ -202,5 +115,43 @@ export default function Users(props: any) {
             
         </div>
     );
+
+    function UserData(props : any) {
+        return (
+            <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
+                <div className="flex w-full flex-row h-[100px]">
+                    <div className="w-[40px] h-[40px] flex items-center">
+                        <img className="w-full h-full" src="./defaultProfile.png"></img>
+                    </div>
+                    <div className="flex w-[50%] text-lg text-black font-semibold indent-[10px] items-center">{props.elem.user.username}</div>
+                    <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
+                        <div className="h-[40px] w-[50%] bg-green-700 text-base text-white font-sans">Assign role</div>
+                        <div className="h-[40px] w-[50%] bg-lime-700 text-base text-white font-sans">Assign team</div>
+                    </div>
+                </div>
+                <div className="flex flex-col w-full">
+                    <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
+                    <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
+                        {
+                            props.elem.roles.map((role: any) => {
+                                return <div className="text-sm indent-[20px]">{role.name}</div>
+                            })
+                        }
+                    </div>
+                </div>
+                <div className="flex w-full flex-col">
+                    <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
+                    <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
+                        {
+                            props.elem.groups.map((group: any) => {
+                                return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+        );
+        );
+    }
 
 }
