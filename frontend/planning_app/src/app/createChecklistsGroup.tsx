@@ -168,12 +168,22 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
   // CIO correctly adds a new checklist to the selected team
   const handleAddChecklist = async (status: string) => {
+
     if (!newTitle) {
       alert("Title is required.");
       return;
     }
 
     console.log("🚀 Adding checklist with status:", status); // ✅ Debugging
+
+    const requestBody = {
+      title: newTitle,
+      description: newDescription,
+      assignedTeam,
+      status, // ✅ Ensure status is included
+    };
+
+    console.log("🚀 Sending request:", requestBody); // ✅ Debugging
 
     try {
       const response = await fetch(`${API_URL}/checklists`, {
@@ -182,12 +192,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          title: newTitle,
-          description: newDescription,
-          assignedTeam, // Pass the currently viewed team
-          status, // Add the checklist category (column) to the request
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
@@ -260,10 +265,11 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         <button 
           className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
           onClick={() => {
-            console.log("✅ Setting newChecklistStatus:", title); // Debugging
+            console.log("✅ Passing status:", title); // Debugging
             setNewChecklistStatus(title);
             // setShowAddModal(true);
-            setTimeout(() => setShowAddModal(true), 100);
+            // setTimeout(() => setShowAddModal(true), 100);
+            setShowAddModal(true);
           }}
         >
           + Add Item
@@ -317,7 +323,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 Cancel
               </button>
               <button 
-                onClick={() => handleAddChecklist(newChecklistStatus)} 
+                onClick={() => handleAddChecklist(title)} 
                 className="p-2 bg-blue-500 text-white rounded"
               >
                 Add
