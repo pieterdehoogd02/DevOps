@@ -238,9 +238,10 @@ function AssignTeam(props: any) {
         }
     }
 
+    
     async function assignTeam() {
         try{
-            let response = await fetch(`${authServer}/}`, {
+            let response = await fetch(`${authServer}/assign-team`, {
                 method: 'POST',
                 headers: { 
                     "Authorization": `Bearer ${props.token}`,
@@ -307,7 +308,7 @@ function AssignRole(props: any) {
 
 
     async function fetchRoles() {
-        let response = await fetch(`${authServer}/roles}`, {
+        let response = await fetch(`${authServer}/roles`, {
             method: 'GET',
             headers: { 
                 "Authorization": `Bearer ${props.token}`,
