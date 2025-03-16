@@ -195,6 +195,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         // ✅ Refresh the checklist data
         fetchChecklists();
       }
+      fetchChecklists();
     } catch (error) {
       console.error("Error updating checklist status:", error);
     }
