@@ -118,12 +118,12 @@ export default function Users(props: any) {
 
     function UserData(props : any) {
         return (
-            <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
+            <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="w-[10%] h-[40px] flex flex-row items-center">
                         <img className="w-full h-full" src="./defaultProfile.png"></img>
                     </div>
-                    <div className="flex w-[50%] text-lg text-black font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
+                    <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
                         <div className="flex h-[40px] w-[80%] bg-green-700 text-base text-white font-sans 
                             rounded-lg justify-center items-center font-semibold hover:cursor-pointer" onClick={() => {}}>Assign role</div>
@@ -132,8 +132,8 @@ export default function Users(props: any) {
                     </div>
                 </div>
                 <div className="flex flex-col w-full">
-                    <div className="text-sm font-semibold text-black indent-[10px] font-sans">Roles</div>
-                    <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
+                    <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
+                    <div className="text-sm font-medium text-gray-500 flex flex-row gap-[2px] overflow-x-auto">
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="text-sm indent-[20px]">{role.name}</div>
@@ -142,8 +142,8 @@ export default function Users(props: any) {
                     </div>
                 </div>
                 <div className="flex w-full flex-col">
-                    <div className="text-sm font-semibold text-black indent-[10px] font-sans">Groups</div>
-                    <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
+                    <div className="text-sm font-semibold text-white indent-[10px] font-sans">Groups</div>
+                    <div className="flex flex-col text-gray-500 w-full gap-[2px] overflow-x-auto">
                         {
                             props.elem.groups.map((group: any) => {
                                 return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
@@ -154,5 +154,8 @@ export default function Users(props: any) {
             </div>
         );
     }
+}
 
+function AssignTeam(props: any) {
+    return (<div></div>);
 }
