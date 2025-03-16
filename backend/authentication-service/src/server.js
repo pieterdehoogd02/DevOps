@@ -495,19 +495,19 @@ async function initializeApp() {
           const adminToken = tokenResponse.data.access_token;
 
           // Step 3: Get Users Assigned to This Client
-          const groupsResponse = await axios.get(
-              `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
+          const rolesResponse = await axios.get(
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
               { 
                 headers: { Authorization: `Bearer ${adminToken}` },
                 httpsAgent: agent
               }
           );
 
-          console.log("groupsResponse = " + JSON.stringify(groupsResponse.data))
+          console.log("rolesResponse = " + JSON.stringify(rolesResponse.data))
            
-          console.log("after getting groups from realm")
+          console.log("after getting roles from realm")
 
-          return res.json({"groups" : groupsResponse.data});
+          return res.json({"roles" : rolesResponse.data});
       } catch (error) {
           console.error("Error fetching client users:", error);
           res.status(500).json({ error: "Internal Server Error" });

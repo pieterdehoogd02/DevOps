@@ -78,15 +78,15 @@ export default function Users(props: any) {
 
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
-            {userToChange !== prevUserChanged && assignTeam && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-lg">
-                    <AssignTeam />
+            {userToChange !== prevUserChanged && assignTeam && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop">
+                    <AssignTeam userToChange={userToChange} setClickDropdown={setClickDropdown}/>
                 </div>}
-            {userToChange !== prevUserChanged && assignRole && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop-blur-lg">
-                    <AssignRole />
+            {userToChange !== prevUserChanged && assignRole && <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <AssignRole userToChange={userToChange} setClickDropdown={setClickDropdown}/>
                 </div>}
             {userData.length > 0 && 
-                <div className={`${(assignTeam || assignRole) ? 'blur-2xl' : 'blur-none'} relative w-full h-full`}>
-                    <div className={`left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4 ${(assignTeam || assignRole) ? 'blur-2xl' : 'blur-none'}`}>
+                <div className={`${(assignTeam || assignRole) ? 'shadow-lg' : 'shadow-none'} relative w-full h-full`}>
+                    <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
                         <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
                         <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
                             {
@@ -198,6 +198,7 @@ export default function Users(props: any) {
 function AssignTeam(props: any) {
 
     const [chosenTeam, chooseTeam] = useState("")
+    const prevChosenTeam = useRef("")
     const [clickedDropdown, setClickDropdown] = useState(false)
     const [groups, setGroups] = useState([])
 
@@ -213,40 +214,72 @@ function AssignTeam(props: any) {
         setGroups(groups)
     }
 
+    useEffect(() => {
+        prevChosenTeam.current = chosenTeam
+        assignTeam()
+    }, [chosenTeam])
 
     async function fetchGroups() {
-        let response = await fetch(`${authServer}/groups}`, {
-            method: 'GET',
-            headers: { 
-                "Authorization": `Bearer ${props.token}`,
-                "Content-Type": "application/json"
-            }, 
-        });
+        try{
+            let response = await fetch(`${authServer}/groups}`, {
+                method: 'GET',
+                headers: { 
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "application/json"
+                }, 
+            });
 
-        let fetchedGroups = await response.json()
-        console.log("groups = " + fetchedGroups)
-        
-        await setGroupsAsync(fetchedGroups.groups)
+            let fetchedGroups = await response.json()
+            console.log("groups = " + fetchedGroups)
+            
+            await setGroupsAsync(fetchedGroups.groups)
+        } catch(err) {
+            console.error("Error: " + JSON.stringify(err))
+        }
     }
 
+    async function assignTeam() {
+        try{
+            let response = await fetch(`${authServer}/}`, {
+                method: 'POST',
+                headers: { 
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "application/json",
+                }, 
+                body: JSON.stringify({ userId: props.userToChange.id, teamName: chosenTeam })
+            });
+
+            if(!response.ok){
+                console.log("Could not assign team to user: " + response.status)
+            }
+        }catch(err){
+            console.error("Error: " + JSON.stringify(err))
+        }
+    }
+
+    
     return (
         <div className="absolute bg-slate-200 w-[20%] h-[20%] flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
             <div className="relative h-[50%] w-[80%] ">
-                {chosenTeam === " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" onClick={() => {setClickDropdownAsync(true)}}>
+                {chosenTeam === " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" onClick={() => {setClickDropdownAsync(true)}}>
                     Select a team...
                 </div>}
-                {chosenTeam !== " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" 
+                {chosenTeam !== " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
                     onClick={async () => {setClickDropdownAsync(true); if(groups.length === 0) await fetchGroups()}}>
                     {chosenTeam}
                 </div>}
                 {
                     clickedDropdown === true && 
-                        <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white" onClick={() => {setClickDropdown(true)}}>
-
-                        </div>
+                    <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll" onClick={() => {setClickDropdown(true)}}>
+                        {
+                            groups.map((elem: any, idx: number) => {
+                                return <div className="bg-transparent w-full h-[1/3] text-white" onClick={async () => {await chooseTeamAsync(elem)}}></div>
+                            })
+                        }
+                    </div>
                 }
             </div>
         </div>
@@ -258,7 +291,7 @@ function AssignRole(props: any) {
 
     const [chosenRole, chooseRole] = useState("")
     const [clickedDropdown, setClickDropdown] = useState(false)
-const [roles, setRoles] = useState([])
+    const [roles, setRoles] = useState([])
 
     const chooseRoleAsync = async (team: any) => {
         chooseRole(team)
@@ -303,9 +336,13 @@ const [roles, setRoles] = useState([])
                 </div>}
                 {
                     clickedDropdown === true && 
-                        <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white" onClick={() => {setClickDropdown(true)}}>
-
-                        </div>
+                    <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll" onClick={() => {setClickDropdown(true)}}>
+                        {
+                            roles.map((elem: any, idx: number) => {
+                                return <div className="bg-transparent w-full h-[1/3] text-white" onClick={async () => {await chooseRoleAsync(elem)}}></div>
+                            })
+                        }
+                    </div>
                 }
             </div>
         </div>
