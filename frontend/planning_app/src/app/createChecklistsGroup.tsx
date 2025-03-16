@@ -209,6 +209,21 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     }
   };
 
+  const fetchChecklists = async () => {
+    try {
+      const response = await fetch(`${API_URL}/checklists/team/${assignedTeam}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const data = await response.json();
+      const filteredChecklists = data.filter((item: any) => item.status?.S === title);
+      setChecklists(filteredChecklists);
+    } catch (error) {
+      console.error("Error fetching checklists:", error);
+    }
+  };
+  
+
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
       
