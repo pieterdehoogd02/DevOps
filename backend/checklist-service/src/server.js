@@ -219,6 +219,46 @@ app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
     }
 });
 
+// ✅ CIO: Update checklist title and description
+app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), async (req, res) => {
+    const { id, assignedTeam } = req.params;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+        return res.status(400).json({ error: "Title and Description are required" });
+    }
+
+    try {
+        let result = await dynamoDB.send(new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            }
+        }));
+
+        if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
+
+        await dynamoDB.send(new UpdateItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            },
+            UpdateExpression: "SET title = :t, description = :d, updatedAt = :u",
+            ExpressionAttributeValues: {
+                ":t": { S: title },
+                ":d": { S: description },
+                ":u": { S: new Date().toISOString() }
+            }
+        }));
+
+        res.json({ message: "Checklist updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update checklist", details: error.message });
+    }
+});
+
 // Start HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
     console.log(`✅ Checklist Service is running on HTTPS at https://checklist.planmeet.net:${PORT}`);
