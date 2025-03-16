@@ -140,7 +140,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
   // PO: Update checklist status
   const handleUpdateStatus = async (id: string) => {
-    
+
     if (!assignedTeam || !newStatus) return;
 
     try {
@@ -181,10 +181,10 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       title: newTitle,
       description: newDescription,
       assignedTeam,
-      status, // ✅ Ensure status is included
+      status: newChecklistStatus || "Unknown",
     };
 
-    console.log("🚀 Sending request:", requestBody); // ✅ Debugging
+    console.log("🚀 Final request being sent to backend:", JSON.stringify(requestBody, null, 2)); // Debugging
 
     try {
       const response = await fetch(`${API_URL}/checklists`, {
@@ -266,7 +266,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         <button 
           className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
           onClick={() => {
-            console.log("✅ Passing status:", title); // Debugging
+            console.log("✅ Setting newChecklistStatus before opening modal:", title); 
             setNewChecklistStatus(title);
             // setShowAddModal(true);
             // setTimeout(() => setShowAddModal(true), 100);
@@ -324,7 +324,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 Cancel
               </button>
               <button 
-                onClick={() => handleAddChecklist(title)} 
+                onClick={() => handleAddChecklist(newChecklistStatus)} 
                 className="p-2 bg-blue-500 text-white rounded"
               >
                 Add
