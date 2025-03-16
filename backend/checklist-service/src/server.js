@@ -66,7 +66,7 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     // extract `status`
     const { title, description, assignedTeam, status } = req.body;
 
-    console.log("🔥 Received status:", status); // ✅ Debugging
+    console.log("🔥 Received status from frontend:", status); // ✅ Debugging
 
     // ✅ Ensure status is included
     if (!title || !assignedTeam || !status) {  
