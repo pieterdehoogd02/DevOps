@@ -161,11 +161,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   };
 
   // CIO correctly adds a new checklist to the selected team
-  const handleAddChecklist = async () => {
+  const handleAddChecklist = async (status: string) => {
     if (!newTitle) {
       alert("Title is required.");
       return;
     }
+
+    console.log("🚀 Adding checklist with status:", status); // ✅ Debugging
 
     try {
       const response = await fetch(`${API_URL}/checklists`, {
@@ -178,7 +180,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           title: newTitle,
           description: newDescription,
           assignedTeam, // Pass the currently viewed team
-          status: newChecklistStatus, // Add the checklist category (column) to the request
+          status, // Add the checklist category (column) to the request
         }),
       });
 
@@ -252,6 +254,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         <button 
           className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
           onClick={() => {
+            console.log("✅ Setting newChecklistStatus:", title); // Debugging
             setNewChecklistStatus(title);
             // setShowAddModal(true);
             setTimeout(() => setShowAddModal(true), 100);
@@ -308,7 +311,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 Cancel
               </button>
               <button 
-                onClick={() => handleAddChecklist()} 
+                onClick={() => handleAddChecklist(newChecklistStatus)} 
                 className="p-2 bg-blue-500 text-white rounded"
               >
                 Add
