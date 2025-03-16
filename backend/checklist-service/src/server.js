@@ -62,9 +62,13 @@ app.get('/', (req, res) => res.send('Checklist Service is Running'));
 // tested
 // ✅ CIO: Create a new checklist
 app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
-    const { title, description, assignedTeam } = req.body;
-    if (!title || !assignedTeam) {
-        return res.status(400).json({ error: "Title and Assigned Team are required" });
+    
+    // extract `status`
+    const { title, description, assignedTeam, status } = req.body;
+
+    // ✅ Ensure status is included
+    if (!title || !assignedTeam || !status) {  
+        return res.status(400).json({ error: "Title, Status, and Assigned Team are required" });
     }
 
     const checklist = {
