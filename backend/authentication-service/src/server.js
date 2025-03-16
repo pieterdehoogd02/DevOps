@@ -311,7 +311,7 @@ async function initializeApp() {
         const adminToken = tokenResponse.data.access_token;
 
         const userResponse = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${encodeURIComponent(user.id)}`,
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
