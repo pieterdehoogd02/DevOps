@@ -257,6 +257,7 @@ function AssignTeam(props: any) {
         }
     }
 
+    
     return (
         <div className="absolute bg-slate-200 w-[20%] h-[20%] flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
@@ -272,13 +273,13 @@ function AssignTeam(props: any) {
                 </div>}
                 {
                     clickedDropdown === true && 
-                        <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll" onClick={() => {setClickDropdown(true)}}>
-                            {
-                                groups.map((elem: any, idx: number) => {
-                                    return <div className="bg-transparent w-full h-[1/3] text-white" onClick={async () => {await chooseTeamAsync(elem)}}></div>
-                                })
-                            }
-                        </div>
+                    <div className="flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll" onClick={() => {setClickDropdown(true)}}>
+                        {
+                            groups.map((elem: any, idx: number) => {
+                                return <div className="bg-transparent w-full h-[1/3] text-white" onClick={async () => {await chooseTeamAsync(elem)}}></div>
+                            })
+                        }
+                    </div>
                 }
             </div>
         </div>
