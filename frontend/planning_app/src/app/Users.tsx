@@ -68,11 +68,11 @@ export default function Users(props: any) {
                             userData.map((elem: any) => {
                                 // if(userData.r)
                                 return(
-                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-2">
-                                        <div className="flex text-lg text-black font-semibold indent-[10px]">{elem.username}</div>
+                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-2 rounded-xl">
+                                        <div className="flex w-full text-lg text-white font-semibold indent-[10px]">{elem.username}</div>
                                         <div className="flex flex-col w-full">
-                                            <div className="text-sm font-medium text-black indent-[10px]">Roles</div>
-                                            <div className="text-sm font-medium text-black flex flex-col">
+                                            <div className="text-sm font-semibold text-white indent-[10px]">Roles</div>
+                                            <div className="text-sm font-medium text-white flex flex-col">
                                                 {
                                                     elem.roles.map((role: any) => {
                                                         return <div className="indent-[10px]">{role.name}</div>
@@ -81,7 +81,7 @@ export default function Users(props: any) {
                                             </div>
                                         </div>
                                         <div className="flex w-full flex-col">
-                                            <div className="text-sm font-medium text-black indent-[10px]">Groups</div>
+                                            <div className="text-sm font-semibold text-white indent-[10px]">Groups</div>
                                             <div className="flex flex-col w-full">
                                                 {
                                                     elem.groups.map((group: any) => {
