@@ -319,6 +319,19 @@ async function initializeApp() {
 
         console.log("userResponse data = " + JSON.stringify(userResponse.data))
         
+        console.log("before group request")
+
+        const groupsUser = await axios.get(
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
+        
+        console.log("groups user = " + JSON.stringify(groupsUser.data))
+        
+        console.log("roles request")
+        
         const rolesUser = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
           {
@@ -327,15 +340,6 @@ async function initializeApp() {
         );
         
         console.log("roles user = " + JSON.stringify(rolesUser.data))
-
-        const groupsUser = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
-          {
-            headers: { Authorization: `Bearer ${adminToken}` },
-          }
-        );
-        
-        console.log("groups user = " + JSON.stringify(groupsUser.data))
         
         const user = userResponse.data;
         const roles = rolesUser.data;
