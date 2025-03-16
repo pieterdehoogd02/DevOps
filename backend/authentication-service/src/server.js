@@ -317,35 +317,35 @@ async function initializeApp() {
           }
         );
 
-        console.log("userResponse data = " + userResponse.data)
+        console.log("userResponse data = " + JSON.stringify(userResponse.data))
         
-        // const rolesUser = await axios.get(
-        //   `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
-        //   {
-        //     headers: { Authorization: `Bearer ${adminToken}` },
-        //   }
-        // );
+        const rolesUser = await axios.get(
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
         
-        // console.log("roles user = " + rolesUser.data)
+        console.log("roles user = " + JSON.stringify(rolesUser.data))
 
-        // const groupsUser = await axios.get(
-        //   `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
-        //   {
-        //     headers: { Authorization: `Bearer ${adminToken}` },
-        //   }
-        // );
+        const groupsUser = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
         
-        console.log("groups user = " + groupsUser.data)
+        console.log("groups user = " + JSON.stringify(groupsUser.data))
         
         const user = userResponse.data;
-        // const roles = rolesUser.data;
-        // const groups = groupsUser.data;
+        const roles = rolesUser.data;
+        const groups = groupsUser.data;
 
         console.log('User Details:', user);
-        // console.log('Roles:', roles);
-        // console.log('Groups:', groups);
+        console.log('Roles:', roles);
+        console.log('Groups:', groups);
 
-        return { user };
+        return { user, roles, groups};
       } catch(err) {
         console.error("Error: " + err)
       }
