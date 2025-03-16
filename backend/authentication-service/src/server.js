@@ -472,6 +472,42 @@ async function initializeApp() {
         }
     }); 
 
+    // ASSIGN ROLE ENDPOINT
+    // app.post('/assign-role', keycloak.protect('realm:CIO'), async (req, res) => {
+    //     try {
+    //         const roles = req.kauth.grant.access_token.content.realm_access.roles;
+    //         if (!roles.includes("CIO")) {
+    //             return res.status(403).json({ error: "Access Denied" });
+    //         }
+
+    //         const { userId, teamName } = req.body;
+    //         if (!userId || !teamName) {
+    //             return res.status(400).json({ error: "User ID and Team Name are required" });
+    //         }
+
+    //         const groupResponse = await axios.get(
+    //             `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
+    //             { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
+    //               httpsAgent: agent
+    //             }
+    //         );
+
+    //         const team = groupResponse.data.find(group => group.name === teamName);
+    //         if (!team) return res.status(404).json({ error: "Team not found" });
+
+    //         await axios.put(
+    //             `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
+    //             { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
+    //               httpsAgent: agent
+    //             }
+    //         );
+
+    //         res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
+    //     } catch (error) {
+    //         res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
+    //     }
+    // }); 
+
     // Start the server after Keycloak is initialized
     app.listen(5001, '0.0.0.0', () => {
         console.log(`✅ Authentication service running on ${authServiceUrl}`);
