@@ -358,7 +358,7 @@ async function initializeApp() {
         console.log('Roles:', roles);
         console.log('Groups:', groups);
 
-        return { user, roles, groups};
+        return res.json({ "user": user, "roles": roles, "groups": groups});
       } catch(err) {
         console.error("Error: " + err)
       }

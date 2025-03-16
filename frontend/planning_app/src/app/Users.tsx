@@ -47,7 +47,7 @@ export default function Users(props: any) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
                 }
                 
-                console.log("response user = " + response.json())
+                console.log("response user = " + await response.json())
                 
                 // console.log("before request role")
 
