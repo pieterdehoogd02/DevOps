@@ -195,7 +195,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         setShowUpdateModal(null);
         setNewStatus("");
         
-        fetchChecklists(); // ✅ Refresh the checklist data
+        // fetchChecklists(); // ✅ Refresh the checklist data
+        window.location.reload(); // ✅ Refresh the page immediately after updating
       }
     } catch (error) {
       console.error("Error updating checklist status:", error);
