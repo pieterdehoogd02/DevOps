@@ -8,6 +8,7 @@ const API_URL = process.env.NEXT_PUBLIC_CHECKLIST_SERVER || "https://checklist.p
 
 interface DecodedToken {
   realm_access?: { roles?: string[] };
+  group?: string[];  // ✅ Fix: Add 'group' field based on actual token
 }
 
 export default function Checklists({ token }: { token: string }) {
@@ -37,13 +38,14 @@ export default function Checklists({ token }: { token: string }) {
       if (!token) return;
       const decoded: DecodedToken = jwtDecode(token || "");
       const roles = decoded?.realm_access?.roles || [];
-      const groups = decoded?.groups || [];
+      const groups = decoded?.group || [];
+      console.log("🔍 Extracted groups from token:", groups); // Debugging
 
       if (roles.includes("CIO")) {
         // CIOs can switch between teams
         setUserRole("CIO");
 
-        // ✅ Get all dev teams from "groups" 
+        // ✅ Extract teams from 'group'
         const teamList = groups.filter((group) => group.startsWith("/dev_team_")).map((g) => g.replace("/", ""));
         
         setTeams(teamList);
@@ -65,6 +67,8 @@ export default function Checklists({ token }: { token: string }) {
 
   useEffect(() => {
     if (selectedTeam) {
+      console.log("🔄 Fetching checklists for team:", selectedTeam);
+      setChecklists([]);  // ✅ Clear previous data before fetching new
       fetchChecklistsForTeam(selectedTeam);
     }
   }, [selectedTeam]);
@@ -79,7 +83,10 @@ export default function Checklists({ token }: { token: string }) {
           <select
             className="p-2 bg-gray-300 rounded-md"
             value={selectedTeam} 
-            onChange={(e) => setSelectedTeam(e.target.value)}
+            onChange={(e) => {
+              console.log("🛠 Switching to team:", e.target.value); // Debugging
+              setSelectedTeam(e.target.value);
+            }}
           >
             {teams.length === 0 ? (
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
