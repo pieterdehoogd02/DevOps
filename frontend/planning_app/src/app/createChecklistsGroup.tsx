@@ -282,6 +282,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       if (response.ok) {
         setShowEditModal(null);
         // fetchChecklistsForTeam(assignedTeam); 
+        fetchChecklists();
       }
     } catch (error) {
       console.error("Error modifying checklist:", error);
@@ -347,7 +348,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                     )}
                   </div>
                 )}
-                
+
                 {/* Edit Checklist Modal */}
                 {showEditModal && (
                   <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
