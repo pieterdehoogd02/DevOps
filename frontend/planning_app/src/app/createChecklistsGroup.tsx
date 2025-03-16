@@ -179,6 +179,9 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     if (!assignedTeam || !newStatus) return;
 
     try {
+      const oldChecklist = checklists.find((item) => item.id.S === id);
+      const oldStatus = oldChecklist.status.S;
+
       const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
         method: "PUT",
         headers: {
@@ -195,6 +198,12 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         // fetchChecklists(); // ✅ Refresh the checklist data
 
         // Fix: Re-fetch both old and new checklist categories
+        setChecklists((prevChecklists) =>
+          prevChecklists.filter((item) => !(item.id.S === id && item.status.S === oldStatus))
+        );
+
+        fetchChecklistsForTeam(assignedTeam);
+
         setTimeout(() => {
           fetchChecklistsForTeam(assignedTeam); // Ensure it's updated in the correct category
         }, 500);
@@ -205,17 +214,22 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   };
 
   const fetchChecklistsForTeam = async (team: string) => {
+    if (!team) return; 
+
     try {
-      if (!team) return; // Prevent fetching if no team is selected
       const response = await fetch(`${API_URL}/checklists/team/${team}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
+      if (!response.ok) {
+        console.error("❌ Error fetching checklists: ", response.statusText);
+        return;
+      }
+      
       const data = await response.json();
-      const filteredChecklists = data.filter((item: any) => item.status?.S);
-      setChecklists(filteredChecklists); // ✅ Update the checklists dynamically
+      setChecklists(data); // Update the checklists in the UI
     } catch (error) {
-      console.error("Error fetching checklists:", error);
+      console.error("❌ Failed to fetch checklists:", error);
     }
   }; 
 
