@@ -124,10 +124,10 @@ export default function Users(props: any) {
                         <img className="w-full h-full" src="./defaultProfile.png"></img>
                     </div>
                     <div className="flex w-[50%] text-lg text-black font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
-                    {/* <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
+                    <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
                         <div className="flex h-[40px] w-[50%] bg-green-700 text-base text-white font-sans">Assign role</div>
                         <div className="flex h-[40px] w-[50%] bg-orange-600 text-base text-white font-sans">Assign team</div>
-                    </div> */}
+                    </div>
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-sm font-semibold text-black indent-[10px] font-sans">Roles</div>
