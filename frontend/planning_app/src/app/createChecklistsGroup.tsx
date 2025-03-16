@@ -281,7 +281,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
       if (response.ok) {
         setShowEditModal(null);
-        fetchChecklistsForTeam(assignedTeam); 
+        // fetchChecklistsForTeam(assignedTeam); 
       }
     } catch (error) {
       console.error("Error modifying checklist:", error);
