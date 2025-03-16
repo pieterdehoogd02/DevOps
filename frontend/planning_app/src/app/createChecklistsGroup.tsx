@@ -307,7 +307,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 Cancel
               </button>
               <button 
-                onClick={handleAddChecklist(newChecklistStatus)} 
+                onClick={() => handleAddChecklist(newChecklistStatus)} 
                 className="p-2 bg-blue-500 text-white rounded"
               >
                 Add
