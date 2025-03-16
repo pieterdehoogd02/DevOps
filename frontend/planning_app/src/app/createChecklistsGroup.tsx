@@ -90,6 +90,9 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  // ✅ Stores the category for new checklists
+  const [newChecklistStatus, setNewChecklistStatus] = useState<string>(""); 
+
   // Fetch checklists **for the selected team**
   useEffect(() => {
     const fetchChecklists = async () => {
@@ -111,7 +114,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   // CIO: Delete a checklist with confirmation
   const handleDeleteChecklist = async (id: string) => {
     if (!assignedTeam) return;
-    
+
     if (!window.confirm("Are you sure you want to delete this checklist?")) return; // Confirmation dialog
 
     try {
@@ -158,11 +161,12 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   };
 
   // CIO correctly adds a new checklist to the selected team
-  const handleAddChecklist = async () => {
+  const handleAddChecklist = async (status: string) => {
     if (!newTitle) {
       alert("Title is required.");
       return;
     }
+
     try {
       const response = await fetch(`${API_URL}/checklists`, {
         method: "POST",
@@ -174,6 +178,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           title: newTitle,
           description: newDescription,
           assignedTeam, // Pass the currently viewed team
+          status, // Add the checklist category (column) to the request
         }),
       });
 
@@ -244,7 +249,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
       {/* Add Checklist Button for CIO */}
       {userRole === "CIO" && (
-        <button className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => setShowAddModal(true)}>
+        <button 
+          className="mt-2 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600" 
+          onClick={() => {
+            setNewChecklistStatus(title);
+            setShowAddModal(true);
+          }}
+        >
           + Add Item
         </button>
       )}
@@ -278,11 +289,29 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       {showAddModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-xl">
-            <input type="text" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="border p-2 w-full" />
-            <textarea placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} className="border p-2 w-full mt-2"></textarea>
+            <input 
+              type="text" 
+              placeholder="Title" 
+              value={newTitle} 
+              onChange={(e) => setNewTitle(e.target.value)} 
+              className="border p-2 w-full" 
+            />
+            <textarea 
+              placeholder="Description" 
+              value={newDescription} 
+              onChange={(e) => setNewDescription(e.target.value)} 
+              className="border p-2 w-full mt-2">
+            </textarea>
             <div className="flex justify-end gap-2 mt-4">
-              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">Cancel</button>
-              <button onClick={handleAddChecklist} className="p-2 bg-blue-500 text-white rounded">Add</button>
+              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">
+                Cancel
+              </button>
+              <button 
+                onClick={handleAddChecklist(newChecklistStatus)} 
+                className="p-2 bg-blue-500 text-white rounded"
+              >
+                Add
+              </button>
             </div>
           </div>
         </div>
