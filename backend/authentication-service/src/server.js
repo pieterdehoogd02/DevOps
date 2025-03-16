@@ -322,7 +322,7 @@ async function initializeApp() {
         console.log("before group request")
 
         const groupsUser = await axios.get(
-          `${authServiceUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
