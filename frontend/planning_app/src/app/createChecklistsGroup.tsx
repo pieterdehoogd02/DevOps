@@ -37,18 +37,24 @@ export default function Checklists({ token }: { token: string }) {
       if (!token) return;
       const decoded: DecodedToken = jwtDecode(token || "");
       const roles = decoded?.realm_access?.roles || [];
+      const groups = decoded?.groups || [];
 
       if (roles.includes("CIO")) {
         // CIOs can switch between teams
         setUserRole("CIO");
 
-        const teamList = roles.filter((role) => role.startsWith("dev_team_")) || [];
+        // ✅ Get all dev teams from "groups" 
+        const teamList = groups.filter((group) => group.startsWith("/dev_team_")).map((g) => g.replace("/", ""));
+        
         setTeams(teamList);
         setSelectedTeam(teamList.length > 0 ? teamList[0] : ""); // ✅ Set the first team as default
       } else {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
-        const userTeams = roles.filter((role) => role.startsWith("dev_team_")) || [];
+        
+        // ✅ Assign only the teams PO/Dev belongs to
+        const userTeams = groups.filter((group) => group.startsWith("/dev_team_")).map((g) => g.replace("/", ""));
+
         setTeams(userTeams);
         setSelectedTeam(userTeams.length > 0 ? userTeams[0] : "");
       }
