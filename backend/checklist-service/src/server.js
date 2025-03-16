@@ -67,6 +67,7 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     const { title, description, assignedTeam, status } = req.body;
 
     console.log("🔥 Received status from frontend:", status); // ✅ Debugging
+    console.log("📌 Extracted status before saving:", status); // New debugging
 
     // ✅ Ensure status is included
     if (!title || !assignedTeam || !status) {  
@@ -80,8 +81,11 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
         assignedTeam: { S: assignedTeam },
         createdAt: { S: new Date().toISOString() },
         updatedAt: { S: new Date().toISOString() },
-        status: { S: status }
+        // status: { S: status }
+        status: { S: String(status) || "Unknown" }  // Force string conversion
     };
+
+    console.log("✅ Final checklist object before inserting into DynamoDB:", checklist); // 🔥 Debugging
 
     try {
         await dynamoDB.send(new PutItemCommand({ TableName: TABLE_NAME, Item: checklist }));

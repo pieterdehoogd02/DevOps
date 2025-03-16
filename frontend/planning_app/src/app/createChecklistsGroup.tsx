@@ -181,10 +181,10 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       title: newTitle,
       description: newDescription,
       assignedTeam,
-      status, // ✅ Ensure status is included
+      status: newChecklistStatus || "Unknown",
     };
 
-    console.log("🚀 Sending request:", requestBody); // ✅ Debugging
+    console.log("🚀 Final request being sent to backend:", JSON.stringify(requestBody, null, 2)); // Debugging
 
     try {
       const response = await fetch(`${API_URL}/checklists`, {
