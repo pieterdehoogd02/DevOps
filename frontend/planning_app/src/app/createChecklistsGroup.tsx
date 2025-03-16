@@ -140,6 +140,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
   // PO: Update checklist status
   const handleUpdateStatus = async (id: string) => {
+    
     if (!assignedTeam || !newStatus) return;
 
     try {
