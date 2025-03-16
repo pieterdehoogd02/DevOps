@@ -45,48 +45,42 @@ export default function Checklists({ token }: { token: string }) {
         const teamList = roles.filter((role) => role.startsWith("dev_team_")) || [];
         setTeams(teamList);
         setSelectedTeam(teamList.length > 0 ? teamList[0] : ""); // ✅ Set the first team as default
-        
-        if (teamList.length > 0) {
-          fetchChecklistsForTeam(teamList[0]); // ✅ Fetch checklists for the first available team
-        }
       } else {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
-
-        // Assign the user to their respective team
-        const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
-        if (groups.length > 0) {
-          setSelectedTeam(groups[0]); // Set their assigned team
-          fetchChecklistsForTeam(groups[0]); // ✅ Fetch checklists for their assigned team
-        }
+        const userTeams = roles.filter((role) => role.startsWith("dev_team_")) || [];
+        setTeams(userTeams);
+        setSelectedTeam(userTeams.length > 0 ? userTeams[0] : "");
       }
     } catch (error) {
       console.error("Error decoding token:", error);
     }
   }, [token]);
 
+  useEffect(() => {
+    if (selectedTeam) {
+      fetchChecklistsForTeam(selectedTeam);
+    }
+  }, [selectedTeam]);
+
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       
-      {/* CIO Team Selection Dropdown */}
+      {/* Team Selection Dropdown */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2 items-center">
           <label className="text-white font-semibold">Viewing Team:</label>
           <select
             className="p-2 bg-gray-300 rounded-md"
             value={selectedTeam} 
-            onChange={(e) => {
-              const newTeam = e.target.value;
-              setSelectedTeam(newTeam);
-              fetchChecklistsForTeam(newTeam); // ✅ Fetch checklists dynamically
-            }}
+            onChange={(e) => setSelectedTeam(e.target.value)}
           >
             {teams.length === 0 ? (
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
             ) : (
               teams.map((team) => (
                 <option key={team} value={team}>
-                  {team} {/* ✅ Ensure team name is displayed */}
+                  {team} 
                 </option>
               ))
             )}
