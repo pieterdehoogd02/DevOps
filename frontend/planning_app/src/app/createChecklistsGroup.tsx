@@ -88,6 +88,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   const [showUpdateModal, setShowUpdateModal] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>("");
 
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   // Fetch checklists **for the selected team**
   useEffect(() => {
     const fetchChecklists = async () => {
@@ -109,6 +111,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   // CIO: Delete a checklist with confirmation
   const handleDeleteChecklist = async (id: string) => {
     if (!assignedTeam) return;
+    
     if (!window.confirm("Are you sure you want to delete this checklist?")) return; // Confirmation dialog
 
     try {
@@ -139,7 +142,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      
+
       if (response.ok) {
         setShowUpdateModal(null);
         setNewStatus("");
