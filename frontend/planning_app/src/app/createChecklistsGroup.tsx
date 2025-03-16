@@ -11,9 +11,9 @@ interface DecodedToken {
 }
 
 export default function Checklists({ token }: { token: string }) {
-  const [userRole, setUserRole] = useState<string>("Other"); // Stores user's role (CIO, PO, Dev)
+  const [userRole, setUserRole] = useState<string>("Other"); // Stores the role of the logged-in user
   const [selectedTeam, setSelectedTeam] = useState<string>("dev_team_1"); // Default team for CIO
-  const [teams, setTeams] = useState<string[]>([]); // Stores available teams for CIO
+  const [teams, setTeams] = useState<string[]>([]); // List of available teams (for CIOs)
 
   // Extract user role and assigned team from JWT token
   useEffect(() => {
@@ -30,10 +30,10 @@ export default function Checklists({ token }: { token: string }) {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
 
-        // Identify the assigned team for non-CIO users
+        // Assign the user to their respective team
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
-          setSelectedTeam(groups[0]); // Set their team
+          setSelectedTeam(groups[0]); // Set their assigned team
         }
       }
     } catch (error) {
@@ -44,7 +44,7 @@ export default function Checklists({ token }: { token: string }) {
   return (
     <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       
-      {/* Dropdown for CIO to switch between teams */}
+      {/* CIO Team Selection Dropdown */}
       {userRole === "CIO" && (
         <div className="p-4 flex flex-row gap-2">
           <label className="text-white">Viewing Team:</label>
@@ -60,7 +60,7 @@ export default function Checklists({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Render columns for the selected team's checklists */}
+      {/* Render Checklist Columns (For Selected Team) */}
       <div className="flex flex-row justify-between items-center">
         {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
           <Checklist
@@ -76,11 +76,10 @@ export default function Checklists({ token }: { token: string }) {
   );
 }
 
-function Checklist({ title, assignedTeam, userRole, token, teams }: { title: string; assignedTeam: string | null; userRole: string; token: string; teams: string[] }) {
+function Checklist({ title, assignedTeam, userRole, token }: { title: string; assignedTeam: string; userRole: string; token: string }) {
   const [checklists, setChecklists] = useState<any[]>([]);
   
   const [menuOpen, setMenuOpen] = useState<{ [key: string]: boolean }>({});
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -93,7 +92,6 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
   useEffect(() => {
     const fetchChecklists = async () => {
       try {
-
         const response = await fetch(`${API_URL}/checklists/team/${assignedTeam}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -141,7 +139,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         },
         body: JSON.stringify({ status: newStatus }),
       });
-
+      
       if (response.ok) {
         setShowUpdateModal(null);
         setNewStatus("");
@@ -156,10 +154,10 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
     }
   };
 
-  // CIO: Add a new checklist
+  // CIO correctly adds a new checklist to the selected team
   const handleAddChecklist = async () => {
-    if (!newTitle || !newAssignedTeam) {
-      alert("Title and Assigned Team are required.");
+    if (!newTitle) {
+      alert("Title is required.");
       return;
     }
     try {
@@ -172,7 +170,7 @@ function Checklist({ title, assignedTeam, userRole, token, teams }: { title: str
         body: JSON.stringify({
           title: newTitle,
           description: newDescription,
-          assignedTeam: assignedTeam, // Automatically set to the currently viewed team
+          assignedTeam, // Pass the currently viewed team
         }),
       });
 
