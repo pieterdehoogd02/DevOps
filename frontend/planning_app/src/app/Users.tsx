@@ -151,7 +151,6 @@ export default function Users(props: any) {
                 </div>
             </div>
         );
-        );
     }
 
 }
