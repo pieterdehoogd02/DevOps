@@ -75,7 +75,6 @@ export default function Checklists({ token }: { token: string }) {
             assignedTeam={selectedTeam} // Always pass the selected team
             userRole={userRole}
             token={token}
-            teams={teams}
           />
         ))}
       </div>

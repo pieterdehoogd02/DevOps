@@ -46,6 +46,36 @@ export default function Users(props: any) {
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
                 }
+                
+                console.log("response user = " + response.json())
+                
+                let responseRole = await fetch(`${authServer}/getUserGroups?userId=${encodeURIComponent(user.id)}`, {
+                    method: 'GET',
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json"
+                    }, 
+                });
+
+                if (!responseRole.ok) {
+                    throw new Error(`Failed to fetch user data: ${responseRole.status}`);
+                }
+
+                console.log("response Role = " + responseRole.json())
+                
+                let responseGroup = await fetch(`${authServer}/getUserRoles?userId=${encodeURIComponent(user.id)}`, {
+                    method: 'GET',
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json"
+                    }, 
+                });
+
+                if (!responseGroup.ok) {
+                    throw new Error(`Failed to fetch user data: ${responseGroup.status}`);
+                }
+                
+                console.log("response group = " + responseGroup.json())
 
                 let user_data = await response.json(); // Parse JSON
 

@@ -179,6 +179,106 @@ async function initializeApp() {
             user: req.kauth.grant.access_token.content // Return user data from Keycloak
         });
     });
+
+    app.get('/getUserRoles/', keycloak.protect(), async (req, res) => {
+      try {
+
+        console.log("In endpoint getUserData")
+
+        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+        console.log("Before getting searchedId")
+
+        const searchedId = req.query.userId
+
+        console.log("SearchedId = " + JSON.stringify(searchedId))
+
+        // Step 1: Get Admin Token
+        const tokenResponse = await axios.post(
+            `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+            new URLSearchParams({
+                grant_type: "client_credentials",
+                client_id: keycloakClientID,
+                client_secret: clientSecret,
+            }),
+            { 
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              httpsAgent: agent  // ✅ Use HTTPS agent }
+            }
+        );
+
+        const adminToken = tokenResponse.data.access_token;
+
+        console.log("before request to get user roles")
+        
+        const rolesUser = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
+        
+        console.log("roles user = " + rolesUser.data)
+
+        const roles = rolesUser.data;
+        console.log('Roles:', roles);
+
+        return { roles };
+      } catch(err) {
+        console.error("Error: " + err)
+      }
+    });
+
+     app.get('/getUserGroups/', keycloak.protect(), async (req, res) => {
+      try {
+
+        console.log("In endpoint getUserData")
+
+        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+        console.log("Before getting searchedId")
+
+        const searchedId = req.query.userId
+
+        console.log("SearchedId = " + JSON.stringify(searchedId))
+
+        // Step 1: Get Admin Token
+        const tokenResponse = await axios.post(
+            `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+            new URLSearchParams({
+                grant_type: "client_credentials",
+                client_id: keycloakClientID,
+                client_secret: clientSecret,
+            }),
+            { 
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              httpsAgent: agent  // ✅ Use HTTPS agent }
+            }
+        );
+
+        const adminToken = tokenResponse.data.access_token;
+        
+        console.log("before request to get user groups")
+        
+        const groupsUser = await axios.get(
+          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+          {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          }
+        );
+        
+        console.log("groups user = " + groupsUser.data)
+
+        const groups = groupsUser.data;
+        console.log('groups:', groups);
+
+        return { groups };
+      } catch(err) {
+        console.error("Error: " + err)
+      }
+    });
     
     app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
@@ -219,33 +319,33 @@ async function initializeApp() {
 
         console.log("userResponse data = " + userResponse.data)
         
-        const rolesUser = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
-          {
-            headers: { Authorization: `Bearer ${adminToken}` },
-          }
-        );
+        // const rolesUser = await axios.get(
+        //   `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+        //   {
+        //     headers: { Authorization: `Bearer ${adminToken}` },
+        //   }
+        // );
         
-        console.log("roles user = " + rolesUser.data)
+        // console.log("roles user = " + rolesUser.data)
 
-        const groupsUser = await axios.get(
-          `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
-          {
-            headers: { Authorization: `Bearer ${adminToken}` },
-          }
-        );
+        // const groupsUser = await axios.get(
+        //   `${authServiceUrl}/auth/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
+        //   {
+        //     headers: { Authorization: `Bearer ${adminToken}` },
+        //   }
+        // );
         
         console.log("groups user = " + groupsUser.data)
         
         const user = userResponse.data;
-        const roles = rolesUser.data;
-        const groups = groupsUser.data;
+        // const roles = rolesUser.data;
+        // const groups = groupsUser.data;
 
         console.log('User Details:', user);
-        console.log('Roles:', roles);
-        console.log('Groups:', groups);
+        // console.log('Roles:', roles);
+        // console.log('Groups:', groups);
 
-        return { user, roles, groups };
+        return { user };
       } catch(err) {
         console.error("Error: " + err)
       }
