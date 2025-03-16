@@ -125,8 +125,10 @@ export default function Users(props: any) {
                     </div>
                     <div className="flex w-[50%] text-lg text-black font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
-                        <div className="flex h-[40px] w-[50%] bg-green-700 text-base text-white font-sans">Assign role</div>
-                        <div className="flex h-[40px] w-[50%] bg-orange-600 text-base text-white font-sans">Assign team</div>
+                        <div className="flex h-[40px] w-[80%] bg-green-700 text-base text-white font-sans 
+                            rounded-lg justify-center items-center font-semibold hover:cursor-pointer" onClick={() => {}}>Assign role</div>
+                        <div className="flex h-[40px] w-[80%] bg-orange-600 text-base text-white font-sans 
+                        rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" onClick={() => {}}>Assign team</div>
                     </div>
                 </div>
                 <div className="flex flex-col w-full">
