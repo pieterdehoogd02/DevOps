@@ -67,7 +67,103 @@ export default function Users(props: any) {
                         {
                             userData.map((elem: any) => {
                                 // if(userData.r)
-                                if(elem.roles && elem.roles.includes())
+                                let user_cio = false
+                                if(elem.roles){
+                                    for(let role of elem.roles){
+                                        if(role.name.includes("CIO")) user_cio = true
+                                    }
+                                }
+                                if(!user_cio) return <div></div>;
+                                return(
+                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
+                                        <div className="flex w-full flex-row h-[100px]">
+                                            <div className="w-[40px] h-[40px] flex items-center">
+                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
+                                            </div>
+                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
+                                        </div>
+                                        <div className="flex flex-col w-full">
+                                            <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
+                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
+                                                {
+                                                    elem.roles.map((role: any) => {
+                                                        return <div className="text-sm indent-[20px]">{role.name}</div>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="flex w-full flex-col">
+                                            <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
+                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
+                                                {
+                                                    elem.groups.map((group: any) => {
+                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
+                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">PO(s)</div>
+                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        {
+                            userData.map((elem: any) => {
+                                // if(userData.r)
+                                let user_po = false
+                                if(elem.roles){
+                                    for(let role of elem.roles){
+                                        if(role.name.includes("PO")) user_po = true
+                                    }
+                                }
+                                if(!user_po) return <div></div>;
+                                return(
+                                    <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
+                                        <div className="flex w-full flex-row h-[100px]">
+                                            <div className="w-[40px] h-[40px] flex items-center">
+                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
+                                            </div>
+                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
+                                        </div>
+                                        <div className="flex flex-col w-full">
+                                            <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
+                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
+                                                {
+                                                    elem.roles.map((role: any) => {
+                                                        return <div className="text-sm indent-[20px]">{role.name}</div>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="flex w-full flex-col">
+                                            <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
+                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
+                                                {
+                                                    elem.groups.map((group: any) => {
+                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
+                    <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">Devs</div>
+                    <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        {
+                            userData.map((elem: any) => {
+                                // if(userData.r)
+                                let user_dev = false
+                                if(elem.roles){
+                                    for(let role of elem.roles){
+                                        if(role.name.includes("dev")) user_dev = true
+                                    }
+                                }
+                                if(!user_dev) return <div></div>;
                                 return(
                                     <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
                                         <div className="flex w-full flex-row h-[100px]">
