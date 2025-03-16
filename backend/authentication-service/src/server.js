@@ -411,25 +411,103 @@ async function initializeApp() {
            
           console.log("after getting users from realm")
 
-          // Step 4: Filter Users Who Have Roles in This Client
-          // let clientUsers = [];
-
-          // for (const user of usersResponse.data) {
-          //     const rolesResponse = await axios.get(
-          //         `${keycloakServerUrl}/admin/realms/${realmName}/users/${user.id}/role-mappings/clients/${client.id}`,
-          //         { headers: { Authorization: `Bearer ${adminToken}` } }
-          //     );
-
-          //     if (rolesResponse.data.length > 0) {
-          //         clientUsers.push(user);
-          //     }
-          // }
-
-          // let json_users = {"users": usersResponse.data}
-
-          // console.log("json_users" + JSON.stringify(json_users))
-
           return res.json({"users" : usersResponse.data});
+      } catch (error) {
+          console.error("Error fetching client users:", error);
+          res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
+    app.get('/groups/', keycloak.protect(), async (req, res) => {
+      try {
+
+          // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
+          // let body = req.body
+          // let client_req = body.client
+          console.log("Groups endpoint innit")
+          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
+
+          const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+          const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+          // Step 1: Get Admin Token
+          const tokenResponse = await axios.post(
+              `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+              new URLSearchParams({
+                  grant_type: "client_credentials",
+                  client_id: keycloakClientID,
+                  client_secret: clientSecret,
+              }),
+              { 
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                httpsAgent: agent  // ✅ Use HTTPS agent }
+              }
+          );
+
+          const adminToken = tokenResponse.data.access_token;
+
+          // Step 3: Get Users Assigned to This Client
+          const groupsResponse = await axios.get(
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
+              { 
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent
+              }
+          );
+
+          console.log("groupsResponse = " + JSON.stringify(groupsResponse.data))
+           
+          console.log("after getting groups from realm")
+
+          return res.json({"groups" : groupsResponse.data});
+      } catch (error) {
+          console.error("Error fetching client users:", error);
+          res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
+    app.get('/roles/', keycloak.protect(), async (req, res) => {
+      try {
+
+          // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
+          // let body = req.body
+          // let client_req = body.client
+          console.log("Groups endpoint innit")
+          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
+
+          const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+          const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+          // Step 1: Get Admin Token
+          const tokenResponse = await axios.post(
+              `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+              new URLSearchParams({
+                  grant_type: "client_credentials",
+                  client_id: keycloakClientID,
+                  client_secret: clientSecret,
+              }),
+              { 
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                httpsAgent: agent  // ✅ Use HTTPS agent }
+              }
+          );
+
+          const adminToken = tokenResponse.data.access_token;
+
+          // Step 3: Get Users Assigned to This Client
+          const groupsResponse = await axios.get(
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
+              { 
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent
+              }
+          );
+
+          console.log("groupsResponse = " + JSON.stringify(groupsResponse.data))
+           
+          console.log("after getting groups from realm")
+
+          return res.json({"groups" : groupsResponse.data});
       } catch (error) {
           console.error("Error fetching client users:", error);
           res.status(500).json({ error: "Internal Server Error" });
