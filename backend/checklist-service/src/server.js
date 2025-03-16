@@ -102,8 +102,8 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
         const userToken = req.kauth.grant.access_token.content;
         const userGroups = userToken.groups || [];
 
-        // console.log("User groups:", userGroups);
-        // console.log("User roles:", userToken.realm_access.roles);
+        console.log("User groups:", userGroups);
+        console.log("User roles:", userToken.realm_access.roles);
 
         // ✅ CIOs can see all checklists
         if (userGroups.includes("CIO") || userGroups.includes("/CIO")) {
@@ -206,7 +206,7 @@ app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
     const { team } = req.params;
 
     try {
-        // console.log(`Fetching checklists for team: ${team}`);
+        console.log(`Fetching checklists for team: ${team}`);
         const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
             FilterExpression: "assignedTeam = :team",

@@ -47,45 +47,10 @@ export default function Users(props: any) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
                 }
                 
-                console.log("response user = " + response.json())
+                let user_data = response.json(); // Parse JSON
+
+                console.log("response user = " + await JSON.stringify(user_data))
                 
-                // console.log("before request role")
-
-                // let responseRole = await fetch(`${authServer}/getUserGroups?userId=${encodeURIComponent(user.id)}`, {
-                //     method: 'GET',
-                //     headers: { 
-                //         "Authorization": `Bearer ${props.token}`,
-                //         "Content-Type": "application/json"
-                //     }, 
-                // });
-
-                // if (!responseRole.ok) {
-                //     throw new Error(`Failed to fetch user data: ${responseRole.status}`);
-                // }
-
-                // console.log("response Role = " + responseRole.json())
-                
-                // let responseGroup = await fetch(`${authServer}/getUserRoles?userId=${encodeURIComponent(user.id)}`, {
-                //     method: 'GET',
-                //     headers: { 
-                //         "Authorization": `Bearer ${props.token}`,
-                //         "Content-Type": "application/json"
-                //     }, 
-                // });
-
-                // if (!responseGroup.ok) {
-                //     throw new Error(`Failed to fetch user data: ${responseGroup.status}`);
-                // }
-                
-                // console.log("response group = " + responseGroup.json())
-
-                // let user_roles = await responseRole.json(); // Parse JSON
-                // let user_groups = await responseGroup.json(); // Parse JSON
-                
-                let user_data = await response.json(); // Parse JSON
-
-                console.log("user data = " + JSON.stringify(user_data))
-
                 setUserDataAsync((prevUserData: any) => [...prevUserData, user_data]);
             } catch (error) {
                 console.error("Error fetching user data:", error);

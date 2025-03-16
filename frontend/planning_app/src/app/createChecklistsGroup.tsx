@@ -200,6 +200,9 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         setShowAddModal(false); // Close the modal after adding successfully
         setNewTitle("");
         setNewDescription("");
+
+        // ✅ Re-fetch checklists to update the UI
+        fetchChecklists();
       }
     } catch (error) {
       console.error("Error adding checklist:", error);

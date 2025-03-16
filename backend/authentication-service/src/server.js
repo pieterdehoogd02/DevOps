@@ -331,9 +331,18 @@ async function initializeApp() {
         console.log("groups user = " + JSON.stringify(groupsUser.data))
         
         console.log("roles request")
+
+
+        const clients = await axios.get(
+            `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
+            { headers: { Authorization: `Bearer ${adminToken}` } }
+          );
+        const client = clients.data.find(c => c.clientId === keycloakClientID);
+        const clientUUID = client.id; // Get the correct UUID
+
         
         const rolesUser = await axios.get(
-          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${keycloakClientID}`,
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${clientUUID}`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
@@ -349,7 +358,7 @@ async function initializeApp() {
         console.log('Roles:', roles);
         console.log('Groups:', groups);
 
-        return { user, roles, groups};
+        return res.json({ "user": user, "roles": roles, "groups": groups});
       } catch(err) {
         console.error("Error: " + err)
       }
