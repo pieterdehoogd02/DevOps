@@ -221,7 +221,7 @@ function AssignTeam(props: any) {
 
     async function fetchGroups() {
         try{
-            let response = await fetch(`${authServer}/groups}`, {
+            let response = await fetch(`${authServer}/groups`, {
                 method: 'GET',
                 headers: { 
                     "Authorization": `Bearer ${props.token}`,
@@ -257,17 +257,17 @@ function AssignTeam(props: any) {
         }
     }
 
-    
+
     return (
         <div className="absolute bg-slate-200 w-[20%] h-[20%] flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
             <div className="relative h-[50%] w-[80%] ">
-                {chosenTeam === " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" onClick={() => {setClickDropdownAsync(true)}}>
+                {chosenTeam === "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" onClick={() => {setClickDropdownAsync(true)}}>
                     Select a team...
                 </div>}
-                {chosenTeam !== " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
+                {chosenTeam !== "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
                     onClick={async () => {setClickDropdownAsync(true); if(groups.length === 0) await fetchGroups()}}>
                     {chosenTeam}
                 </div>}
@@ -322,7 +322,7 @@ function AssignRole(props: any) {
     }
 
     return (
-        <div className="absolute bg-slate-200 w-[20%] h-[20%] flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="fixed bg-slate-200 w-[30%] h-[30%] flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
