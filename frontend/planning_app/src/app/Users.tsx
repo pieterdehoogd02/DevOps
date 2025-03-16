@@ -67,12 +67,18 @@ export default function Users(props: any) {
                         {
                             userData.map((elem: any) => {
                                 // if(userData.r)
+                                if(elem.roles && elem.roles.includes())
                                 return(
                                     <div className="w-[30%] h-auto bg-slate-500 flex flex-col gap-3 rounded-xl">
-                                        <div className="flex w-full text-lg text-black font-semibold indent-[10px]">{elem.user.username}</div>
+                                        <div className="flex w-full flex-row h-[100px]">
+                                            <div className="w-[40px] h-[40px] flex items-center">
+                                                <img className="w-full h-full" src="./defaultProfile.png"></img>
+                                            </div>
+                                            <div className="flex w-full text-lg text-black font-semibold indent-[10px] items-center">{elem.user.username}</div>
+                                        </div>
                                         <div className="flex flex-col w-full">
                                             <div className="text-sm font-semibold text-black indent-[10px]">Roles</div>
-                                            <div className="text-sm font-medium text-zinc-700 flex flex-row gap-[2px] overflow-x-auto">
+                                            <div className="text-sm font-medium text-white flex flex-row gap-[2px] overflow-x-auto">
                                                 {
                                                     elem.roles.map((role: any) => {
                                                         return <div className="text-sm indent-[20px]">{role.name}</div>
@@ -82,10 +88,10 @@ export default function Users(props: any) {
                                         </div>
                                         <div className="flex w-full flex-col">
                                             <div className="text-sm font-semibold text-black indent-[10px]">Groups</div>
-                                            <div className="flex flex-col text-zinc-700 w-full gap-[2px] overflow-x-auto">
+                                            <div className="flex flex-col text-white w-full gap-[2px] overflow-x-auto">
                                                 {
                                                     elem.groups.map((group: any) => {
-                                                        return <div className="text-sm font-medium indent-[10px]">{group.name}</div>
+                                                        return <div className="text-sm font-medium indent-[20px]">{group.name}</div>
                                                     })
                                                 }
                                             </div>
