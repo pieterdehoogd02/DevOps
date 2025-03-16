@@ -191,15 +191,33 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       if (response.ok) {
         setShowUpdateModal(null);
         setNewStatus("");
+        
+        // fetchChecklists(); // ✅ Refresh the checklist data
 
-        // ✅ Refresh the checklist data
-        fetchChecklists();
+        // Fix: Re-fetch both old and new checklist categories
+        setTimeout(() => {
+          fetchChecklistsForTeam(assignedTeam); // Ensure it's updated in the correct category
+        }, 500);
       }
-      fetchChecklists();
     } catch (error) {
       console.error("Error updating checklist status:", error);
     }
   };
+
+  const fetchChecklistsForTeam = async (team: string) => {
+    try {
+      if (!team) return; // Prevent fetching if no team is selected
+      const response = await fetch(`${API_URL}/checklists/team/${team}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const data = await response.json();
+      const filteredChecklists = data.filter((item: any) => item.status?.S);
+      setChecklists(filteredChecklists); // ✅ Update the checklists dynamically
+    } catch (error) {
+      console.error("Error fetching checklists:", error);
+    }
+  }; 
 
   // CIO correctly adds a new checklist to the selected team
   const handleAddChecklist = async (status: string) => {
