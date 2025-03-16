@@ -14,6 +14,22 @@ export default function Checklists({ token }: { token: string }) {
   const [userRole, setUserRole] = useState<string>("Other"); // Stores the role of the logged-in user
   const [selectedTeam, setSelectedTeam] = useState<string>("dev_team_1"); // Default team for CIO
   const [teams, setTeams] = useState<string[]>([]); // List of available teams (for CIOs)
+  const [checklists, setChecklists] = useState<any[]>([]); // Stores checklists for the selected team
+
+  const fetchChecklistsForTeam = async (team: string) => {
+    try {
+      if (!team) return; // Prevent fetching if no team is selected
+      const response = await fetch(`${API_URL}/checklists/team/${team}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const data = await response.json();
+      const filteredChecklists = data.filter((item: any) => item.status?.S);
+      setChecklists(filteredChecklists); // ✅ Update the checklists dynamically
+    } catch (error) {
+      console.error("Error fetching checklists:", error);
+    }
+  }; 
 
   // Extract user role and assigned team from JWT token
   useEffect(() => {
@@ -25,7 +41,14 @@ export default function Checklists({ token }: { token: string }) {
       if (roles.includes("CIO")) {
         // CIOs can switch between teams
         setUserRole("CIO");
-        setTeams(roles.filter((role) => role.startsWith("dev_team_")) || []);
+
+        const teamList = roles.filter((role) => role.startsWith("dev_team_")) || [];
+        setTeams(teamList);
+        setSelectedTeam(teamList.length > 0 ? teamList[0] : ""); // ✅ Set the first team as default
+        
+        if (teamList.length > 0) {
+          fetchChecklistsForTeam(teamList[0]); // ✅ Fetch checklists for the first available team
+        }
       } else {
         // Set role to PO or Dev
         setUserRole(roles.includes("PO") ? "PO" : "Dev");
@@ -34,6 +57,7 @@ export default function Checklists({ token }: { token: string }) {
         const groups = roles.filter((role) => role.startsWith("dev_team_")) || [];
         if (groups.length > 0) {
           setSelectedTeam(groups[0]); // Set their assigned team
+          fetchChecklistsForTeam(groups[0]); // ✅ Fetch checklists for their assigned team
         }
       }
     } catch (error) {
@@ -50,8 +74,12 @@ export default function Checklists({ token }: { token: string }) {
           <label className="text-white font-semibold">Viewing Team:</label>
           <select
             className="p-2 bg-gray-300 rounded-md"
-            value={selectedTeam || (teams.length > 0 ? teams[0] : "")} // ✅ Always show the current team
-            onChange={(e) => setSelectedTeam(e.target.value)}
+            value={selectedTeam} 
+            onChange={(e) => {
+              const newTeam = e.target.value;
+              setSelectedTeam(newTeam);
+              fetchChecklistsForTeam(newTeam); // ✅ Fetch checklists dynamically
+            }}
           >
             {teams.length === 0 ? (
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
@@ -221,9 +249,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     } catch (error) {
       console.error("Error fetching checklists:", error);
     }
-  };
+  }; 
   
-
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
       
