@@ -308,17 +308,24 @@ function AssignTeam(props: any) {
     async function assignTeam() {
         try{
             console.log("In assign teams")
-            let response = await fetch(`${authServer}/assign-team`, {
-                method: 'POST',
-                headers: { 
-                    "Authorization": `Bearer ${props.token}`,
-                    "Content-Type": "application/json",
-                }, 
-                body: JSON.stringify({ userId: props.userToChange.id, teamName: chosenTeam })
-            });
+            for(let i = 0; i < groups.length ; i++){
+                let teamName = ""
+                if(groupsChosen[i] === true){
+                    teamName = groups[i]
+                }
 
-            if(!response.ok){
-                console.log("Could not assign team to user: " + response.status)
+                let response = await fetch(`${authServer}/assign-team`, {
+                    method: 'POST',
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json",
+                    }, 
+                    body: JSON.stringify({ userId: props.userToChange.id, teamName: chosenTeam })
+                });
+
+                if(!response.ok){
+                    console.log("Could not assign team to user: " + response.status)
+                }
             }
         }catch(err){
             console.error("Error: " + JSON.stringify(err))
@@ -366,9 +373,9 @@ function AssignTeam(props: any) {
                             >
                                 {!groupsChosen[idx] && <div className="flex w-full h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
                                 {groupsChosen[idx] && <div className="flex w-full h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
-                                {groupsChosen[idx] && <div className="absolute left-[80%] top-0 w-[20%] h-[20px] flex flex-row justify-center items-center hover:cursor-pointer" 
+                                {groupsChosen[idx] && <div className="absolute left-[80%] top-0 w-[20%] h-full flex flex-row justify-center items-center hover:cursor-pointer" 
                                     onClick={() => {setGroupChosenAsync(idx); }}>
-                                    <img src="./tick-green.png" className="w-[20px] h-[20px] object-contain"></img>
+                                    <img src="./tick-green.png" className="w-[1/2] h-[1/2] object-contain"></img>
                                 </div>}
                             </div>
                         ))}
@@ -376,7 +383,8 @@ function AssignTeam(props: any) {
                 )}
             </div>
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="w-[60%] h-full bg-green-700 rounded-xl  text-white text-base font-semibold font-sans hover:cursor-pointer" 
+                <div className="flex flex-row justify-center items-center w-[60%] h-full bg-green-700 rounded-md
+                     text-white text-base font-semibold font-sans hover:cursor-pointer border-2 border-black" 
                     onClick={() => {props.setAssignTeam(false)}}>
                     Apply changes
                 </div>
