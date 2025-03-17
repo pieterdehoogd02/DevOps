@@ -41,7 +41,6 @@ export default function Home() {
         alert("Login failed");
         return;
       }
-
       
       console.log("Logged in!!!")
 
@@ -105,12 +104,22 @@ function Dashboard(props: any) {
   // once we get the token update roles
   useEffect(() => {
     console.log("localStorage has changed")
-    if(!props.token) {
-      console.log("decoded access_token = " + JSON.stringify(jwtDecode(props.token || "")))
-      setRolesAsync(getRoles(jwtDecode(props.token || "")))
-      console.log("roles = " + JSON.stringify(roles))
+    // if(!props.token) {
+    //   console.log("decoded access_token = " + JSON.stringify(jwtDecode(props.token || "")))
+    //   setRolesAsync(getRoles(jwtDecode(props.token || "")))
+    //   console.log("roles = " + JSON.stringify(roles))
+    // }
+
+    if (props.token) { 
+      const decodedToken = jwtDecode(props.token || "");
+      console.log("Decoded token:", decodedToken);
+  
+      const extractedRoles = getRoles(decodedToken);
+      console.log("✅ Extracted roles:", extractedRoles);
+      
+      setRoles(extractedRoles);
     }
-  }, [props.token])
+  }, [props.token]); // this runs when `props.token` changes
 
   const setRolesAsync = async (roles : any) => {
     setRoles(roles)
@@ -161,6 +170,14 @@ function Dashboard(props: any) {
       console.error("Error fetching project members:", error);
       return null; // Return null or handle errors appropriately
     }
+  }
+
+  function getRoles (token : any) {
+    // Ensure we extract roles correctly from `realm_access`
+    const roles = token?.realm_access?.roles || [];
+    console.log("Extracted roles from token:", roles); // Debugging
+
+    return roles;
   }
 
   console.log("Roles before rendering sidebar: ", roles); // Debugging
