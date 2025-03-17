@@ -317,27 +317,30 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 >
                   ⋮
                 </button>
-                <button 
-                  onClick={() => {
-                    setShowEditModal(checklist.id.S);
-                    setEditTitle(checklist.title.S);
-                    setEditDescription(checklist.description.S);
-                  }} 
-                  className="text-yellow-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
-                >
-                  Modify
-                </button>
-
                 {menuOpen[checklist.id.S] && (
                   <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
                     {userRole === "CIO" && (
-                      <button 
-                        onClick={() => handleDeleteChecklist(checklist.id.S)} 
-                        className="text-red-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
-                      >  
-                        Delete
-                      </button>
+                      <>
+                        <button 
+                          onClick={() => {
+                            setShowEditModal(checklist.id.S);
+                            setEditTitle(checklist.title.S);
+                            setEditDescription(checklist.description.S);
+                          }} 
+                          className="text-yellow-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
+                        >
+                          Modify
+                        </button>
+
+                        <button 
+                          onClick={() => handleDeleteChecklist(checklist.id.S)} 
+                          className="text-red-500 block px-2 py-1 hover:bg-gray-200 w-full text-left"
+                        >  
+                          Delete
+                        </button>
+                      </>
                     )}
+
                     {userRole === "PO" && (
                       <button 
                         onClick={() => setShowUpdateModal(checklist.id.S)} 
