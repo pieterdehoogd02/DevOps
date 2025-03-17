@@ -58,6 +58,8 @@ export default function Users(props: any) {
     }, [users]); // Run when `users` changes
 
     async function gettingAllUserData() {
+        // set the data to empty before fetching again
+        setUserDataAsync([]) 
         for (let user of users) { // Remove `: any`
             try {
                 console.log("user id = " + user.id)
