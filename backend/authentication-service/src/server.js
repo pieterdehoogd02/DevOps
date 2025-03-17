@@ -540,6 +540,8 @@ async function initializeApp() {
             if (!userId || !teamName) {
                 return res.status(400).json({ error: "User ID and Team Name are required" });
             }
+            
+            console.log("Checked userId and teamName exist")
 
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
@@ -556,7 +558,7 @@ async function initializeApp() {
 
             const adminToken = tokenResponse.data.access_token;
 
-            console.log("Checked userId and teamName exist")
+            console.log("Got token")
 
             const groupResponse = await axios.get(
                 `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
