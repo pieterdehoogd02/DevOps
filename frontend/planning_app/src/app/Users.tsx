@@ -185,12 +185,14 @@ export default function Users(props: any) {
                     <div className="text-sm font-medium text-gray-500 flex flex-row gap-[2px] overflow-x-auto">
                         {
                             props.elem.roles.map((role: any) => {
-                                return <div className="flex flex-row bg-slate-700 rounded-md">
-                                    <div className="text-sm indent-[20px]">{role.name}</div>
-                                    <div className="flex flex-row w-[20px] h-[20px] justify-center items-center">
-                                        <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
-                                    </div>
-                                </div>
+                                return <div className="flex flex-row w-fit bg-slate-700 rounded-md">
+                                            <div className="flex flex-row items-center">
+                                                <div className="text-sm indent-[20px]">{role.name}</div>
+                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
+                                                    <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                                </div>
+                                            </div>
+                                        </div>
                                 // return <div className="text-sm indent-[20px]">{role.name}</div>
                             })
                         }
@@ -203,12 +205,14 @@ export default function Users(props: any) {
                             props.elem.groups.map((group: any) => {
                                 // return <div className=""></div>
                                 // return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
-                                return <div className="text-sm font-medium indent-[20px] flex flex-row bg-slate-700 rounded-md">
-                                    <div className="text-sm indent-[20px]">{group.name}</div>
-                                    <div className="flex flex-row w-[20px] h-[20px] justify-center items-center">
-                                        <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
-                                    </div>
-                                </div>
+                                return <div className="flex flex-row w-fit bg-slate-700 rounded-md">
+                                            <div className="flex flex-row items-center">
+                                                <div className="text-sm indent-[20px]">{group.name}</div>
+                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
+                                                    <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                                </div>
+                                            </div>
+                                        </div>
                             })
                         }
                     </div>
