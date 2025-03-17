@@ -264,15 +264,19 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     const { assignedTeam } = req.params;
 
     try {
-        // Fetch all checklists that: 1) belong to the specified `assignedTeam`, 2) have the status `Done`, 
-        // 3) do not have the `submitted` attribute (they haven't been submitted yet)
+        // Fetch all checklists that: 
+        // 1) belong to the specified `assignedTeam`, 
+        // 2) have the status `Done`, 
+        // 3) either do not have the `submitted` attribute (they haven't been submitted yet) or have `submitted = false`
         const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
-            FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            // FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            FilterExpression: "assignedTeam = :team AND #s = :done AND (attribute_not_exists(submitted) OR submitted = :notSubmitted)",
             ExpressionAttributeNames: {"#s": "status"},
             ExpressionAttributeValues: {
                 ":team": { S: assignedTeam },
-                ":done": { S: "Done" }
+                ":done": { S: "Done" },
+                ":notSubmitted": { BOOL: false }
             }
         }));
 
