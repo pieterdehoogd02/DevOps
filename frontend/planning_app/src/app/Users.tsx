@@ -165,7 +165,7 @@ export default function Users(props: any) {
         async function deleteGroup(group : any) {
             try {
                 console.log("In delete group")
-                console.log("userId = " +  props.userToChange.user.id +  "group1 = " + group)
+                console.log("user = " +  JSON.stringify(props.userToChange) +  "group1 = " + JSON.stringify(group))
                 let response = await fetch(`${authServer}/delete-group`, {
                     method: 'POST',
                     headers: { 
@@ -207,8 +207,6 @@ export default function Users(props: any) {
                 console.error("Error: " + error)
             }
         }
-
-
 
         return (
             <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
@@ -584,7 +582,7 @@ function AssignRole(props: any) {
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-2xl
                      text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
-                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignTeam(false); }}>
+                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignRole(false); }}>
                     Apply changes
                 </div>
             </div>
