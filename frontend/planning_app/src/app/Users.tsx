@@ -326,6 +326,7 @@ function AssignTeam(props: any) {
             console.log("In assign teams")
             for(let i = 0; i < groups.length ; i++){
                 let teamName = ""
+                console.log(`groups[${i}] = ` + JSON.stringify(groups[i]))
                 if(groupsChosen[i] === true) teamName = groups[i].name
                 let response = await fetch(`${authServer}/assign-team`, {
                     method: 'POST',
