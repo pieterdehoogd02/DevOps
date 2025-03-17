@@ -208,6 +208,7 @@ export default function Users(props: any) {
 function AssignTeam(props: any) {
 
     const [chosenTeam, chooseTeam] : any = useState(null)
+    const [groupsChosen, setGroupsChosen] = useState([])
     const prevChosenTeam = useRef(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
     const [groups, setGroups] = useState([])
@@ -223,6 +224,16 @@ function AssignTeam(props: any) {
 
     const setGroupsAsync = async (groups: any) => {
         setGroups(groups)
+    }
+    
+    const setGroupsChosenAsync = async (groups: any) => {
+        setGroupsChosen(groups)
+    }
+
+    const setGroupChosenAsync = async (idx: number) => {
+        setGroupsChosen((prevState : any) => 
+            prevState.map((elem : boolean, idx2 : number) => idx === idx2 ? !elem : elem)
+        );
     }
 
     useEffect(() => {
@@ -270,6 +281,9 @@ function AssignTeam(props: any) {
             console.log("groups = " + JSON.stringify(fetchedGroups))
             
             await setGroupsAsync(fetchedGroups.groups)
+            for(let group of fetchedGroups){
+                setGroupsChosenAsync((prevGroups: any) => [...prevGroups, false])
+            }
         } catch(err) {
             console.error("Error: " + JSON.stringify(err))
         }
@@ -327,7 +341,7 @@ function AssignTeam(props: any) {
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
-                                className={`w-full h-[2/3] flex justify-center items-center bg-transparent border-2 border-black 
+                                className={`w-full h-[2/3] flex flex-row justify-center items-center bg-transparent border-2 border-black 
                                 hover:bg-slate-600 cursor-pointer 
                                 ${idx === 0 ? "rounded-t-md" : idx === groups.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                                 onClick={async () => {
@@ -335,7 +349,11 @@ function AssignTeam(props: any) {
                                     await setClickDropdownAsync(false);
                                 }}
                             >
-                                {elem.name}
+                                {!groupsChosen[idx] && <div className="flex w-full h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
+                                {groupsChosen[idx] && <div className="flex w-[80%] h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
+                                {groupsChosen[idx] && <div className="flex w-[20%] h-full flex-row justify-center items-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>
+                                    <img src="./tick.png" className="w-full h-[80%] flex flex-row justify-center items-center"></img>
+                                </div>}
                             </div>
                         ))}
                     </div>
@@ -378,7 +396,7 @@ function AssignRole(props: any) {
         let fetchedRoles = await response.json()
         console.log("roles = " + JSON.stringify(fetchedRoles))
         
-        await setRolesAsync(fetchedRoles.groups)
+        await setRolesAsync(fetchedRoles.roles)
     }
 
     return (
@@ -387,12 +405,12 @@ function AssignRole(props: any) {
                 <div className="text-black text-base font-semibold">Assign {props.userToChange.name} to team..</div>
             </div>
             <div ref={ref} className="relative h-[50%] w-full flex flex-col justify-center items-center">
-                {chosenRole === null && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
+                {chosenRole === null && <div className="flex w-[60%] h-[50px] border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" onClick={async () => {
                     await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     Select a team...
                 </div>}
-                {chosenRole !== null && <div className="flex w-full h-[50px] border-2 rounded-md bg-slate-500 border-black text-white 
+                {chosenRole !== null && <div className="flex w-[60%] h-[50px] border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     {chosenRole.name}
@@ -411,6 +429,9 @@ function AssignRole(props: any) {
                     </div>
                 }
             </div>
+            {/* <div className="relative flex flex-row w-full h-[30%]">
+                <div className=""
+            </div> */}
         </div>
     );
 }
