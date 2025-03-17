@@ -327,6 +327,68 @@ app.get('/submissions', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
+// ✅ PO: View all submitted checklists for their team
+app.get('/submissions/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
+    const { assignedTeam } = req.params;
+
+    try {
+        // Fetch checklists that: 1) belong to the team, 2) are marked as "submitted"
+        const result = await dynamoDB.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: "assignedTeam = :team AND submitted = :submitted",
+            ExpressionAttributeValues: {
+                ":team": { S: assignedTeam },
+                ":submitted": { BOOL: true }
+            }
+        }));
+
+        res.json(result.Items || []);
+    } catch (error) {
+        console.error("❌ Error fetching submitted checklists:", error);
+        res.status(500).json({ error: "Failed to fetch submitted checklists", details: error.message });
+    }
+});
+
+// ✅ PO: Modify submitted checklist (title & description)
+app.put('/submissions/:id/:assignedTeam/edit', keycloak.protect('realm:PO'), async (req, res) => {
+    const { id, assignedTeam } = req.params;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+        return res.status(400).json({ error: "Title and Description are required" });
+    }
+
+    try {
+        let result = await dynamoDB.send(new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            }
+        }));
+
+        if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
+
+        await dynamoDB.send(new UpdateItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            },
+            UpdateExpression: "SET title = :t, description = :d, updatedAt = :u",
+            ExpressionAttributeValues: {
+                ":t": { S: title },
+                ":d": { S: description },
+                ":u": { S: new Date().toISOString() }
+            }
+        }));
+        
+        res.json({ message: "Checklist updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update checklist", details: error.message });
+    }
+});
+
 // Start HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
     console.log(`✅ Checklist Service is running on HTTPS at https://checklist.planmeet.net:${PORT}`);
