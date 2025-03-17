@@ -311,15 +311,17 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      const responseData = await response.json(); // Extract response body
+
       if (response.ok) {
         alert("✅ Checklists successfully submitted!");
         fetchChecklists(); // Refresh UI after submission
       } else {
-        console.error("❌ Submission failed:", response.statusText);
-        alert("❌ Submission failed!");
+        console.error("❌ Submission failed:", response.status, responseData);
+        alert("Submission failed!");
       }
     } catch (error) {
-      console.error("❌ Error submitting checklists:", error);
+      console.error("Error submitting checklists:", error);
     }
   };
 

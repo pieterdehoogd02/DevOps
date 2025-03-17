@@ -104,11 +104,6 @@ function Dashboard(props: any) {
   // once we get the token update roles
   useEffect(() => {
     console.log("localStorage has changed")
-    // if(!props.token) {
-    //   console.log("decoded access_token = " + JSON.stringify(jwtDecode(props.token || "")))
-    //   setRolesAsync(getRoles(jwtDecode(props.token || "")))
-    //   console.log("roles = " + JSON.stringify(roles))
-    // }
 
     if (props.token) { 
       const decodedToken = jwtDecode(props.token || "");
@@ -136,10 +131,6 @@ function Dashboard(props: any) {
   const setShowUsersAsync = async () => {
     setShowUsers(!showUsers)
   }
-  
-  // function getRoles(token: any) {
-  //   return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
-  // }
 
   function getRoles (token : any) {
     // Ensure we extract roles correctly from `realm_access`
