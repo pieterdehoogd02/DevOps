@@ -242,7 +242,7 @@ function AssignTeam(props: any) {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                props.setClickDropdownAsync2(false); // Close dropdown if clicked outside
+                props.setClickDropdownAsync(false); // Close dropdown if clicked outside
             }
         }
 
@@ -327,7 +327,7 @@ function AssignTeam(props: any) {
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
-                                className={`w-full h-[2/3] flex justify-center items-center bg-transparent border-y-2 border-black 
+                                className={`w-full h-[2/3] flex justify-center items-center bg-transparent border-2 border-black 
                                 hover:bg-slate-600 cursor-pointer 
                                 ${idx === 0 ? "rounded-t-md" : idx === groups.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                                 onClick={async () => {
@@ -392,7 +392,7 @@ function AssignRole(props: any) {
                     await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     Select a team...
                 </div>}
-                {chosenRole !== null && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
+                {chosenRole !== null && <div className="flex w-full h-[50px] border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     {chosenRole.name}
