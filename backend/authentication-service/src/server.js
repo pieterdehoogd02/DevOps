@@ -350,11 +350,15 @@ async function initializeApp() {
         // );
 
         const rolesUser = await axios.get(
-          `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
-          {
-            headers: { Authorization: `Bearer ${adminToken}` },
-          }
+            `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
+            {
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent // If using a custom HTTPS agent
+            }
         );
+
+        console.log("User's Realm Roles:", userRolesResponse.data);
+
         
         // console.log("roles user = " + JSON.stringify(rolesUser.data))
         
