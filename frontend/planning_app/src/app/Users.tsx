@@ -145,7 +145,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_dev) return <div></div>;
-                                    return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -165,7 +165,7 @@ export default function Users(props: any) {
         async function deleteGroup(group : any) {
             try {
                 console.log("In delete group")
-
+                console.log("userId = " +  props.userToChange.user.id +  "group1 = " + group)
                 let response = await fetch(`${authServer}/delete-group`, {
                     method: 'POST',
                     headers: { 

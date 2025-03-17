@@ -652,7 +652,7 @@ async function initializeApp() {
 
             console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
 
-            const group = groupsResponse.data.find(group => group.name === group1);
+            const group = groupsResponse.data.find(group => group.name === group1.name);
             if (!group) return res.status(404).json({ error: "group not found" });
             
             console.log("Deleting from group = " + JSON.stringify(group))
