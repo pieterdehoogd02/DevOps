@@ -279,6 +279,7 @@ async function initializeApp() {
         console.error("Error: " + err)
       }
     });
+   
     
     app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
