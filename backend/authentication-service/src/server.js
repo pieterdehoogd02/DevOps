@@ -342,8 +342,15 @@ async function initializeApp() {
         const clientUUID = client.id; // Get the correct UUID
 
         
+        // const rolesUser = await axios.get(
+        //   `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${clientUUID}`,
+        //   {
+        //     headers: { Authorization: `Bearer ${adminToken}` },
+        //   }
+        // );
+
         const rolesUser = await axios.get(
-          `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${clientUUID}`,
+          `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
           {
             headers: { Authorization: `Bearer ${adminToken}` },
           }
@@ -742,24 +749,24 @@ async function initializeApp() {
                 }
             );
 
-            const clientsResponse = await axios.get(
-                `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
-                { headers: { "Authorization": `Bearer ${adminToken}` } }
-            );
-            const client = clientsResponse.data.find(client => client.clientId === keycloakClientID);
-            if (!client) throw new Error("Client not found!");
-            const keycloakClientUUID = client.id;
-            console.log("After client")
-            console.log("client = " + JSON.stringify(client))
+            // const clientsResponse = await axios.get(
+            //     `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
+            //     { headers: { "Authorization": `Bearer ${adminToken}` } }
+            // );
+            // const client = clientsResponse.data.find(client => client.clientId === keycloakClientID);
+            // if (!client) throw new Error("Client not found!");
+            // const keycloakClientUUID = client.id;
+            // console.log("After client")
+            // console.log("client = " + JSON.stringify(client))
 
-            await axios.post(
-                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientUUID}`,
-                [role], // Array of role objects
-                {
-                    headers: { "Authorization": `Bearer ${adminToken}` },
-                    httpsAgent: agent
-                }
-            );
+            // await axios.post(
+            //     `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientUUID}`,
+            //     [role], // Array of role objects
+            //     {
+            //         headers: { "Authorization": `Bearer ${adminToken}` },
+            //         httpsAgent: agent
+            //     }
+            // );
             
             console.log(`✅ User ${userId} assigned to team ${roleName}`)
 
