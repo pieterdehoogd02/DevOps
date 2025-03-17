@@ -185,7 +185,13 @@ export default function Users(props: any) {
                     <div className="text-sm font-medium text-gray-500 flex flex-row gap-[2px] overflow-x-auto">
                         {
                             props.elem.roles.map((role: any) => {
-                                return <div className="text-sm indent-[20px]">{role.name}</div>
+                                return <div className="flex flex-row bg-slate-700 rounded-md">
+                                    <div className="text-sm indent-[20px]">{role.name}</div>
+                                    <div className="flex flex-row w-[20px] h-[20px] justify-center items-center">
+                                        <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                    </div>
+                                </div>
+                                // return <div className="text-sm indent-[20px]">{role.name}</div>
                             })
                         }
                     </div>
@@ -195,7 +201,14 @@ export default function Users(props: any) {
                     <div className="flex flex-col text-gray-500 w-full gap-[2px] overflow-x-auto">
                         {
                             props.elem.groups.map((group: any) => {
-                                return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
+                                // return <div className=""></div>
+                                // return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
+                                return <div className="text-sm font-medium indent-[20px] flex flex-row bg-slate-700 rounded-md">
+                                    <div className="text-sm indent-[20px]">{group.name}</div>
+                                    <div className="flex flex-row w-[20px] h-[20px] justify-center items-center">
+                                        <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                    </div>
+                                </div>
                             })
                         }
                     </div>
@@ -368,7 +381,7 @@ function AssignTeam(props: any) {
                             {/* Tick (Only when groupsChosen[idx] is true) */}
                             {groupsChosen[idx] && (
                                 <div className="absolute left-[80%] w-[20%] h-full flex flex-row justify-center items-center">
-                                    <img src="./tick-green.png" className="w-[50%] h-[50%] object-contain"></img>
+                                    <img src="./tick.png" className="w-[80%] h-[80%] object-contain"></img>
                                 </div>
                             )}
                         </div>
