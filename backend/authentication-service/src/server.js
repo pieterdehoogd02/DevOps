@@ -563,9 +563,11 @@ async function initializeApp() {
 
             console.log("Got token")
 
-            const groupResponse = await axios.get(
-                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
-                { headers: { "Authorization": `Bearer ${adminToken}` },
+            // Step 3: Get Users Assigned to This Client
+            const groupsResponse = await axios.get(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
+                { 
+                  headers: { Authorization: `Bearer ${adminToken}` },
                   httpsAgent: agent
                 }
             );
@@ -578,8 +580,8 @@ async function initializeApp() {
             console.log("Adding to team = " + team)
 
             await axios.put(
-                `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
-                { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
+                { headers: { "Authorization": `Bearer ${adminToken}` },
                   httpsAgent: agent
                 }
             );
