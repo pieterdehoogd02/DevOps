@@ -196,8 +196,18 @@ export default function Users(props: any) {
 
         async function deleteRole(role: any) {
             try {
-                console.log("In delete role")
-                console.log("user = " +  JSON.stringify(props.elem) +  "group1 = " + JSON.stringify(role))
+                
+                console.log("In delete group")
+                console.log("user = " +  JSON.stringify(props.elem) +  ", group1 = " + JSON.stringify(role))
+
+                const userId = props.elem?.user?.id; 
+                if (!userId) {
+                    console.error("Error: userId is missing!");
+                    return;
+                } else {
+                    console.log("userId = " + userId)
+                }
+
                 let response = await fetch(`${authServer}/delete-role`, {
                     method: 'POST',
                     headers: { 
@@ -500,6 +510,22 @@ function AssignRole(props: any) {
         console.log("after setGroupsChosenAsync")
     }
 
+    useEffect(() => {
+        fetchRoles()
+
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef2.current && !dropdownRef2.current.contains(event.target as Node)) {
+                props.setAssignTeam(false); // Hide the div when clicking outside
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [])
+
 
     async function fetchRoles() {
         let response = await fetch(`${authServer}/roles`, {
@@ -553,7 +579,7 @@ function AssignRole(props: any) {
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
-                    Assign {props.userToChange.user.username} to team..
+                    Assign {props.userToChange.user.username} to role..
                 </div>
             </div>
 
@@ -591,7 +617,7 @@ function AssignRole(props: any) {
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-2xl
                      text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
-                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignRole(false); }}>
+                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignTeam(false); }}>
                     Apply changes
                 </div>
             </div>
