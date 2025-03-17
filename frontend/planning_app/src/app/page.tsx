@@ -137,9 +137,9 @@ function Dashboard(props: any) {
     setShowUsers(!showUsers)
   }
   
-  function getRoles(token: any) {
-    return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
-  }
+  // function getRoles(token: any) {
+  //   return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
+  // }
 
   async function getProjectMembers() {
     try {
