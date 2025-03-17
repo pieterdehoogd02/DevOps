@@ -550,21 +550,21 @@ function AssignRole(props: any) {
     async function assignRoles() {
         try{
             console.log("========================================")
-            console.log("In assign teams")
+            console.log("In assign role")
             console.log("========================================")
             for(let i = 0; i < roles.length ; i++){
-                let teamName = ""
+                let roleName = ""
                 console.log(`roles[${i}] = ` + JSON.stringify(roles[i]))
                 if(rolesChosen[i] === true) {
-                    teamName = roles[i].name
-                    console.log("teamName = " + teamName)
-                    let response = await fetch(`${authServer}/assign-team`, {
+                    roleName = roles[i].name
+                    console.log("roleName = " + roleName)
+                    let response = await fetch(`${authServer}/assign-role`, {
                         method: 'POST',
                         headers: { 
                             "Authorization": `Bearer ${props.token}`,
                             "Content-Type": "application/json",
                         }, 
-                        body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
+                        body: JSON.stringify({ userId: props.userToChange.user.id, teamName: roleName })
                     });
 
                     if(!response.ok){
