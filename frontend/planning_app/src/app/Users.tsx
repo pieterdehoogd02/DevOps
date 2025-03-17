@@ -345,7 +345,7 @@ function AssignTeam(props: any) {
             {/* Dropdown Container */}
             <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
                 {/* Dropdown Trigger (Centered) */}
-                <div
+                {/* <div
                     className="flex w-[60%] h-[50px] border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center cursor-pointer"
                     onClick={async () => {
@@ -354,16 +354,16 @@ function AssignTeam(props: any) {
                     }}
                 >
                     {chosenTeam ? chosenTeam.name : "Select a team..."}
-                </div>
+                </div> */}
 
                 {/* Dropdown List (Centered) */}
                 {clickedDropdown && (
-                    <div ref={dropdownRef} className="relative h-[200%] w-[60%] border-2 rounded-md bg-slate-500 border-black text-white 
+                    <div ref={dropdownRef} className="relative h-[260%] w-[60%] border-2 rounded-md bg-slate-500 border-black text-white 
                     overflow-y-scroll flex flex-col items-center">
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
-                                className={`w-full h-[2/3] flex flex-row justify-center items-center bg-transparent border-2 border-black 
+                                className={`w-full h-[1/3] flex flex-row justify-center items-center bg-transparent border-2 border-black 
                                 hover:bg-slate-600 cursor-pointer 
                                 ${idx === 0 ? "rounded-t-md" : idx === groups.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                                 onClick={async () => {
