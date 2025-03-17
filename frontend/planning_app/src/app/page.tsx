@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Checklists from "./createChecklistsGroup";
+import ViewSubmissions from "./ViewSubmissions";
 import Users from "./Users";
 
 import { jwtDecode } from "jwt-decode";
@@ -98,6 +99,8 @@ function Dashboard(props: any) {
   const [members, setMembers] : any = useState([])
   const [showChecklists, setShowChecklists] = useState(true)
   const [showUsers, setShowUsers] = useState(false)
+
+  const [showSubmissions, setShowSubmissions] = useState(false);
 
   // once we get the token update roles
   useEffect(() => {
@@ -198,11 +201,26 @@ function Dashboard(props: any) {
           onClick={async () => {await setShowUsersAsync(); await setShowChecklistsAsync();}}>Backlog</div>
         <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={() => {}}>Roles</div>
+
+          {/* New section for CIO to view submissions */}
+          {roles.includes("CIO") && (
+            <div
+              className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+              onClick={() => {
+                setShowSubmissions(true);
+                setShowChecklists(false);
+                setShowUsers(false);
+              }}
+            >
+              View Submissions
+            </div>
+          )}
       </div>
 
       {/* Main Content Area */}
       {showChecklists && <Checklists token={props.token}></Checklists>}
       {showUsers && <Users users={members} token={props.token}></Users>}
+      {showSubmissions && <ViewSubmissions token={props.token}></ViewSubmissions>}
     </div>
   );
 }
