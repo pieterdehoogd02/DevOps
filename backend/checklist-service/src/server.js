@@ -264,15 +264,19 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     const { assignedTeam } = req.params;
 
     try {
-        // Fetch all checklists that: 1) belong to the specified `assignedTeam`, 2) have the status `Done`, 
-        // 3) do not have the `submitted` attribute (they haven't been submitted yet)
+        // Fetch all checklists that: 
+        // 1) belong to the specified `assignedTeam`, 
+        // 2) have the status `Done`, 
+        // 3) either do not have the `submitted` attribute (they haven't been submitted yet) or have `submitted = false`
         const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
-            FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            // FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            FilterExpression: "assignedTeam = :team AND #s = :done AND (attribute_not_exists(submitted) OR submitted = :notSubmitted)",
             ExpressionAttributeNames: {"#s": "status"},
             ExpressionAttributeValues: {
                 ":team": { S: assignedTeam },
-                ":done": { S: "Done" }
+                ":done": { S: "Done" },
+                ":notSubmitted": { BOOL: false }
             }
         }));
 
@@ -291,10 +295,10 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                     assignedTeam: checklist.assignedTeam
                 },
                 // Add `submitted` attribute & update timestamp
-                UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
+                UpdateExpression: "SET submitted = :submitted, submittedAt = :submittedAt",
                 ExpressionAttributeValues: {
                     ":submitted": { BOOL: true },
-                    ":updatedAt": { S: new Date().toISOString() }
+                    ":submittedAt": { S: new Date().toISOString() }
                 }
             }));
         }
@@ -320,6 +324,68 @@ app.get('/submissions', keycloak.protect('realm:CIO'), async (req, res) => {
     } catch (error) {
         console.error("❌ Error fetching submitted checklists:", error);
         res.status(500).json({ error: "Failed to fetch submissions", details: error.message });
+    }
+});
+
+// ✅ PO: View all submitted checklists for their team
+app.get('/submissions/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
+    const { assignedTeam } = req.params;
+
+    try {
+        // Fetch checklists that: 1) belong to the team, 2) are marked as "submitted"
+        const result = await dynamoDB.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: "assignedTeam = :team AND submitted = :submitted",
+            ExpressionAttributeValues: {
+                ":team": { S: assignedTeam },
+                ":submitted": { BOOL: true }
+            }
+        }));
+
+        res.json(result.Items || []);
+    } catch (error) {
+        console.error("❌ Error fetching submitted checklists:", error);
+        res.status(500).json({ error: "Failed to fetch submitted checklists", details: error.message });
+    }
+});
+
+// ✅ PO: Modify submitted checklist (title & description)
+app.put('/submissions/:id/:assignedTeam/edit', keycloak.protect('realm:PO'), async (req, res) => {
+    const { id, assignedTeam } = req.params;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+        return res.status(400).json({ error: "Title and Description are required" });
+    }
+
+    try {
+        let result = await dynamoDB.send(new GetItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            }
+        }));
+
+        if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
+
+        await dynamoDB.send(new UpdateItemCommand({
+            TableName: TABLE_NAME,
+            Key: {
+                id: { S: id },
+                assignedTeam: { S: assignedTeam }
+            },
+            UpdateExpression: "SET title = :t, description = :d, updatedAt = :u",
+            ExpressionAttributeValues: {
+                ":t": { S: title },
+                ":d": { S: description },
+                ":u": { S: new Date().toISOString() }
+            }
+        }));
+        
+        res.json({ message: "Checklist updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update checklist", details: error.message });
     }
 });
 
