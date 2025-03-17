@@ -279,6 +279,7 @@ async function initializeApp() {
         console.error("Error: " + err)
       }
     });
+   
     
     app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
@@ -515,7 +516,7 @@ async function initializeApp() {
     });
     
     // ✅ Assign a user to a team (CIO only)
-    app.post('/assign-team', keycloak.protect('realm:CIO'), async (req, res) => {
+    app.post('/assign-team/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
             if (!roles.includes("CIO")) {
