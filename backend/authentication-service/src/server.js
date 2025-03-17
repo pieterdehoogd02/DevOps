@@ -659,14 +659,13 @@ async function initializeApp() {
 
             await axios.delete(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${group.id}`,
-              {}, // Empty body as PUT to this endpoint doesn't require data
               {
                 headers: { Authorization: `Bearer ${adminToken}` },
                 httpsAgent: agent
               }
             )
 
-            console.log(`✅ User ${userId} deleted from group ${group1}`)
+            console.log(`✅ User ${userId} deleted from group ${group1.name}`)
 
             res.json({ message: `✅ User ${userId} deleted from group ${group1}` });
         } catch (error) {
