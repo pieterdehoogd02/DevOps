@@ -208,7 +208,7 @@ export default function Users(props: any) {
 function AssignTeam(props: any) {
 
     const [chosenTeam, chooseTeam] : any = useState(null)
-    const [groupsChosen, setGroupsChosen] = useState([])
+    const [groupsChosen, setGroupsChosen]  = useState<boolean[]>([]);
     const prevChosenTeam = useRef(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
     const [groups, setGroups] = useState([])
@@ -231,9 +231,11 @@ function AssignTeam(props: any) {
     }
 
     const setGroupChosenAsync = async (idx: number) => {
-        setGroupsChosen((prevState : any) => 
+        console.log("in setGroupsChosenAsync")
+        setGroupsChosenAsync((prevState : any) => 
             prevState.map((elem : boolean, idx2 : number) => idx === idx2 ? !elem : elem)
         );
+        console.log("after setGroupsChosenAsync")
     }
 
     useEffect(() => {
@@ -281,9 +283,7 @@ function AssignTeam(props: any) {
             console.log("groups = " + JSON.stringify(fetchedGroups))
             
             await setGroupsAsync(fetchedGroups.groups)
-            for(let group of fetchedGroups){
-                setGroupsChosenAsync((prevGroups: any) => [...prevGroups, false])
-            }
+            setGroupsChosen(new Array(fetchedGroups.groups.length).fill(false));
         } catch(err) {
             console.error("Error: " + JSON.stringify(err))
         }
@@ -423,6 +423,7 @@ function AssignRole(props: any) {
                                 return <div className="bg-transparent w-full h-[2/3] text-white flex flex-row justify-center items-center" 
                                     onClick={async () => {await chooseRoleAsync(elem); setClickDropdownAsync(!clickedDropdown)}}>
                                         {elem.name}
+
                                     </div>
                             })
                         }
