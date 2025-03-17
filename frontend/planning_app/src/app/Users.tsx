@@ -327,22 +327,23 @@ function AssignTeam(props: any) {
             for(let i = 0; i < groups.length ; i++){
                 let teamName = ""
                 console.log(`groups[${i}] = ` + JSON.stringify(groups[i]))
-                if(groupsChosen[i] === true) teamName = groups[i].name
-                let response = await fetch(`${authServer}/assign-team`, {
-                    method: 'POST',
-                    headers: { 
-                        "Authorization": `Bearer ${props.token}`,
-                        "Content-Type": "application/json",
-                    }, 
-                    body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
-                });
+                if(groupsChosen[i] === true) {
+                    teamName = groups[i].name
+                    let response = await fetch(`${authServer}/assign-team`, {
+                        method: 'POST',
+                        headers: { 
+                            "Authorization": `Bearer ${props.token}`,
+                            "Content-Type": "application/json",
+                        }, 
+                        body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
+                    });
 
-                if(!response.ok){
-                    console.log("Could not assign team to user: " + response.status)
-                } else {
-                    console.log("added user to group")
+                    if(!response.ok){
+                        console.log("Could not assign team to user: " + response.status)
+                    } else {
+                        console.log("added user to group")
+                    }
                 }
-
             }
         }catch(err){
             console.error("Error: " + JSON.stringify(err))
