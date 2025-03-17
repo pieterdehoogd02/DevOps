@@ -169,6 +169,7 @@ export default function Users(props: any) {
                         <div className="flex h-[40px] w-[95%] bg-green-700 text-base text-white font-sans 
                             rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
                             onClick={() => {
+                                console.log("User to change = " + JSON.stringify(props.elem))
                                 props.prevUserChanged.current = props.elem; 
                                 props.setUserToChangeAsync(props.elem)
                                 props.setAssignRoleAsync(true)
@@ -176,6 +177,7 @@ export default function Users(props: any) {
                         <div className="flex h-[40px] w-[95%] bg-orange-600 text-base text-white font-sans 
                         rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
                         onClick={() => {
+                            console.log("User to change = " + JSON.stringify(props.elem))
                             props.prevUserChanged.current = props.elem; 
                             props.setUserToChangeAsync(props.elem)
                             props.setAssignTeamAsync(true)
@@ -331,7 +333,7 @@ function AssignTeam(props: any) {
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.id, teamName: teamName })
+                    body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
                 });
 
                 if(!response.ok){
@@ -352,7 +354,7 @@ function AssignTeam(props: any) {
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
-                    Assign {props.userToChange.username} to team..
+                    Assign {props.userToChange.user.username} to team..
                 </div>
             </div>
 
