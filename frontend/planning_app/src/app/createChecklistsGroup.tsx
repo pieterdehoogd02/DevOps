@@ -25,7 +25,13 @@ export default function Checklists({ token }: { token: string }) {
       });
   
       const data = await response.json();
-      const filteredChecklists = data.filter((item: any) => item.status?.S);
+
+      // ✅ Exclude submitted checklists
+      const filteredChecklists = data.filter((item: any) => 
+        item.status?.S && 
+        (!item.submitted || item.submitted.BOOL === false)
+      );
+
       setChecklists(filteredChecklists); // ✅ Update the checklists dynamically
     } catch (error) {
       console.error("Error fetching checklists:", error);
