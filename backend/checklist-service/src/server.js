@@ -259,6 +259,70 @@ app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), asy
     }
 });
 
+// ✅ PO: Submit all "Done" checklists for their team 
+app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
+    const { assignedTeam } = req.params;
+
+    try {
+        // Fetch all checklists that: 1) belong to the specified `assignedTeam`, 2) have the status `Done`, 
+        // 3) do not have the `submitted` attribute (they haven't been submitted yet)
+        const result = await dynamoDB.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            ExpressionAttributeNames: {"#s": "status"},
+            ExpressionAttributeValues: {
+                ":team": { S: assignedTeam },
+                ":done": { S: "Done" }
+            }
+        }));
+
+        const checklists = result.Items;
+
+        if (!checklists || checklists.length === 0) {
+            return res.status(400).json({ error: "No completed checklists available for submission." });
+        }
+
+        // ✅ Mark each checklist as "submitted"
+        for (const checklist of checklists) {
+            await dynamoDB.send(new UpdateItemCommand({
+                TableName: TABLE_NAME,
+                Key: {
+                    id: checklist.id,
+                    assignedTeam: checklist.assignedTeam
+                },
+                // Add `submitted` attribute & update timestamp
+                UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
+                ExpressionAttributeValues: {
+                    ":submitted": { BOOL: true },
+                    ":updatedAt": { S: new Date().toISOString() }
+                }
+            }));
+        }
+
+        res.json({ message: "All 'Done' checklists submitted successfully!", submittedChecklists: checklists });
+    } catch (error) {
+        console.error("❌ Error submitting checklists:", error);
+        res.status(500).json({ error: "Failed to submit checklists", details: error.message });
+    }
+});
+
+// ✅ CIO: View all submitted checklists
+app.get('/submissions', keycloak.protect('realm:CIO'), async (req, res) => {
+    try {
+        // Fetch all checklists that: 1) have the `submitted` attribute, and 2) `submitted` is set to `true`
+        const result = await dynamoDB.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: "attribute_exists(submitted) AND submitted = :submitted",
+            ExpressionAttributeValues: { ":submitted": { BOOL: true } }
+        }));
+
+        res.json(result.Items || []); // Return the submitted checklists
+    } catch (error) {
+        console.error("❌ Error fetching submitted checklists:", error);
+        res.status(500).json({ error: "Failed to fetch submissions", details: error.message });
+    }
+});
+
 // Start HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
     console.log(`✅ Checklist Service is running on HTTPS at https://checklist.planmeet.net:${PORT}`);
