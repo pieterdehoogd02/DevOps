@@ -103,7 +103,7 @@ export default function Checklists({ token }: { token: string }) {
 
       {/* Render Checklist Columns (For Selected Team) */}
       <div className="flex flex-row justify-between items-center">
-        {["Todo", "In progress", "In review", "Done", "Backlog"].map((title) => (
+        {[ "Backlog", "Todo", "In progress", "In review", "Done" ].map((title) => (
           <Checklist
             key={title}
             title={title}
@@ -288,6 +288,19 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       console.error("Error modifying checklist:", error);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element | null; // Type assertion to Element
+  
+      if (target && !target.closest(".menu-container")) {
+        setMenuOpen({}); // Close the menu
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);  
   
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
@@ -310,7 +323,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
             {/* Three-dot menu for CIOs and POs */}
             {(userRole === "CIO" || userRole === "PO") && (
-              <div className="absolute top-2 right-2">
+              <div className="absolute top-2 right-2 menu-container">
                 <button 
                   className="text-gray-600" 
                   onClick={() => setMenuOpen({ ...menuOpen, [checklist.id.S]: !menuOpen[checklist.id.S] })}
@@ -318,7 +331,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                   ⋮
                 </button>
                 {menuOpen[checklist.id.S] && (
-                  <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2">
+                  <div className="absolute right-0 mt-1 bg-white shadow-md rounded-md p-2 z-50">
                     {userRole === "CIO" && (
                       <>
                         <button 
@@ -417,11 +430,11 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
               className="border p-2 w-full"
             >
               <option value="">Select Status</option>
+              <option value="Backlog">Backlog</option>
               <option value="Todo">Todo</option>
               <option value="In progress">In Progress</option>
               <option value="In review">In Review</option>
               <option value="Done">Done</option>
-              <option value="Backlog">Backlog</option>
             </select>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowUpdateModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
