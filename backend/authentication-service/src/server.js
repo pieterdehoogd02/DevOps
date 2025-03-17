@@ -533,6 +533,9 @@ async function initializeApp() {
             
             console.log("Role includes CIO moving on")
 
+            console.log("body = " + JSON.stringify(req.body))
+            console.log("body = " + req.body)
+
             const { userId, teamName } = req.body;
             if (!userId || !teamName) {
                 return res.status(400).json({ error: "User ID and Team Name are required" });

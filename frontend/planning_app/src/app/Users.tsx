@@ -230,7 +230,7 @@ function AssignTeam(props: any) {
     const [groupsChosen, setGroupsChosen]  = useState<boolean[]>([]);
     const prevChosenTeam = useRef(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
-    const [groups, setGroups] = useState([])
+    const [groups, setGroups] = useState<any[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const dropdownRef2 = useRef<HTMLDivElement>(null);
 
@@ -324,10 +324,7 @@ function AssignTeam(props: any) {
             console.log("In assign teams")
             for(let i = 0; i < groups.length ; i++){
                 let teamName = ""
-                if(groupsChosen[i] === true){
-                    teamName = groups[i]
-                }
-
+                if(groupsChosen[i] === true) teamName = groups[i].name
                 let response = await fetch(`${authServer}/assign-team`, {
                     method: 'POST',
                     headers: { 
