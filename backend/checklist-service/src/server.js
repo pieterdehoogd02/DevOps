@@ -291,10 +291,10 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                     assignedTeam: checklist.assignedTeam
                 },
                 // Add `submitted` attribute & update timestamp
-                UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
+                UpdateExpression: "SET submitted = :submitted, submittedAt = :submittedAt",
                 ExpressionAttributeValues: {
                     ":submitted": { BOOL: true },
-                    ":updatedAt": { S: new Date().toISOString() }
+                    ":submittedAt": { S: new Date().toISOString() }
                 }
             }));
         }
