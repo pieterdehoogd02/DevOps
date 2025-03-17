@@ -742,8 +742,16 @@ async function initializeApp() {
                 }
             );
 
+            const clientsResponse = await axios.get(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
+                { headers: { "Authorization": `Bearer ${adminToken}` } }
+            );
+            const client = clientsResponse.data.find(client => client.clientId === keycloakClientID);
+            if (!client) throw new Error("Client not found!");
+            const keycloakClientUUID = client.id;
+
             await axios.post(
-                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientID}`,
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientUUID}`,
                 [role], // Array of role objects
                 {
                     headers: { "Authorization": `Bearer ${adminToken}` },
