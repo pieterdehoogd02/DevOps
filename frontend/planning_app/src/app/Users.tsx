@@ -570,7 +570,7 @@ function AssignRole(props: any) {
                     if(!response.ok){
                         console.log("Could not assign team to user: " + response.status)
                     } else {
-                        console.log("added user to group")
+                        console.log("added user to role")
                     }
                 }
             }

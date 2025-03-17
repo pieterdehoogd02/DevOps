@@ -734,11 +734,20 @@ async function initializeApp() {
             
             console.log("Adding to role = " + JSON.stringify(role))
 
-            await axios.put(
-                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role.id}`,
-                {},
+            await axios.post(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
+                [role], // Array of role objects
                 { headers: { "Authorization": `Bearer ${adminToken}` },
                   httpsAgent: agent
+                }
+            );
+
+            await axios.post(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientID}`,
+                [role], // Array of role objects
+                {
+                    headers: { "Authorization": `Bearer ${adminToken}` },
+                    httpsAgent: agent
                 }
             );
             
