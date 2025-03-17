@@ -333,7 +333,7 @@ function AssignTeam(props: any) {
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.id, teamName: teamName })
+                    body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
                 });
 
                 if(!response.ok){
