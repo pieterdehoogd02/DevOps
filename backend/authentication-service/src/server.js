@@ -580,10 +580,12 @@ async function initializeApp() {
             console.log("Adding to team = " + JSON.stringify(team))
 
             await axios.put(
-                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
-                { headers: { Authorization: `Bearer ${adminToken}` },
-                  httpsAgent: agent
-                }
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
+              {}, // Empty body as PUT to this endpoint doesn't require data
+              {
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent
+              }
             )
 
             console.log(`✅ User ${userId} assigned to team ${teamName}`)
