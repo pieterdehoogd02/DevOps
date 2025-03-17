@@ -227,6 +227,7 @@ function AssignTeam(props: any) {
 
     async function fetchGroups() {
         try{
+            console.log("In fetch groups")
             let response = await fetch(`${authServer}/groups`, {
                 method: 'GET',
                 headers: { 
@@ -247,6 +248,7 @@ function AssignTeam(props: any) {
     
     async function assignTeam() {
         try{
+            console.log("In assign teams")
             let response = await fetch(`${authServer}/assign-team`, {
                 method: 'POST',
                 headers: { 
