@@ -41,18 +41,22 @@ export default function ViewSubmissions({ token }: { token: string}) {
                 ) : (
                     <table className="w-full text-white border-collapse">
                         <thead>
-                            <tr className="border-b">
-                                <th className="p-2 text-left">Title</th>
-                                <th className="p-2 text-left">Team</th>
-                                <th className="p-2 text-left">Submitted At</th>
+                            <tr className="border-b bg-gray-800">
+                                <th className="p-3 text-left">Title</th>
+                                <th className="p-3 text-left">Description</th> {/* ✅ Added Description Column */}
+                                <th className="p-3 text-left">Team</th>
+                                <th className="p-3 text-left">Submitted At</th>
                             </tr>
                         </thead>
                         <tbody>
                             {submissions.map((submission, index) => (
-                                <tr key={index} className="border-b">
-                                <td className="p-2">{submission.title?.S}</td>
-                                <td className="p-2">{submission.assignedTeam?.S}</td>
-                                <td className="p-2">{submission.submittedAt?.S}</td>
+                                <tr key={index} className="border-b hover:bg-gray-700">
+                                    <td className="p-3">{submission.title?.S || "Untitled"}</td>
+                                    <td className="p-3 text-gray-300">
+                                        {submission.description?.S || "No description provided"} {/* ✅ Display Description */}
+                                    </td>
+                                    <td className="p-3">{submission.assignedTeam?.S}</td>
+                                    <td className="p-3">{submission.submittedAt?.S}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -294,7 +294,7 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                 UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
                 ExpressionAttributeValues: {
                     ":submitted": { BOOL: true },
-                    ":updatedAt": { S: new Date().toISOString() }
+                    ":submittedAt": { S: new Date().toISOString() }
                 }
             }));
         }
