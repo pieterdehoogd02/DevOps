@@ -327,8 +327,9 @@ function AssignTeam(props: any) {
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
-                                className="w-[60%] h-[2/3] flex justify-center items-center bg-transparent border-y-2 border-black 
-                                hover:bg-slate-600 cursor-pointer"
+                                className={`w-full h-[2/3] flex justify-center items-center bg-transparent border-y-2 border-black 
+                                hover:bg-slate-600 cursor-pointer 
+                                ${idx === 0 ? "rounded-t-md" : idx === groups.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                                 onClick={async () => {
                                     await chooseTeamAsync(elem);
                                     await setClickDropdownAsync(false);
