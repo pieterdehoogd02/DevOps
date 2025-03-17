@@ -622,7 +622,7 @@ function AssignRole(props: any) {
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-2xl
                      text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
-                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignTeam(false); }}>
+                    onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignRole(false); }}>
                     Apply changes
                 </div>
             </div>
