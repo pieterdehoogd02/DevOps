@@ -741,6 +741,15 @@ async function initializeApp() {
                   httpsAgent: agent
                 }
             );
+
+            await axios.post(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientID}`,
+                [role], // Array of role objects
+                {
+                    headers: { "Authorization": `Bearer ${adminToken}` },
+                    httpsAgent: agent
+                }
+            );
             
             console.log(`✅ User ${userId} assigned to team ${roleName}`)
 
