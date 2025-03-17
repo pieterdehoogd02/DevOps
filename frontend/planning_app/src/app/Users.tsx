@@ -226,7 +226,9 @@ function AssignTeam(props: any) {
     }
 
     useEffect(() => {
-
+        console.log("user to change = " + JSON.stringify(props.userToChange))
+        console.log("user to change = " + JSON.stringify(props.userToChange))
+        console.log("user to change = " + JSON.stringify(props.userToChange))
     }, [props.userToChange])
 
     useEffect(() => {
