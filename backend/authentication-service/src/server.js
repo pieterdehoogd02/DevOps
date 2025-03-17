@@ -597,6 +597,84 @@ async function initializeApp() {
     }); 
 
     // ✅ Assign a user to a team (CIO only)
+    app.post('/delete-group/', keycloak.protect('realm:CIO'), async (req, res) => {
+        try {
+
+            console.log("======================================") 
+            console.log("            IN DELETE GROUPS          ")
+            console.log("======================================") 
+
+            const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            if (!roles.includes("CIO")) {
+                return res.status(403).json({ error: "Access Denied" });
+            }
+            
+            console.log("Role includes CIO moving on")
+
+            console.log("body = " + JSON.stringify(req.body))
+            console.log("body = " + req.body)
+
+            const { userId, groupName } = req.body;
+            if (!userId || !groupName) {
+                return res.status(400).json({ error: "User ID and group Name are required" });
+            }
+            
+            console.log("Checked userId and groupName exist")
+
+            const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+            const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+            const tokenResponse = await axios.post(
+                `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+                new URLSearchParams({
+                    grant_type: "client_credentials",
+                    client_id: keycloakClientID,
+                    client_secret: clientSecret,
+                }),
+                { 
+                  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                  httpsAgent: agent  // ✅ Use HTTPS agent }
+                }
+            );
+
+            const adminToken = tokenResponse.data.access_token;
+
+            console.log("Got token")
+
+            // Step 3: Get Users Assigned to This Client
+            const groupsResponse = await axios.get(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
+                { 
+                  headers: { Authorization: `Bearer ${adminToken}` },
+                  httpsAgent: agent
+                }
+            );
+
+            console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
+
+            const group = groupsResponse.data.find(group => group.name === groupName);
+            if (!group) return res.status(404).json({ error: "group not found" });
+            
+            console.log("Deleting from group = " + JSON.stringify(group))
+
+            await axios.delete(
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${group.id}`,
+              {}, // Empty body as PUT to this endpoint doesn't require data
+              {
+                headers: { Authorization: `Bearer ${adminToken}` },
+                httpsAgent: agent
+              }
+            )
+
+            console.log(`✅ User ${userId} deleted from group ${groupName}`)
+
+            res.json({ message: `✅ User ${userId} deleted from group ${groupName}` });
+        } catch (error) {
+            res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
+        }
+    }); 
+
+    // ✅ Assign a user to a team (CIO only)
     app.post('/assign-role/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
@@ -659,6 +737,7 @@ async function initializeApp() {
 
             await axios.put(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role.id}`,
+                {},
                 { headers: { "Authorization": `Bearer ${adminToken}` },
                   httpsAgent: agent
                 }

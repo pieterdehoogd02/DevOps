@@ -112,7 +112,7 @@ export default function Users(props: any) {
                                     }
                                     if(!user_cio) return <div></div>;
                                     return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
-                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync}></UserData>
+                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
                         </div>
@@ -129,7 +129,7 @@ export default function Users(props: any) {
                                     }
                                     if(!user_po) return <div></div>;
                                     return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
-                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync}></UserData>
+                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
                         </div>
@@ -146,7 +146,7 @@ export default function Users(props: any) {
                                     }
                                     if(!user_dev) return <div></div>;
                                     return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
-                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync}></UserData>
+                                        setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
                         </div>
@@ -158,6 +158,52 @@ export default function Users(props: any) {
     );
 
     function UserData(props : any) {
+
+        // const [roleToDelete, setRoleToDelete] = useState(null) 
+        // const [groupToDelete, setGroupToDelete] = useState(null) 
+        
+        async function deleteGroup(group : any) {
+            try {
+                console.log("In delete group")
+
+                let response = await fetch(`${authServer}/delete-group`, {
+                    method: 'POST',
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json",
+                    }, 
+                    body: JSON.stringify({ userId: props.userToChange.user.id, groupName: group })
+                });
+
+                if(!response.ok) {
+                    console.error("Could not delete role")
+                }
+
+                console.log("Deleted group = " + group)
+            } catch (error) {
+                console.error("Error: " + JSON.stringify(error))
+            }
+        }
+
+        async function deleteRole(role: any) {
+            console.log("In delete role")
+
+            let response = await fetch(`${authServer}/delete-role`, {
+                method: 'POST',
+                headers: { 
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "application/json",
+                }, 
+                body: JSON.stringify({ userId: props.userToChange.user.id, role: role })
+            });
+
+            if(!response.ok) {
+                console.error("Could not delete role")
+            }
+        }
+
+
+
         return (
             <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
@@ -192,7 +238,8 @@ export default function Users(props: any) {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
                                             <div className="flex flex-row items-center">
                                                 <div className="text-sm indent-[20px]">{role.name}</div>
-                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
+                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
+                                                    onClick={async () => {await deleteRole(role); await props.gettingAllUserData()}}>
                                                     <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
                                                 </div>
                                             </div>
@@ -212,7 +259,8 @@ export default function Users(props: any) {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
                                             <div className="flex flex-row items-center">
                                                 <div className="text-sm indent-[20px]">{group.name}</div>
-                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
+                                                <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
+                                                    onClick={async () => {await deleteGroup(group) ; await props.gettingAllUserData()}}>
                                                     <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
                                                 </div>
                                             </div>
