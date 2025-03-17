@@ -179,7 +179,7 @@ export default function Users(props: any) {
                     console.error("Could not delete role")
                 }
 
-                console.log("Deleted group = " + group)
+                console.log("Deleted group = " + group.name)
             } catch (error) {
                 console.error("Error: " + JSON.stringify(error))
             }
@@ -201,7 +201,7 @@ export default function Users(props: any) {
                 if(!response.ok) {
                     console.error("Could not delete role")
                 } else {
-                    console.log("Deleted role = " + role)
+                    console.log("Deleted role = " + role.name)
                 }
             }catch(error) {
                 console.error("Error: " + error)
