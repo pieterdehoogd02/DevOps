@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Checklists from "./createChecklistsGroup";
 import ViewSubmissions from "./ViewSubmissions";
+import SubmittedForms from "./SubmittedForms";
 import Users from "./Users";
 
 import { jwtDecode } from "jwt-decode";
@@ -100,6 +101,8 @@ function Dashboard(props: any) {
   const [showUsers, setShowUsers] = useState(false)
 
   const [showSubmissions, setShowSubmissions] = useState(false);
+
+  const [showSubmittedForms, setShowSubmittedForms] = useState(false);
 
   // once we get the token update roles
   useEffect(() => {
@@ -229,6 +232,21 @@ function Dashboard(props: any) {
           </div>
         )}
 
+        {roles.includes("PO") && (
+          <div
+            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {
+              console.log("📌 Viewing Submitted Forms");
+              setShowSubmittedForms(true);
+              setShowChecklists(false);
+              setShowUsers(false);
+              setShowSubmissions(false);
+            }}
+          >
+            Submitted Forms
+          </div>
+        )}
+
         {roles.includes("CIO") && (
           <div 
             className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
@@ -248,6 +266,7 @@ function Dashboard(props: any) {
       {showChecklists && <Checklists token={props.token}></Checklists>}
       {showUsers && <Users users={members} token={props.token}></Users>}
       {showSubmissions && <ViewSubmissions token={props.token}></ViewSubmissions>}
+      {showSubmittedForms && <SubmittedForms token={props.token}></SubmittedForms>}
     </div>
   );
 }
