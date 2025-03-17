@@ -172,7 +172,7 @@ export default function Users(props: any) {
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.user.id, groupName: group })
+                    body: JSON.stringify({ userId: props.userToChange.user.id, group: group })
                 });
 
                 if(!response.ok) {

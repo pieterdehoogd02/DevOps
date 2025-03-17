@@ -614,12 +614,12 @@ async function initializeApp() {
             console.log("body = " + JSON.stringify(req.body))
             console.log("body = " + req.body)
 
-            const { userId, groupName } = req.body;
+            const { userId, group1 } = req.body;
             if (!userId || !groupName) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
-            console.log("Checked userId and groupName exist")
+            console.log("Checked userId and group1 exist")
 
             const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
             const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
@@ -652,7 +652,7 @@ async function initializeApp() {
 
             console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
 
-            const group = groupsResponse.data.find(group => group.name === groupName);
+            const group = groupsResponse.data.find(group => group.name === group1);
             if (!group) return res.status(404).json({ error: "group not found" });
             
             console.log("Deleting from group = " + JSON.stringify(group))
@@ -666,9 +666,9 @@ async function initializeApp() {
               }
             )
 
-            console.log(`✅ User ${userId} deleted from group ${groupName}`)
+            console.log(`✅ User ${userId} deleted from group ${group1}`)
 
-            res.json({ message: `✅ User ${userId} deleted from group ${groupName}` });
+            res.json({ message: `✅ User ${userId} deleted from group ${group1}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
         }
@@ -692,8 +692,8 @@ async function initializeApp() {
             console.log("body = " + JSON.stringify(req.body))
             console.log("body = " + req.body)
 
-            const { userId, groupName } = req.body;
-            if (!userId || !groupName) {
+            const { userId, group1 } = req.body;
+            if (!userId || !group1) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
@@ -730,7 +730,7 @@ async function initializeApp() {
 
             console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
 
-            const group = groupsResponse.data.find(group => group.name === groupName);
+            const group = groupsResponse.data.find(group => group.name === group1.name);
             if (!group) return res.status(404).json({ error: "group not found" });
             
             console.log("Deleting from group = " + JSON.stringify(group))
@@ -744,9 +744,9 @@ async function initializeApp() {
               }
             )
 
-            console.log(`✅ User ${userId} deleted from group ${groupName}`)
+            console.log(`✅ User ${userId} deleted from group ${group1.name}`)
 
-            res.json({ message: `✅ User ${userId} deleted from group ${groupName}` });
+            res.json({ message: `✅ User ${userId} deleted from group ${group1.name}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
         }
