@@ -172,13 +172,13 @@ function Dashboard(props: any) {
     }
   }
 
-  function getRoles (token : any) {
-    // Ensure we extract roles correctly from `realm_access`
-    const roles = token?.realm_access?.roles || [];
-    console.log("Extracted roles from token:", roles); // Debugging
+  // function getRoles (token : any) {
+  //   // Ensure we extract roles correctly from `realm_access`
+  //   const roles = token?.realm_access?.roles || [];
+  //   console.log("Extracted roles from token:", roles); // Debugging
 
-    return roles;
-  }
+  //   return roles;
+  // }
 
   console.log("Roles before rendering sidebar: ", roles); // Debugging
 
