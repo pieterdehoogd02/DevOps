@@ -306,7 +306,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     if (!assignedTeam) return;
 
     try {
-      const response = await fetch(`${API_URL}/submissions/${assignedTeam}`, {
+      const response = await fetch(`${API_URL}/submission/${assignedTeam}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -323,22 +323,22 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     }
   };
 
-  const fetchSubmittedChecklists = async () => {
-    try {
-      const response = await fetch(`${API_URL}/submissions`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  // const fetchSubmittedChecklists = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/submissions`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        setChecklists(data);
-      } else {
-        console.error("❌ Error fetching submitted checklists:", response.statusText);
-      }
-    } catch (error) {
-      console.error("❌ Failed to fetch submitted checklists:", error);
-    } 
-  }
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setChecklists(data);
+  //     } else {
+  //       console.error("❌ Error fetching submitted checklists:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Failed to fetch submitted checklists:", error);
+  //   } 
+  // }
   
   return (
     <div className="flex flex-col top-[2%] w-[19%] min-h-[96%] bg-black rounded-xl bg-opacity-30 p-3">
@@ -466,14 +466,14 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         </button>
       )}
 
-      {userRole === "CIO" && (
+      {/* {userRole === "CIO" && (
         <button 
           className="mt-2 p-2 w-full bg-green-500 text-white rounded hover:bg-green-600"
           onClick={fetchSubmittedChecklists}
         >
           View Submitted
         </button>
-      )}
+      )} */}
 
       {/* Update Status Modal (for PO) */}
       {showUpdateModal && (
