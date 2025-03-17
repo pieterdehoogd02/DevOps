@@ -111,7 +111,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_cio) return <div></div>;
-                                    return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -128,7 +128,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_po) return <div></div>;
-                                    return <UserData elem={elem} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -186,19 +186,25 @@ export default function Users(props: any) {
         }
 
         async function deleteRole(role: any) {
-            console.log("In delete role")
+            try {
+                console.log("In delete role")
 
-            let response = await fetch(`${authServer}/delete-role`, {
-                method: 'POST',
-                headers: { 
-                    "Authorization": `Bearer ${props.token}`,
-                    "Content-Type": "application/json",
-                }, 
-                body: JSON.stringify({ userId: props.userToChange.user.id, role: role })
-            });
+                let response = await fetch(`${authServer}/delete-role`, {
+                    method: 'POST',
+                    headers: { 
+                        "Authorization": `Bearer ${props.token}`,
+                        "Content-Type": "application/json",
+                    }, 
+                    body: JSON.stringify({ userId: props.userToChange.user.id, role: role })
+                });
 
-            if(!response.ok) {
-                console.error("Could not delete role")
+                if(!response.ok) {
+                    console.error("Could not delete role")
+                } else {
+                    console.log("Deleted role = " + role)
+                }
+            }catch(error) {
+                console.error("Error: " + error)
             }
         }
 
