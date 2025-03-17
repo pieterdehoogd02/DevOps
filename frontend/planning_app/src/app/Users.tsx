@@ -235,7 +235,7 @@ export default function Users(props: any) {
                     </div>
                     <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
-                        <div className="flex h-[40px] w-[95%] bg-green-700 text-base text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-green-700 text-lg text-white font-sans 
                             rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
                             onClick={() => {
                                 console.log("User to change = " + JSON.stringify(props.elem))
@@ -243,7 +243,7 @@ export default function Users(props: any) {
                                 props.setUserToChangeAsync(props.elem)
                                 props.setAssignRoleAsync(true)
                             }}>Assign role</div>
-                        <div className="flex h-[40px] w-[95%] bg-orange-600 text-base text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-orange-600 text-lg text-white font-sans 
                         rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
                         onClick={() => {
                             console.log("User to change = " + JSON.stringify(props.elem))
@@ -528,18 +528,23 @@ function AssignRole(props: any) {
 
 
     async function fetchRoles() {
-        let response = await fetch(`${authServer}/roles`, {
-            method: 'GET',
-            headers: { 
-                "Authorization": `Bearer ${props.token}`,
-                "Content-Type": "application/json"
-            }, 
-        });
+        try {
+            let response = await fetch(`${authServer}/roles`, {
+                method: 'GET',
+                headers: { 
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "application/json"
+                }, 
+            });
 
-        let fetchedRoles = await response.json()
-        console.log("roles = " + JSON.stringify(fetchedRoles))
-        
-        await setRolesAsync(fetchedRoles.roles)
+            let fetchedRoles = await response.json()
+            console.log("roles = " + JSON.stringify(fetchedRoles))
+            
+            await setRolesAsync(fetchedRoles.roles)
+            setRolesChosen(new Array(fetchedRoles.roles.length).fill(false));
+        } catch(err) {
+            console.log("Error fetching roles " + err)
+        }
     }
 
     async function assignRoles() {
