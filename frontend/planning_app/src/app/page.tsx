@@ -141,7 +141,7 @@ function Dashboard(props: any) {
   //   return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
   // }
 
-    function getRoles (token : any) {
+  function getRoles (token : any) {
     // Ensure we extract roles correctly from `realm_access`
     const roles = token?.realm_access?.roles || [];
     console.log("Extracted roles from token:", roles); // Debugging
@@ -213,10 +213,15 @@ function Dashboard(props: any) {
         </div>
 
         {/* Sidebar Menu Items */}
-        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-          onClick={async () => {await setShowUsersAsync(); await setShowChecklistsAsync();}}>Backlog</div>
-        {/* <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-          onClick={() => {}}>Roles</div> */}
+        <div 
+          className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          onClick={ () => {
+            setShowChecklists(true);
+            setShowUsers(false);
+            setShowSubmissions(false);
+          }}>
+            Dashboard
+        </div>
 
         {/* New section for CIO to view submissions */}
         {roles.includes("CIO") && (
@@ -230,6 +235,20 @@ function Dashboard(props: any) {
             }}
           >
             View Submissions
+          </div>
+        )}
+
+        {roles.includes("CIO") && (
+          <div 
+            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {
+              // setShowNotifications(true);
+              // setShowChecklists(false);
+              setShowUsers(false);
+              setShowSubmissions(false);
+            }}
+          >
+            Notifications
           </div>
         )}
       </div>
