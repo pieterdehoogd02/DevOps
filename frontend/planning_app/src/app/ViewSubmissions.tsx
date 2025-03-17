@@ -56,7 +56,7 @@ export default function ViewSubmissions({ token }: { token: string}) {
                                         {submission.description?.S || "No description provided"} {/* ✅ Display Description */}
                                     </td>
                                     <td className="p-3">{submission.assignedTeam?.S}</td>
-                                    <td className="p-3">{submission.submittedAt?.S}</td>
+                                    <td className="p-3">{submission.updatedAt?.S}</td>
                                 </tr>
                             ))}
                         </tbody>

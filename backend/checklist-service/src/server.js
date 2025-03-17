@@ -264,14 +264,11 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     const { assignedTeam } = req.params;
 
     try {
-        console.log("Received Submission Request for Team:", assignedTeam);
-
         // Fetch all checklists that: 1) belong to the specified `assignedTeam`, 2) have the status `Done`, 
         // 3) do not have the `submitted` attribute (they haven't been submitted yet)
-        const result = await dynamoDB.send(new QueryCommand({
+        const result = await dynamoDB.send(new ScanCommand({
             TableName: TABLE_NAME,
-            KeyConditionExpression: "assignedTeam = :team",
-            FilterExpression: "#s = :done AND attribute_not_exists(submitted)",
+            FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
             ExpressionAttributeNames: {"#s": "status"},
             ExpressionAttributeValues: {
                 ":team": { S: assignedTeam },
@@ -285,9 +282,7 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
             return res.status(400).json({ error: "No completed checklists available for submission." });
         }
 
-        // ✅ Mark each checklist as "submitted" & add "submittedAt" timestamp
-        const submittedAtTimestamp = new Date().toISOString();
-
+        // ✅ Mark each checklist as "submitted"
         for (const checklist of checklists) {
             await dynamoDB.send(new UpdateItemCommand({
                 TableName: TABLE_NAME,
@@ -295,15 +290,15 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                     id: checklist.id,
                     assignedTeam: checklist.assignedTeam
                 },
-                // Add `submitted` attribute & update `submittedAt` timestamp
-                UpdateExpression: "SET submitted = :submitted, submittedAt = :submittedAt, updatedAt = :updatedAt",
+                // Add `submitted` attribute & update timestamp
+                UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
                 ExpressionAttributeValues: {
                     ":submitted": { BOOL: true },
-                    ":submittedAt": { S: submittedAtTimestamp },
-                    ":updatedAt": { S: submittedAtTimestamp }
+                    ":updatedAt": { S: new Date().toISOString() }
                 }
             }));
         }
+
         res.json({ message: "All 'Done' checklists submitted successfully!", submittedChecklists: checklists });
     } catch (error) {
         console.error("❌ Error submitting checklists:", error);
