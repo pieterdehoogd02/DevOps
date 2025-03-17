@@ -264,11 +264,14 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     const { assignedTeam } = req.params;
 
     try {
+        console.log("Received Submission Request for Team:", assignedTeam);
+
         // Fetch all checklists that: 1) belong to the specified `assignedTeam`, 2) have the status `Done`, 
         // 3) do not have the `submitted` attribute (they haven't been submitted yet)
-        const result = await dynamoDB.send(new ScanCommand({
+        const result = await dynamoDB.send(new QueryCommand({
             TableName: TABLE_NAME,
-            FilterExpression: "assignedTeam = :team AND #s = :done AND attribute_not_exists(submitted)",
+            KeyConditionExpression: "assignedTeam = :team",
+            FilterExpression: "#s = :done AND attribute_not_exists(submitted)",
             ExpressionAttributeNames: {"#s": "status"},
             ExpressionAttributeValues: {
                 ":team": { S: assignedTeam },
@@ -301,7 +304,6 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                 }
             }));
         }
-
         res.json({ message: "All 'Done' checklists submitted successfully!", submittedChecklists: checklists });
     } catch (error) {
         console.error("❌ Error submitting checklists:", error);
