@@ -137,8 +137,16 @@ function Dashboard(props: any) {
     setShowUsers(!showUsers)
   }
   
-  function getRoles(token: any) {
-    return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
+  // function getRoles(token: any) {
+  //   return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
+  // }
+
+    function getRoles (token : any) {
+    // Ensure we extract roles correctly from `realm_access`
+    const roles = token?.realm_access?.roles || [];
+    console.log("Extracted roles from token:", roles); // Debugging
+
+    return roles;
   }
 
   async function getProjectMembers() {
@@ -171,14 +179,6 @@ function Dashboard(props: any) {
       return null; // Return null or handle errors appropriately
     }
   }
-
-  // function getRoles (token : any) {
-  //   // Ensure we extract roles correctly from `realm_access`
-  //   const roles = token?.realm_access?.roles || [];
-  //   console.log("Extracted roles from token:", roles); // Debugging
-
-  //   return roles;
-  // }
 
   console.log("Roles before rendering sidebar: ", roles); // Debugging
 
