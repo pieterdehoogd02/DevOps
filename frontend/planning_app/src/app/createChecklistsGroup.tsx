@@ -153,7 +153,11 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
         });
 
         const data = await response.json();
-        const filteredChecklists = data.filter((item: any) => item.status?.S === title);
+        const filteredChecklists = data.filter((item: any) => 
+          item.status?.S === title &&
+          (!item.submitted || item.submitted.BOOL === false) // Exclude submitted items
+        );
+
         setChecklists(filteredChecklists);
       } catch (error) {
         console.error("Error fetching checklists:", error);
@@ -262,7 +266,10 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       });
   
       const data = await response.json();
-      const filteredChecklists = data.filter((item: any) => item.status?.S === title);
+      const filteredChecklists = data.filter((item: any) => 
+        item.status?.S === title && 
+        (!item.submitted || item.submitted.BOOL === false) // Exclude submitted items
+      );
       setChecklists(filteredChecklists);
     } catch (error) {
       console.error("Error fetching checklists:", error);
