@@ -615,7 +615,7 @@ async function initializeApp() {
             console.log("body = " + req.body)
 
             const { userId, group1 } = req.body;
-            if (!userId || !groupName) {
+            if (!userId || !group1) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
