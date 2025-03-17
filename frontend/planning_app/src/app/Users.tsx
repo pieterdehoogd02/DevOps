@@ -160,7 +160,7 @@ export default function Users(props: any) {
             <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="w-[20%] h-[40px] flex flex-row items-center justify-center">
-                        <img className="w-full h-full object-cover" src="./defaultProfile.png"></img>
+                        <img className="flex flex-row justify-center items-center w-full h-full object-cover " src="./defaultProfile.png"></img>
                     </div>
                     <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
@@ -182,7 +182,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
-                    <div className="grid grid-cols-3 gap-x-[10px] gap-y-[5px] text-sm font-medium text-gray-500 overflow-x-auto indent-[5px]">
+                    <div className="grid grid-cols-3 gap-x-[2px] gap-y-[5px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
@@ -200,7 +200,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex w-full flex-col">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Groups</div>
-                    <div className="grid grid-cols-3 gap-x-[10px] gap-y-[5px] text-gray-500 w-full overflow-x-auto indent-[5px]">
+                    <div className="grid grid-cols-3 gap-x-[2px] gap-y-[5px] text-gray-500 w-full overflow-x-auto ml-[5px]">
                         {
                             props.elem.groups.map((group: any) => {
                                 // return <div className=""></div>
@@ -277,13 +277,6 @@ function AssignTeam(props: any) {
         console.log("user to change = " + JSON.stringify(props.userToChange))
         console.log("user to change = " + JSON.stringify(props.userToChange))
     }, [props.userToChange])
-
-    // useEffect(() => {
-    //     if (prevChosenTeam.current !== chosenTeam) {
-    //         prevChosenTeam.current = chosenTeam;
-    //         assignTeam();
-    //     }
-    // }, [chosenTeam])
 
     // Detect clicks outside dropdown
     useEffect(() => {
