@@ -163,6 +163,7 @@ function Dashboard(props: any) {
     }
   }
 
+  console.log("Roles before rendering sidebar: ", roles); // Debugging
 
   return (
     <div className="left-0 top-0 w-full h-full">
