@@ -165,14 +165,23 @@ export default function Users(props: any) {
         async function deleteGroup(group : any) {
             try {
                 console.log("In delete group")
-                console.log("user = " +  JSON.stringify(props.elem) +  "group1 = " + JSON.stringify(group))
+                console.log("user = " +  JSON.stringify(props.elem) +  ", group1 = " + JSON.stringify(group))
+
+                const userId = props.elem?.user?.id; 
+                if (!userId) {
+                    console.error("Error: userId is missing!");
+                    return;
+                } else {
+                    console.log("userId = " + userId)
+                }
+
                 let response = await fetch(`${authServer}/delete-group`, {
                     method: 'POST',
                     headers: { 
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.elem.id, group1: group })
+                    body: JSON.stringify({ userId: props.elem.user.id, group1: group })
                 });
 
                 if(!response.ok) {
@@ -195,7 +204,7 @@ export default function Users(props: any) {
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.elem.id, role: role })
+                    body: JSON.stringify({ userId: props.elem.user.id, role: role })
                 });
 
                 if(!response.ok) {
