@@ -577,18 +577,94 @@ async function initializeApp() {
             const team = groupsResponse.data.find(group => group.name === teamName);
             if (!team) return res.status(404).json({ error: "Team not found" });
             
-            console.log("Adding to team = " + team)
+            console.log("Adding to team = " + JSON.stringify(team))
 
             await axios.put(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
                 { headers: { "Authorization": `Bearer ${adminToken}` },
                   httpsAgent: agent
                 }
-            );
+            )
+
+            console.log(`✅ User ${userId} assigned to team ${teamName}`)
 
             res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
+        }
+    }); 
+
+    // ✅ Assign a user to a team (CIO only)
+    app.post('/assign-role/', keycloak.protect('realm:CIO'), async (req, res) => {
+        try {
+
+            console.log("======================================") 
+            console.log("            IN ASSIGN ROLES           ")
+            console.log("======================================") 
+
+            const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            if (!roles.includes("CIO")) {
+                return res.status(403).json({ error: "Access Denied" });
+            }
+            
+            console.log("Role includes CIO moving on")
+
+            console.log("body = " + JSON.stringify(req.body))
+            console.log("body = " + req.body)
+
+            const { userId, roleName } = req.body;
+            if (!userId || !roleName) {
+                return res.status(400).json({ error: "User ID and role Name are required" });
+            }
+            
+            console.log("Checked userId and roleName exist")
+
+            const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+            const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
+            const tokenResponse = await axios.post(
+                `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
+                new URLSearchParams({
+                    grant_type: "client_credentials",
+                    client_id: keycloakClientID,
+                    client_secret: clientSecret,
+                }),
+                { 
+                  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                  httpsAgent: agent  // ✅ Use HTTPS agent }
+                }
+            );
+
+            const adminToken = tokenResponse.data.access_token;
+
+            console.log("Got token")
+
+            // Step 3: Get Users Assigned to This Client
+            const rolesResponse = await axios.get(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
+                { 
+                  headers: { Authorization: `Bearer ${adminToken}` },
+                  httpsAgent: agent
+                }
+            );
+
+            console.log("After role response with role data = " + JSON.stringify(rolesResponse.data))
+
+            const role = rolesResponse.data.find(role => role.name === roleName);
+            if (!role) return res.status(404).json({ error: "role not found" });
+            
+            console.log("Adding to role = " + role)
+
+            await axios.put(
+                `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role.id}`,
+                { headers: { "Authorization": `Bearer ${adminToken}` },
+                  httpsAgent: agent
+                }
+            );
+
+            res.json({ message: `✅ User ${userId} assigned to role ${roleName}` });
+        } catch (error) {
+            res.status(500).json({ error: "❌ Failed to assign user to role", details: error.response?.data || error.message });
         }
     }); 
 
