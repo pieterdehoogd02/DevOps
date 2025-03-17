@@ -170,7 +170,7 @@ export default function Users(props: any) {
                         onClick={() => {
                             props.prevUserChanged.current = props.elem; 
                             props.setUserToChangeAsync(props.elem)
-                            props.setAssignRoleAsync(true)
+                            props.setAssignTeamAsync(true)
                         }}>Assign team</div>
                     </div>
                 </div>
@@ -340,11 +340,11 @@ function AssignRole(props: any) {
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
             <div className="relative h-[50%] w-[80%] ">
-                {chosenRole === " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" onClick={async () => {
-                    await setClickDropdownAsync(!clickedDropdown)}}>
+                {chosenRole === "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" onClick={async () => {
+                    await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     Select a team...
                 </div>}
-                {chosenRole !== " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" 
+                {chosenRole !== "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     {chosenRole}
                 </div>}
