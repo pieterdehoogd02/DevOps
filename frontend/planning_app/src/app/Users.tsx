@@ -165,14 +165,14 @@ export default function Users(props: any) {
         async function deleteGroup(group : any) {
             try {
                 console.log("In delete group")
-                console.log("user = " +  JSON.stringify(props.userToChange) +  "group1 = " + JSON.stringify(group))
+                console.log("user = " +  JSON.stringify(props.elem) +  "group1 = " + JSON.stringify(group))
                 let response = await fetch(`${authServer}/delete-group`, {
                     method: 'POST',
                     headers: { 
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.user.id, group1: group })
+                    body: JSON.stringify({ userId: props.elem.id, group1: group })
                 });
 
                 if(!response.ok) {
@@ -188,14 +188,14 @@ export default function Users(props: any) {
         async function deleteRole(role: any) {
             try {
                 console.log("In delete role")
-
+                console.log("user = " +  JSON.stringify(props.elem) +  "group1 = " + JSON.stringify(role))
                 let response = await fetch(`${authServer}/delete-role`, {
                     method: 'POST',
                     headers: { 
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.user.id, role: role })
+                    body: JSON.stringify({ userId: props.elem.id, role: role })
                 });
 
                 if(!response.ok) {
