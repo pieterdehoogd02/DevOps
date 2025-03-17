@@ -365,18 +365,19 @@ function AssignTeam(props: any) {
                                 }}
                             >
                                 {!groupsChosen[idx] && <div className="flex w-full h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
-                                {groupsChosen[idx] && <div className="flex w-[80%] h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
-                                {groupsChosen[idx] && <div className="flex w-[20%] h-[20px] flex-row justify-center items-center hover:cursor-pointer" 
+                                {groupsChosen[idx] && <div className="flex w-full h-full flex-row justify-center hover:cursor-pointer" onClick={() => {setGroupChosenAsync(idx)}}>{elem.name}</div>}
+                                {groupsChosen[idx] && <div className="absolute left-[80%] top-0 w-[20%] h-[20px] flex flex-row justify-center items-center hover:cursor-pointer" 
                                     onClick={() => {setGroupChosenAsync(idx); }}>
-                                    <img src="./tick.png" className="w-[20px] h-[20px] object-contain"></img>
+                                    <img src="./tick-green.png" className="w-[20px] h-[20px] object-contain"></img>
                                 </div>}
                             </div>
                         ))}
                     </div>
                 )}
             </div>
-            <div className="h-[10%] w-full flex flex-row justify-center items-center">
-                <div className="w-[1/2] h-full bg-green-700 rounded-xl  text-white text-base font-semibold font-sans" onClick={() => {props.setAssignTeam(false)}}>
+            <div className="h-[20%] w-full flex flex-row justify-center items-center">
+                <div className="w-[60%] h-full bg-green-700 rounded-xl  text-white text-base font-semibold font-sans hover:cursor-pointer" 
+                    onClick={() => {props.setAssignTeam(false)}}>
                     Apply changes
                 </div>
             </div>
