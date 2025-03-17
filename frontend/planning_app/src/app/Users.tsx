@@ -83,10 +83,12 @@ export default function Users(props: any) {
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
             {userToChange !== prevUserChanged && assignTeam && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop">
-                    <AssignTeam userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam}/>
+                    <AssignTeam token={props.token} userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} 
+                        clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam}/>
                 </div>}
             {userToChange !== prevUserChanged && assignRole && <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <AssignRole userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} clickedDropdown={clickedDropdown} setAssignRole={setAssignRole}/>
+                    <AssignRole userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} 
+                        token={props.token} clickedDropdown={clickedDropdown} setAssignRole={setAssignRole}/>
                 </div>}
             {userData.length > 0 && 
                 <div className={`${(assignTeam || assignRole) ? 'shadow-lg' : 'shadow-none'} relative w-full h-full`}>
@@ -170,7 +172,7 @@ export default function Users(props: any) {
                         onClick={() => {
                             props.prevUserChanged.current = props.elem; 
                             props.setUserToChangeAsync(props.elem)
-                            props.setAssignRoleAsync(true)
+                            props.setAssignTeamAsync(true)
                         }}>Assign team</div>
                     </div>
                 </div>
@@ -219,12 +221,15 @@ function AssignTeam(props: any) {
     }
 
     useEffect(() => {
-        prevChosenTeam.current = chosenTeam
-        assignTeam()
+        if (prevChosenTeam.current !== chosenTeam) {
+            prevChosenTeam.current = chosenTeam;
+            assignTeam();
+        }
     }, [chosenTeam])
 
     async function fetchGroups() {
         try{
+            console.log("In fetch groups")
             let response = await fetch(`${authServer}/groups`, {
                 method: 'GET',
                 headers: { 
@@ -245,6 +250,7 @@ function AssignTeam(props: any) {
     
     async function assignTeam() {
         try{
+            console.log("In assign teams")
             let response = await fetch(`${authServer}/assign-team`, {
                 method: 'POST',
                 headers: { 
@@ -336,11 +342,11 @@ function AssignRole(props: any) {
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
             <div className="relative h-[50%] w-[80%] ">
-                {chosenRole === " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" onClick={async () => {
-                    await setClickDropdownAsync(!clickedDropdown)}}>
+                {chosenRole === "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" onClick={async () => {
+                    await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     Select a team...
                 </div>}
-                {chosenRole !== " " && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" 
+                {chosenRole !== "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     {chosenRole}
                 </div>}

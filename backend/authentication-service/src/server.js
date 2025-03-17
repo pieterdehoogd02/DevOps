@@ -219,10 +219,10 @@ async function initializeApp() {
           }
         );
         
-        console.log("roles user = " + rolesUser.data)
+        // console.log("roles user = " + rolesUser.data)
 
         const roles = rolesUser.data;
-        console.log('Roles:', roles);
+        // console.log('Roles:', roles);
 
         return { roles };
       } catch(err) {
@@ -260,7 +260,7 @@ async function initializeApp() {
 
         const adminToken = tokenResponse.data.access_token;
         
-        console.log("before request to get user groups")
+        // console.log("before request to get user groups")
 
         const groupsUser = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}/groups`,
@@ -269,10 +269,10 @@ async function initializeApp() {
           }
         );
         
-        console.log("groups user = " + groupsUser.data)
+        // console.log("groups user = " + groupsUser.data)
 
         const groups = groupsUser.data;
-        console.log('groups:', groups);
+        // console.log('groups:', groups);
 
         return { groups };
       } catch(err) {
@@ -318,7 +318,7 @@ async function initializeApp() {
           }
         );
 
-        console.log("userResponse data = " + JSON.stringify(userResponse.data))
+        // console.log("userResponse data = " + JSON.stringify(userResponse.data))
         
         console.log("before group request")
 
@@ -329,7 +329,7 @@ async function initializeApp() {
           }
         );
         
-        console.log("groups user = " + JSON.stringify(groupsUser.data))
+        // console.log("groups user = " + JSON.stringify(groupsUser.data))
         
         console.log("roles request")
 
@@ -349,15 +349,15 @@ async function initializeApp() {
           }
         );
         
-        console.log("roles user = " + JSON.stringify(rolesUser.data))
+        // console.log("roles user = " + JSON.stringify(rolesUser.data))
         
         const user = userResponse.data;
         const roles = rolesUser.data;
         const groups = groupsUser.data;
 
-        console.log('User Details:', user);
-        console.log('Roles:', roles);
-        console.log('Groups:', groups);
+        // console.log('User Details:', user);
+        // console.log('Roles:', roles);
+        // console.log('Groups:', groups);
 
         return res.json({ "user": user, "roles": roles, "groups": groups});
       } catch(err) {
@@ -397,7 +397,7 @@ async function initializeApp() {
 
           const adminToken = tokenResponse.data.access_token;
 
-          console.log("after keycloak initial request")
+          // console.log("after keycloak initial request")
 
           // Step 3: Get Users Assigned to This Client
           const usersResponse = await axios.get(
@@ -408,7 +408,7 @@ async function initializeApp() {
               }
           );
 
-          console.log("usersResponse = " + JSON.stringify(usersResponse.data))
+          // console.log("usersResponse = " + JSON.stringify(usersResponse.data))
            
           console.log("after getting users from realm")
 
