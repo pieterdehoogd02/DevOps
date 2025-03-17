@@ -354,7 +354,7 @@ function AssignTeam(props: any) {
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
-                    Assign {props.userToChange.username} to team..
+                    Assign {props.userToChange.user.username} to team..
                 </div>
             </div>
 
