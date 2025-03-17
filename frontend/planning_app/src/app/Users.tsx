@@ -564,7 +564,7 @@ function AssignRole(props: any) {
                             "Authorization": `Bearer ${props.token}`,
                             "Content-Type": "application/json",
                         }, 
-                        body: JSON.stringify({ userId: props.userToChange.user.id, teamName: roleName })
+                        body: JSON.stringify({ userId: props.userToChange.user.id, roleName: roleName })
                     });
 
                     if(!response.ok){
