@@ -282,7 +282,9 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
             return res.status(400).json({ error: "No completed checklists available for submission." });
         }
 
-        // ✅ Mark each checklist as "submitted"
+        // ✅ Mark each checklist as "submitted" & add "submittedAt" timestamp
+        const submittedAtTimestamp = new Date().toISOString();
+
         for (const checklist of checklists) {
             await dynamoDB.send(new UpdateItemCommand({
                 TableName: TABLE_NAME,
@@ -290,11 +292,12 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
                     id: checklist.id,
                     assignedTeam: checklist.assignedTeam
                 },
-                // Add `submitted` attribute & update timestamp
-                UpdateExpression: "SET submitted = :submitted, updatedAt = :updatedAt",
+                // Add `submitted` attribute & update `submittedAt` timestamp
+                UpdateExpression: "SET submitted = :submitted, submittedAt = :submittedAt, updatedAt = :updatedAt",
                 ExpressionAttributeValues: {
                     ":submitted": { BOOL: true },
-                    ":submittedAt": { S: new Date().toISOString() }
+                    ":submittedAt": { S: submittedAtTimestamp },
+                    ":updatedAt": { S: submittedAtTimestamp }
                 }
             }));
         }
