@@ -749,6 +749,7 @@ async function initializeApp() {
             const client = clientsResponse.data.find(client => client.clientId === keycloakClientID);
             if (!client) throw new Error("Client not found!");
             const keycloakClientUUID = client.id;
+            console.log("After client")
             console.log("client = " + JSON.stringify(client))
 
             await axios.post(
