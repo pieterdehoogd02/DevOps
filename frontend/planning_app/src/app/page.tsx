@@ -207,6 +207,7 @@ function Dashboard(props: any) {
           <div
             className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
+              console.log("📌 View Submissions clicked!"); // Debugging
               setShowSubmissions(true);
               setShowChecklists(false);
               setShowUsers(false);

@@ -11,6 +11,7 @@ export default function ViewSubmissions({ token }: { token: string}) {
     useEffect(() => {
         const fetchSubmissions = async () => {
             try {
+              console.log("📌 Fetching submissions...");
               const response = await fetch(`${API_URL}/submissions`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
@@ -20,6 +21,7 @@ export default function ViewSubmissions({ token }: { token: string}) {
               }
       
               const data = await response.json();
+              console.log("✅ Submissions fetched:", data); // Debugging
               setSubmissions(data);
             } catch (error) {
               console.error("Error fetching submissions:", error);
