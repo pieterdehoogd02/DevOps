@@ -203,8 +203,8 @@ export default function Users(props: any) {
 
 function AssignTeam(props: any) {
 
-    const [chosenTeam, chooseTeam] = useState("")
-    const prevChosenTeam = useRef("")
+    const [chosenTeam, chooseTeam] : any = useState(null)
+    const prevChosenTeam = useRef(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
     const [groups, setGroups] = useState([])
 
@@ -278,18 +278,18 @@ function AssignTeam(props: any) {
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">Assign {props.userToChange.username } to team..</div>
             </div>
-            <div className="relative h-[50%] w-[80%] ">
-                {chosenTeam === "" && <div className="flex w-[60%] h-[1/2] border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
+            <div className="relative h-[50%] w-[80%] flex flex-col justify-center items-center">
+                {chosenTeam === null && <div className="flex w-[60%] h-[1/2] border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(groups.length === 0) await fetchGroups()}}>
                     Select a team...
                 </div>}
-                {chosenTeam !== "" && <div className="flex w-[60%] h-[1/2] border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
+                {chosenTeam !== null && <div className="flex w-[60%] h-[1/2] border-2 rounded-md bg-slate-500 border-black text-white flex-row justify-center items-center" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(groups.length === 0) await fetchGroups()}}>
-                    {chosenTeam}
+                    {chosenTeam.name}
                 </div>}
                 {
                     clickedDropdown === true && 
-                    <div className="flex w-full h-[3/2] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll flex-col" onClick={() => {}}>
+                    <div className="flex w-full h-[3/2] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll flex-col justify-center items-center" onClick={() => {}}>
                         {
                             groups.map((elem: any, idx: number) => {
                                 return <div className={`bg-transparent w-full h-[1/3] text-white border-x-2 border-black`}     
@@ -308,7 +308,7 @@ function AssignTeam(props: any) {
 
 function AssignRole(props: any) {
 
-    const [chosenRole, chooseRole] = useState("")
+    const [chosenRole, chooseRole] : any = useState(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
     const [roles, setRoles] = useState([])
 
@@ -346,15 +346,15 @@ function AssignRole(props: any) {
                 <div className="text-black text-base font-semibold">Assign {props.name} to team..</div>
             </div>
             <div className="relative h-[50%] w-[80%] flex flex-row justify-center items-center">
-                {chosenRole === "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
+                {chosenRole === null && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" onClick={async () => {
                     await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
                     Select a team...
                 </div>}
-                {chosenRole !== "" && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
+                {chosenRole !== null && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" 
                     onClick={async () => {await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
-                    {chosenRole}
+                    {chosenRole.name}
                 </div>}
                 {
                     clickedDropdown === true && 
