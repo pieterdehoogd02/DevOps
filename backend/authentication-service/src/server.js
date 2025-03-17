@@ -422,6 +422,9 @@ async function initializeApp() {
     app.get('/groups/', keycloak.protect(), async (req, res) => {
       try {
 
+        console.log("======================================") 
+        console.log("============== GROUPS ================")
+        console.log("======================================") 
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
           // let body = req.body
           // let client_req = body.client
@@ -518,10 +521,17 @@ async function initializeApp() {
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
+
+            console.log("======================================") 
+            console.log("            IN ASSIGN TEAMS           ")
+            console.log("======================================") 
+
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
             if (!roles.includes("CIO")) {
                 return res.status(403).json({ error: "Access Denied" });
             }
+            
+            console.log("Role includes CIO moving on")
 
             const { userId, teamName } = req.body;
             if (!userId || !teamName) {
@@ -537,6 +547,8 @@ async function initializeApp() {
 
             const team = groupResponse.data.find(group => group.name === teamName);
             if (!team) return res.status(404).json({ error: "Team not found" });
+            
+            console.log("Adding to team = " + team)
 
             await axios.put(
                 `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}/groups/${team.id}`,
