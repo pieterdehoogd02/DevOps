@@ -128,8 +128,6 @@ function Dashboard(props: any) {
     setShowUsers(!showUsers)
   }
   
-
-
   function getRoles(token: any) {
     return token?.payload?.resource_access?.DevOpsAuthService?.roles || []
   }
@@ -199,8 +197,8 @@ function Dashboard(props: any) {
         {/* Sidebar Menu Items */}
         <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={async () => {await setShowUsersAsync(); await setShowChecklistsAsync();}}>Backlog</div>
-        <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-          onClick={() => {}}>Roles</div>
+        {/* <div className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          onClick={() => {}}>Roles</div> */}
 
         {/* New section for CIO to view submissions */}
         {roles.includes("CIO") && (
