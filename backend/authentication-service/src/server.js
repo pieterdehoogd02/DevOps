@@ -538,6 +538,8 @@ async function initializeApp() {
                 return res.status(400).json({ error: "User ID and Team Name are required" });
             }
 
+            console.log("Checked userId and teamName exist")
+
             const groupResponse = await axios.get(
                 `${process.env.KEYCLOAK_URL1}/admin/realms/${process.env.KEYCLOAK_REALM}/groups`,
                 { headers: { "Authorization": `Bearer ${req.kauth.grant.access_token.token}` },
