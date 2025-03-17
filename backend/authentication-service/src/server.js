@@ -581,7 +581,7 @@ async function initializeApp() {
 
             await axios.put(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
-                { headers: { "Authorization": `Bearer ${adminToken}` },
+                { headers: { Authorization: `Bearer ${adminToken}` },
                   httpsAgent: agent
                 }
             )
@@ -653,7 +653,7 @@ async function initializeApp() {
             const role = rolesResponse.data.find(role => role.name === roleName);
             if (!role) return res.status(404).json({ error: "role not found" });
             
-            console.log("Adding to role = " + role)
+            console.log("Adding to role = " + JSON.stringify(role))
 
             await axios.put(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role.id}`,
@@ -661,6 +661,8 @@ async function initializeApp() {
                   httpsAgent: agent
                 }
             );
+            
+            console.log(`✅ User ${userId} assigned to team ${roleName}`)
 
             res.json({ message: `✅ User ${userId} assigned to role ${roleName}` });
         } catch (error) {
