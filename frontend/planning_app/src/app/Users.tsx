@@ -298,7 +298,7 @@ function AssignTeam(props: any) {
 
 
     return (
-        <div className="absolute bg-slate-200 w-[20%] h-[20%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute bg-slate-200 w-[20%] h-[20%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
@@ -322,12 +322,12 @@ function AssignTeam(props: any) {
 
                 {/* Dropdown List (Centered) */}
                 {clickedDropdown && (
-                    <div className="absolute top-full w-full border-2 rounded-md bg-slate-500 border-black text-white 
+                    <div className="absolute h-[200%] w-full  border-2 rounded-md bg-slate-500 border-black text-white 
                     overflow-y-scroll flex flex-col items-center">
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
-                                className="w-full h-[50px] flex justify-center items-center bg-transparent border-y-2 border-black 
+                                className="w-full h-[1/3] flex justify-center items-center bg-transparent border-y-2 border-black 
                                 hover:bg-slate-600 cursor-pointer"
                                 onClick={async () => {
                                     await chooseTeamAsync(elem);
@@ -375,7 +375,7 @@ function AssignRole(props: any) {
         });
 
         let fetchedRoles = await response.json()
-        console.log("groups = " + fetchedRoles)
+        console.log("roles = " + JSON.stringify(fetchedRoles))
         
         await setRolesAsync(fetchedRoles.groups)
     }
@@ -385,7 +385,7 @@ function AssignRole(props: any) {
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">Assign {props.userToChange.name} to team..</div>
             </div>
-            <div ref={ref} className="relative h-[50%] w-[80%] flex flex-row justify-center items-center">
+            <div ref={ref} className="relative h-[50%] w-[80%] flex flex-col justify-center items-center">
                 {chosenRole === null && <div className="flex w-full h-full border-2 rounded-md bg-slate-500 border-black text-white 
                     flex-row justify-center items-center" onClick={async () => {
                     await setClickDropdownAsync(!clickedDropdown); if(roles.length === 0) await fetchRoles()}}>
@@ -398,7 +398,7 @@ function AssignRole(props: any) {
                 </div>}
                 {
                     clickedDropdown === true && 
-                    <div className="flex w-full h-[3/2] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll flex-col justify-center items-center" onClick={() => {}}>
+                    <div className="absolute flex w-full h-[200%] border-2 rounded-md bg-slate-500 border-black text-white overflow-y-scroll flex-col justify-center items-center" onClick={() => {}}>
                         {
                             roles.map((elem: any, idx: number) => {
                                 return <div className="bg-transparent w-full h-[1/3] text-white flex flex-row justify-center items-center" 
