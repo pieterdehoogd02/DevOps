@@ -162,7 +162,7 @@ export default function Users(props: any) {
             <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="w-[20%] h-[40px] flex flex-row items-center justify-center">
-                        <img className="flex flex-row justify-center items-center w-full h-full object-cover " src="./jonSnow.png"></img>
+                        <img className="flex flex-row justify-center items-center w-full h-full object-cover " src="./jonSnow.jpg"></img>
                     </div>
                     <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
@@ -230,7 +230,7 @@ function AssignTeam(props: any) {
     const [groupsChosen, setGroupsChosen]  = useState<boolean[]>([]);
     const prevChosenTeam = useRef(null)
     const [clickedDropdown, setClickDropdown] = useState(false)
-    const [groups, setGroups] = useState([])
+    const [groups, setGroups] = useState<any[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const dropdownRef2 = useRef<HTMLDivElement>(null);
 
@@ -324,22 +324,22 @@ function AssignTeam(props: any) {
             console.log("In assign teams")
             for(let i = 0; i < groups.length ; i++){
                 let teamName = ""
-                if(groupsChosen[i] === true){
-                    teamName = groups[i]
-                }
-
+                if(groupsChosen[i] === true) teamName = groups[i].name
                 let response = await fetch(`${authServer}/assign-team`, {
                     method: 'POST',
                     headers: { 
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.id, teamName: chosenTeam })
+                    body: JSON.stringify({ userId: props.userToChange.id, teamName: teamName })
                 });
 
                 if(!response.ok){
                     console.log("Could not assign team to user: " + response.status)
+                } else {
+                    console.log("added user to group")
                 }
+
             }
         }catch(err){
             console.error("Error: " + JSON.stringify(err))
