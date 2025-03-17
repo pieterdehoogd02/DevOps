@@ -193,7 +193,7 @@ export default function Users(props: any) {
                                             <div className="flex flex-row items-center">
                                                 <div className="text-sm indent-[20px]">{role.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
-                                                    <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                                    <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,7 +213,7 @@ export default function Users(props: any) {
                                             <div className="flex flex-row items-center">
                                                 <div className="text-sm indent-[20px]">{group.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer">
-                                                    <img className="w-[80%] h-[80%] object-contain" src="./grayX.png"></img>
+                                                    <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
                                                 </div>
                                             </div>
                                         </div>

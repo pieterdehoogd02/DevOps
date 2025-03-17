@@ -572,9 +572,9 @@ async function initializeApp() {
                 }
             );
 
-            console.log("After group response with group data = " + JSON.stringify(groupResponse.data))
+            console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
 
-            const team = groupResponse.data.find(group => group.name === teamName);
+            const team = groupsResponse.data.find(group => group.name === teamName);
             if (!team) return res.status(404).json({ error: "Team not found" });
             
             console.log("Adding to team = " + team)
