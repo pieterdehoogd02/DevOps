@@ -219,8 +219,10 @@ function AssignTeam(props: any) {
     }
 
     useEffect(() => {
-        prevChosenTeam.current = chosenTeam
-        assignTeam()
+        if (prevChosenTeam.current !== chosenTeam) {
+            prevChosenTeam.current = chosenTeam;
+            assignTeam();
+        }
     }, [chosenTeam])
 
     async function fetchGroups() {
