@@ -543,6 +543,9 @@ async function initializeApp() {
             
             console.log("Checked userId and teamName exist")
 
+            const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
+            const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
+
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
                 new URLSearchParams({
