@@ -331,12 +331,15 @@ function AssignTeam(props: any) {
                         "Authorization": `Bearer ${props.token}`,
                         "Content-Type": "application/json",
                     }, 
-                    body: JSON.stringify({ userId: props.userToChange.id, teamName: chosenTeam })
+                    body: JSON.stringify({ userId: props.userToChange.id, teamName: teamName })
                 });
 
                 if(!response.ok){
                     console.log("Could not assign team to user: " + response.status)
+                } else {
+                    console.log("added user to group")
                 }
+
             }
         }catch(err){
             console.error("Error: " + JSON.stringify(err))
