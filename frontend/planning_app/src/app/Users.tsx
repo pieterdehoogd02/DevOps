@@ -196,8 +196,18 @@ export default function Users(props: any) {
 
         async function deleteRole(role: any) {
             try {
-                console.log("In delete role")
-                console.log("user = " +  JSON.stringify(props.elem) +  "group1 = " + JSON.stringify(role))
+                
+                console.log("In delete group")
+                console.log("user = " +  JSON.stringify(props.elem) +  ", group1 = " + JSON.stringify(role))
+
+                const userId = props.elem?.user?.id; 
+                if (!userId) {
+                    console.error("Error: userId is missing!");
+                    return;
+                } else {
+                    console.log("userId = " + userId)
+                }
+
                 let response = await fetch(`${authServer}/delete-role`, {
                     method: 'POST',
                     headers: { 
@@ -225,7 +235,7 @@ export default function Users(props: any) {
                     </div>
                     <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] items-center font-sans">{props.elem.user.username}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
-                        <div className="flex h-[40px] w-[95%] bg-green-700 text-base text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-green-700 text-lg text-white font-sans 
                             rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
                             onClick={() => {
                                 console.log("User to change = " + JSON.stringify(props.elem))
@@ -233,7 +243,7 @@ export default function Users(props: any) {
                                 props.setUserToChangeAsync(props.elem)
                                 props.setAssignRoleAsync(true)
                             }}>Assign role</div>
-                        <div className="flex h-[40px] w-[95%] bg-orange-600 text-base text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-orange-600 text-lg text-white font-sans 
                         rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
                         onClick={() => {
                             console.log("User to change = " + JSON.stringify(props.elem))
@@ -500,40 +510,61 @@ function AssignRole(props: any) {
         console.log("after setGroupsChosenAsync")
     }
 
+    useEffect(() => {
+        fetchRoles()
+
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef2.current && !dropdownRef2.current.contains(event.target as Node)) {
+                props.setAssignTeam(false); // Hide the div when clicking outside
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [])
+
 
     async function fetchRoles() {
-        let response = await fetch(`${authServer}/roles`, {
-            method: 'GET',
-            headers: { 
-                "Authorization": `Bearer ${props.token}`,
-                "Content-Type": "application/json"
-            }, 
-        });
+        try {
+            let response = await fetch(`${authServer}/roles`, {
+                method: 'GET',
+                headers: { 
+                    "Authorization": `Bearer ${props.token}`,
+                    "Content-Type": "application/json"
+                }, 
+            });
 
-        let fetchedRoles = await response.json()
-        console.log("roles = " + JSON.stringify(fetchedRoles))
-        
-        await setRolesAsync(fetchedRoles.roles)
+            let fetchedRoles = await response.json()
+            console.log("roles = " + JSON.stringify(fetchedRoles))
+            
+            await setRolesAsync(fetchedRoles.roles)
+            setRolesChosen(new Array(fetchedRoles.roles.length).fill(false));
+        } catch(err) {
+            console.log("Error fetching roles " + err)
+        }
     }
 
     async function assignRoles() {
         try{
             console.log("========================================")
-            console.log("In assign teams")
+            console.log("In assign role")
             console.log("========================================")
             for(let i = 0; i < roles.length ; i++){
-                let teamName = ""
+                let roleName = ""
                 console.log(`roles[${i}] = ` + JSON.stringify(roles[i]))
                 if(rolesChosen[i] === true) {
-                    teamName = roles[i].name
-                    console.log("teamName = " + teamName)
-                    let response = await fetch(`${authServer}/assign-team`, {
+                    roleName = roles[i].name
+                    console.log("roleName = " + roleName)
+                    let response = await fetch(`${authServer}/assign-role`, {
                         method: 'POST',
                         headers: { 
                             "Authorization": `Bearer ${props.token}`,
                             "Content-Type": "application/json",
                         }, 
-                        body: JSON.stringify({ userId: props.userToChange.user.id, teamName: teamName })
+                        body: JSON.stringify({ userId: props.userToChange.user.id, roleName: roleName })
                     });
 
                     if(!response.ok){
@@ -553,7 +584,7 @@ function AssignRole(props: any) {
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
-                    Assign {props.userToChange.user.username} to team..
+                    Assign {props.userToChange.user.username} to role..
                 </div>
             </div>
 
