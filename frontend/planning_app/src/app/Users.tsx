@@ -247,6 +247,8 @@ function AssignTeam(props: any) {
         }
 
         document.addEventListener("mousedown", handleClickOutside);
+        
+        fetchGroups()
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
@@ -381,8 +383,8 @@ function AssignTeam(props: any) {
                 </div>
             </div>
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="flex flex-row justify-center items-center w-[60%] h-full bg-green-700 rounded-md
-                     text-white text-base font-semibold font-sans hover:cursor-pointer border-2 border-black" 
+                <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-full
+                     text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
                     onClick={() => {props.setAssignTeam(false)}}>
                     Apply changes
                 </div>
