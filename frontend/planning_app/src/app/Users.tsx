@@ -83,10 +83,12 @@ export default function Users(props: any) {
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
             {userToChange !== prevUserChanged && assignTeam && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop">
-                    <AssignTeam userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam}/>
+                    <AssignTeam token={props.token} userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} 
+                        clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam}/>
                 </div>}
             {userToChange !== prevUserChanged && assignRole && <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <AssignRole userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} clickedDropdown={clickedDropdown} setAssignRole={setAssignRole}/>
+                    <AssignRole userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} 
+                        token={props.token} clickedDropdown={clickedDropdown} setAssignRole={setAssignRole}/>
                 </div>}
             {userData.length > 0 && 
                 <div className={`${(assignTeam || assignRole) ? 'shadow-lg' : 'shadow-none'} relative w-full h-full`}>
