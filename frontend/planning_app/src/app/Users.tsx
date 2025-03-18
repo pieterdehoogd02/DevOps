@@ -88,7 +88,7 @@ export default function Users(props: any) {
 
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
-            {userToChange !== prevUserChanged && assignTeam && <div className="absolute inset-0 flex items-center justify-center z-10 backdrop">
+            {userToChange !== prevUserChanged && assignTeam && <div className="relative overflow-y-auto inset-0 flex items-center justify-center z-10 backdrop">
                     <AssignTeam token={props.token} userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} setClickDropdownAsync2={setClickDropdownAsync2} 
                         clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam} gettingAllUserData={gettingAllUserData}/>
                 </div>}
@@ -353,23 +353,6 @@ function AssignTeam(props: any) {
         console.log("user to change = " + JSON.stringify(props.userToChange))
     }, [props.userToChange])
 
-    // Detect clicks outside dropdown
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                props.setClickDropdownAsync(false); // Close dropdown if clicked outside
-            }
-        }
-
-        if (clickedDropdown) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [clickedDropdown]);
-
     async function fetchGroups() {
         try{
             console.log("In fetch groups")
@@ -426,7 +409,7 @@ function AssignTeam(props: any) {
 
 
     return (
-        <div ref={dropdownRef2} className="absolute bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
+        <div ref={dropdownRef2} className="fixed  bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
@@ -580,7 +563,7 @@ function AssignRole(props: any) {
     }
 
      return (
-        <div ref={dropdownRef2} className="absolute bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
+        <div ref={dropdownRef2} className="fixed bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-black text-base font-semibold">
