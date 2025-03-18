@@ -235,7 +235,7 @@ export default function Users(props: any) {
                     </div>
                     <div className="flex w-[40%] text-lg text-white font-semibold indent-[10px] justify-start items-center font-sans">{props.elem.user.firstName} {props.elem.user.lastName}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
-                        <div className="flex h-[40px] w-[95%] bg-green-700 text-lg text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-purple-800 text-lg text-white font-sans 
                             rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
                             onClick={() => {
                                 console.log("User to change = " + JSON.stringify(props.elem))
@@ -243,7 +243,7 @@ export default function Users(props: any) {
                                 props.setUserToChangeAsync(props.elem)
                                 props.setAssignRoleAsync(true)
                             }}>Assign role</div>
-                        <div className="flex h-[40px] w-[95%] bg-orange-600 text-lg text-white font-sans 
+                        <div className="flex h-[40px] w-[95%] bg-blue-700 text-lg text-white font-sans 
                         rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
                         onClick={() => {
                             console.log("User to change = " + JSON.stringify(props.elem))
@@ -413,7 +413,7 @@ function AssignTeam(props: any) {
                 {/* Header */}
                 <div className="h-[20%] w-full flex flex-row justify-center items-center">
                     <div className="text-gray-700 text-base font-semibold">
-                        Assign {props.userToChange.user.username} to team..
+                        Assign {props.userToChange.user.username} {props.userToChange.user.lastName} to team..
                     </div>
                 </div>
 
@@ -570,7 +570,7 @@ function AssignRole(props: any) {
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-gray-700 text-base font-semibold">
-                    Assign {props.userToChange.user.username} to role..
+                    Assign {props.userToChange.user.firstName} {props.userToChange.user.lastName} to role..
                 </div>
             </div>
 

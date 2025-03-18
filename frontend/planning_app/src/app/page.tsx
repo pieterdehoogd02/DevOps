@@ -183,7 +183,11 @@ function Dashboard(props: any) {
         <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-            onClick={async () => {await getProjectMembers(); await setShowUsersAsync(); await setShowChecklistsAsync();}}>People</div>
+            onClick={async () => 
+              { 
+                await getProjectMembers(); await setShowUsersAsync(); await setShowChecklistsAsync(); 
+                setShowSubmissions(false); setShowSubmittedForms(false);
+              }}>People</div>
           {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {}}>Create</div>}
         </div>
@@ -213,6 +217,7 @@ function Dashboard(props: any) {
             setShowChecklists(true);
             setShowUsers(false);
             setShowSubmissions(false);
+            setShowSubmittedForms(false);
           }}>
             Dashboard
         </div>
