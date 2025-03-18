@@ -110,7 +110,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("CIO")) user_cio = true
                                         }
                                     }
-                                    if(!user_cio) return <div></div>;
+                                    if(!user_cio) return null;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
@@ -127,7 +127,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("PO")) user_po = true
                                         }
                                     }
-                                    if(!user_po) return <div></div>;
+                                    if(!user_po) return null;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
@@ -144,7 +144,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("Dev")) user_dev = true
                                         }
                                     }
-                                    if(!user_dev) return <div></div>;
+                                    if(!user_dev) return null;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
