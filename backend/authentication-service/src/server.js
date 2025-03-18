@@ -826,13 +826,15 @@ async function initializeApp() {
             
             console.log("Deleting role = " + JSON.stringify(role1))
 
-            await axios.delete(
-              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role1.id}`,
+            await axios.post(
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
+              [role1], // Role object in an array
               {
                 headers: { Authorization: `Bearer ${adminToken}` },
                 httpsAgent: agent
               }
-            )
+            );
+
 
             console.log(`✅ User ${userId} deleted from role ${role1.name}`)
 
