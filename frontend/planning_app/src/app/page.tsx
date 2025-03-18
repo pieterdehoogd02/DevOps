@@ -185,7 +185,7 @@ function Dashboard(props: any) {
           <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" 
             onClick={async () => 
               { 
-                await getProjectMembers(); await setShowUsersAsync(); await setShowChecklistsAsync(); 
+                await getProjectMembers(); await setShowUsersAsync(); await setShowChecklists(false); 
                 setShowSubmissions(false); setShowSubmittedForms(false);
               }}>People</div>
           {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
