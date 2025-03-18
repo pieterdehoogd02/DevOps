@@ -270,7 +270,7 @@ function Dashboard(props: any) {
 
       {/* Main Content Area */}
       {showChecklists && <Checklists token={props.token}></Checklists>}
-      {showUsers && <Users users={members} token={props.token}></Users>}
+      {showUsers && <Users users={members} rolesCurrUser={roles} token={props.token}></Users>}
       {showSubmissions && <ViewSubmissions token={props.token}></ViewSubmissions>}
       {showSubmittedForms && <SubmittedForms token={props.token}></SubmittedForms>}
     </div>

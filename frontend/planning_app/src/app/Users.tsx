@@ -111,7 +111,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_cio) return null;
-                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData rolesCurrUser={props.rolesCurrUser} elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -128,7 +128,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_po) return null;
-                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData rolesCurrUser={props.rolesCurrUser} elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -145,7 +145,7 @@ export default function Users(props: any) {
                                         }
                                     }
                                     if(!user_dev) return null;
-                                    return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
+                                    return <UserData rolesCurrUser={props.rolesCurrUser} elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
                             }
@@ -227,6 +227,15 @@ export default function Users(props: any) {
             }
         }
 
+        function userHasCioRole() {
+            if(props.rolesCurrUser) {
+                console.log("roles curr user = " + JSON.stringify(props.rolesCurrUser))
+                props.rolesCurrUser.find((role : any) => {return role.name === "CIO"})
+                return false
+            } 
+            return false
+        }
+
         return (
             <div className="w-full h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
@@ -234,24 +243,26 @@ export default function Users(props: any) {
                         <img className="w-[80px] h-[80px] object-contain rounded-full" src="./jonSnow.jpg"></img>
                     </div>
                     <div className="flex w-[40%] text-lg text-white font-semibold indent-[10px] justify-start items-center font-sans">{props.elem.user.firstName} {props.elem.user.lastName}</div>
-                    <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
-                        <div className="flex h-[40px] w-[95%] bg-purple-800 text-lg text-white font-sans 
-                            rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
+                    {userHasCioRole() && 
+                        <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
+                            <div className="flex h-[40px] w-[95%] bg-purple-800 text-lg text-white font-sans 
+                                rounded-lg justify-center items-center font-semibold hover:cursor-pointer" 
+                                onClick={() => {
+                                    console.log("User to change = " + JSON.stringify(props.elem))
+                                    props.prevUserChanged.current = props.elem; 
+                                    props.setUserToChangeAsync(props.elem)
+                                    props.setAssignRoleAsync(true)
+                                }}>Assign role</div>
+                            <div className="flex h-[40px] w-[95%] bg-blue-700 text-lg text-white font-sans 
+                            rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
                             onClick={() => {
                                 console.log("User to change = " + JSON.stringify(props.elem))
                                 props.prevUserChanged.current = props.elem; 
                                 props.setUserToChangeAsync(props.elem)
-                                props.setAssignRoleAsync(true)
-                            }}>Assign role</div>
-                        <div className="flex h-[40px] w-[95%] bg-blue-700 text-lg text-white font-sans 
-                        rounded-lg flex-row justify-center items-center font-semibold hover:cursor-pointer" 
-                        onClick={() => {
-                            console.log("User to change = " + JSON.stringify(props.elem))
-                            props.prevUserChanged.current = props.elem; 
-                            props.setUserToChangeAsync(props.elem)
-                            props.setAssignTeamAsync(true)
-                        }}>Assign team</div>
-                    </div>
+                                props.setAssignTeamAsync(true)
+                            }}>Assign team</div>
+                        </div>
+                    }
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
