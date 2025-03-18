@@ -408,10 +408,11 @@ function AssignTeam(props: any) {
 
 
     return (
-        <div ref={dropdownRef2} className="fixed  bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
+        <div ref={dropdownRef2} className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md 
+                         bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] bg-opacity-70">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="text-black text-base font-semibold">
+                <div className="text-gray-700 text-base font-semibold">
                     Assign {props.userToChange.user.username} to team..
                 </div>
             </div>
@@ -420,12 +421,12 @@ function AssignTeam(props: any) {
             <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
 
                 {/* Dropdown List (Centered) */}
-                <div ref={dropdownRef} className="relative h-[260%] w-[60%] border-2 rounded-md bg-slate-500 border-black text-white 
+                <div ref={dropdownRef} className="relative h-[260%] w-[60%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
                 overflow-y-scroll flex flex-col items-center">
                     {groups.map((elem: any, idx: number) => (
                         <div
                             key={idx}
-                            className={`relative w-full h-[1/3] flex flex-row justify-center items-center bg-transparent border-2 border-black 
+                            className={`relative w-full h-[1/3] flex flex-row justify-center items-center bg-transparent border-[1px] border-gray-700 
                             hover:bg-slate-600 cursor-pointer 
                             ${idx === 0 ? "rounded-t-md" : idx === groups.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                             onClick={async () => {
@@ -448,8 +449,8 @@ function AssignTeam(props: any) {
                 </div>
             </div>
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-2xl
-                     text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
+                <div className="flex flex-row justify-center items-center w-[30%] h-full bg-green-700 rounded-2xl
+                     text-white text-sm font-semibold font-sans hover:cursor-pointer border-2 " 
                     onClick={async () => {await assignTeams(); props.gettingAllUserData() ; props.setAssignTeam(false); }}>
                     Apply changes
                 </div>
