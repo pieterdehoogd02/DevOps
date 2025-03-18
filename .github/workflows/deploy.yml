@@ -92,7 +92,7 @@ jobs:
     - name: Make checklist service 
       run: | 
         echo "${{ secrets.EC2_SSH_KEY }}"
-        ssh -v -i private_key.pem -o IdentitiesOnly=yes -o PubkeyAuthentication=yes ubuntu@44.203.90.240
+        ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes ubuntu@44.203.90.240
 
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
