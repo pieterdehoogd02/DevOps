@@ -91,11 +91,8 @@ jobs:
     # ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.90.240 << 'EOF'
     - name: Make checklist service 
       run: | 
-        mkdir -p ~/.ssh/id_rsa
-        chmod 700 ~/.ssh
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh -i ~/.ssh/EC2_SSH_KEY -o IdentitiesOnly=yes ubuntu@44.203.90.240 << 'EOF'
+        cat private_key.pem
+        ssh -i private_key.pem -o IdentitiesOnly=yes ubuntu@44.203.90.240 << 'EOF'
 
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
