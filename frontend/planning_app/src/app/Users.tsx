@@ -88,7 +88,7 @@ export default function Users(props: any) {
 
     return (
         <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
-            {userToChange !== prevUserChanged && assignTeam && <div className="relative overflow-y-auto inset-0 flex items-center justify-center z-10 backdrop">
+            {userToChange !== prevUserChanged && assignTeam && <div className="relative overflow-y-auto inset-0 flex items-center justify-center z-10">
                     <AssignTeam token={props.token} userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} setClickDropdownAsync2={setClickDropdownAsync2} 
                         clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam} gettingAllUserData={gettingAllUserData}/>
                 </div>}
@@ -97,7 +97,7 @@ export default function Users(props: any) {
                         token={props.token} clickedDropdown={clickedDropdown} setAssignRole={setAssignRole} gettingAllUserData={gettingAllUserData}/>
                 </div>}
             {userData.length > 0 && 
-                <div className={`${(assignTeam || assignRole) ? 'shadow-lg' : 'shadow-none'} relative w-full h-full`}>
+                <div className={`${(assignTeam || assignRole) ? 'backdrop-blur-sm' : 'backdrop-blur-none'} relative w-full h-full`}>
                     <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
                         <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
                         <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
@@ -418,7 +418,7 @@ function AssignTeam(props: any) {
             </div>
 
             {/* Dropdown Container */}
-            <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
+            <div  className="relative h-[50%] w-[70%] flex flex-col justify-center items-center">
 
                 {/* Dropdown List (Centered) */}
                 <div ref={dropdownRef} className="relative h-[260%] w-[70%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
@@ -449,7 +449,7 @@ function AssignTeam(props: any) {
                 </div>
             </div>
             <div className="h-[30%] w-full flex flex-row justify-center items-center">
-                <div className="flex flex-row justify-center items-center w-[30%] h-[70%] bg-green-700 rounded-md
+                <div className="flex flex-row justify-center items-center w-[30%] h-[70%] bg-green-700 rounded-sm
                 text-white text-sm font-semibold font-sans hover:cursor-pointer border-2 border-gray-700" 
                     onClick={async () => {await assignTeams(); props.gettingAllUserData() ; props.setAssignTeam(false); }}>
                     Apply changes
@@ -574,7 +574,7 @@ function AssignRole(props: any) {
             </div>
 
             {/* Dropdown Container */}
-            <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
+            <div  className="relative h-[50%] w-[70%] flex flex-col justify-center items-center">
 
                 {/* Dropdown List (Centered) */}
                 <div ref={dropdownRef} className="relative h-[260%] w-[70%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
@@ -605,8 +605,8 @@ function AssignRole(props: any) {
                 </div>
             </div>
             <div className="h-[30%] w-full flex flex-row justify-center items-center">
-                <div className="flex flex-row justify-center items-center w-[30%] h-[70%] bg-green-700 rounded-md
-                     text-white text-base font-semibold font-sans hover:cursor-pointer border-[1px] border-gray-700" 
+                <div className="flex flex-row justify-center items-center w-[30%] h-[70%] bg-green-700 rounded-sm
+                     text-white text-base font-semibold font-sans hover:cursor-pointer border-[2px] border-gray-700" 
                     onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignRole(false); }}>
                     Apply changes
                 </div>
