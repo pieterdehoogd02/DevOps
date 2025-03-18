@@ -31,6 +31,14 @@ export default function ViewSubmissions({ token }: { token: string}) {
         fetchSubmissions();
     }, [token]);
 
+    function parseTimestamp(val : string) {
+        let [date, time] = val.split("T")
+
+        let time1 = time.split(".")[0]
+
+        return time1 + " " + date
+    }
+
     return (
         <div className="absolute top-[2%] left-[19%] w-[79%] h-[96%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
             <h2 className="text-xl font-semibold text-white p-4">Submitted Checklists</h2>
@@ -56,7 +64,7 @@ export default function ViewSubmissions({ token }: { token: string}) {
                                         {submission.description?.S || "No description provided"} {/* ✅ Display Description */}
                                     </td>
                                     <td className="p-3">{submission.assignedTeam?.S}</td>
-                                    <td className="p-3">{submission.submittedAt?.S}</td>
+                                    <td className="p-3">{parseTimestamp(submission.submittedAt?.S)}</td>
                                 </tr>
                             ))}
                         </tbody>

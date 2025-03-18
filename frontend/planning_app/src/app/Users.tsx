@@ -422,7 +422,7 @@ function AssignTeam(props: any) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
-            <div ref={dropdownRef2} className="rounded-md bg-slate-200 w-[25%] h-[30%] flex flex-col gap-[20px] bg-opacity-70">
+            <div ref={dropdownRef2} className="rounded-md bg-slate-200 w-[25%] h-[30%] flex flex-col gap-[20px]">
                 {/* Header */}
                 <div className="h-[20%] w-full flex flex-row justify-center items-center">
                     <div className="text-gray-700 text-base font-semibold">
@@ -579,7 +579,7 @@ function AssignRole(props: any) {
 
      return (
         <div ref={dropdownRef2} className="fixed w-[25%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
-            bg-slate-200 rounded-md bg-opacity-70">
+            bg-slate-200 rounded-md">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
                 <div className="text-gray-700 text-base font-semibold">

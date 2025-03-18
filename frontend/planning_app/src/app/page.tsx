@@ -189,7 +189,7 @@ function Dashboard(props: any) {
           </div>
           <div className="flex flex-col w-[70%] h-full">
             <div className="flex h-[50%] w-full text-md justify-start items-center indent-[10px] font-sans font-semibold">Project name</div>
-            <div className="flex h-[50%] w-full text-sm justify-start items-center indent-[10px] font-sans font-medium">Software Engineering</div>
+            <div className="flex h-[50%] w-full text-sm justify-start items-center indent-[10px] font-sans font-medium">CheckIT</div>
           </div>
         </div>
 
