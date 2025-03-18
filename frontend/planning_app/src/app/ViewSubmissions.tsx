@@ -32,7 +32,7 @@ export default function ViewSubmissions({ token }: { token: string}) {
     }, [token]);
 
     return (
-        <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
+        <div className="absolute top-[2%] left-[19%] w-[79%] h-[96%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
             <h2 className="text-xl font-semibold text-white p-4">Submitted Checklists</h2>
 
             <div className="overflow-y-auto p-4">

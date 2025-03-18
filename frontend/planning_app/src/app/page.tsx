@@ -179,26 +179,9 @@ function Dashboard(props: any) {
   return (
     <div className="left-0 top-0 w-full h-full">
       {/* Top Navigation Bar */}
-      <div className="absolute top-[2%] left-[2%] w-[96%] h-[10%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-row">
-        <div className="relative left-[20%] top-0 w-[40%] h-full flex flex-row">
-          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" onClick={() => {}}>My projects</div>
-          <div className="flex w-[33%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-            onClick={async () => 
-              { 
-                await getProjectMembers(); await setShowUsersAsync(); await setShowChecklists(false); 
-                setShowSubmissions(false); setShowSubmittedForms(false);
-              }}>People</div>
-          {roles.includes("CIO") && <div className="flex w-[34%] text-base font-semibold justify-start items-center hover:underline-offset-4 hover:underline hover:cursor-pointer"
-            onClick={() => {}}>Create</div>}
-        </div>
-        <div className="relative left-[46%] top-0 w-[14%] h-full flex flex-row items-center justify-center">
-          <div className="flex flex-row h-[50%] w-[25%] items-center justify-start font-semibold font-sans text-base hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-            onClick={() => { props.handleLogout() }}>Logout</div>
-        </div>
-      </div>  
 
       {/* Sidebar */}
-      <div className="absolute top-[14%] h-[84%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%] py-6">
+      <div className="absolute top-[2%] h-[96%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%] py-6">
         {/* Project Section */}
         <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
           <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
@@ -220,6 +203,16 @@ function Dashboard(props: any) {
             setShowSubmittedForms(false);
           }}>
             Dashboard
+        </div>
+        <div 
+          className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          onClick={ () => {
+            setShowUsers(true);
+            setShowChecklists(false);
+            setShowSubmissions(false);
+            setShowSubmittedForms(false);
+          }}>
+            People
         </div>
 
         {/* New section for CIO to view submissions */}
@@ -258,7 +251,7 @@ function Dashboard(props: any) {
             className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               // setShowNotifications(true);
-              // setShowChecklists(false);
+              setShowChecklists(false);
               setShowUsers(false);
               setShowSubmissions(false);
             }}
@@ -266,6 +259,15 @@ function Dashboard(props: any) {
             Notifications
           </div>
         )}
+        <div
+            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            onClick={() => {
+              console.log("Logging out");
+              props.handleLogout()
+            }}
+          >
+            Logout
+          </div>
       </div>
 
       {/* Main Content Area */}

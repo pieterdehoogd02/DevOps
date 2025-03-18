@@ -87,7 +87,7 @@ export default function Users(props: any) {
     }
 
     return (
-        <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
+        <div className="absolute top-[2%] left-[19%] w-[79%] h-[96%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70 overflow-y-scroll">
             {userToChange !== prevUserChanged && assignTeam && <div className="relative overflow-y-auto inset-0 flex items-center justify-center z-10">
                     <AssignTeam token={props.token} userToChange={userToChange} setClickDropdownAsync={setClickDropdownAsync} setClickDropdownAsync2={setClickDropdownAsync2} 
                         clickedDropdown={clickedDropdown} setAssignTeam={setAssignTeam} gettingAllUserData={gettingAllUserData}/>
