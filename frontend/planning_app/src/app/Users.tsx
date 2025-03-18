@@ -101,7 +101,7 @@ export default function Users(props: any) {
                     <div className="left-[2%] top-[5%] w-[96%] h-auto flex flex-col gap-4">
                         <div className="flex top-[5%] left-0 indent-[10px] h-auto w-full text-slate-400 text-2xl font-semibold text-start">Project members</div>
 
-                        <div className="flex top-[5%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-t-[6px] border-b-4 border-slate-400">CIO(s)</div>
+                        <div className="flex top-[5%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-4 border-slate-400">CIO(s)</div>
                         <div className="h-auto left-[20px] w-[calc(100%-20px)] grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
