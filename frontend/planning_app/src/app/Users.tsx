@@ -231,7 +231,7 @@ export default function Users(props: any) {
             <div className="w-full h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="relative w-[20%] h-[60px] flex flex-row items-center justify-center">
-                        <img className="flex flex-row justify-center items-center w-[40px] h-[40px] object-contain rounded-full" src="./jonSnow.jpg"></img>
+                        <img className="absolute w-[50%] h-[50%] object-contain" src="./jonSnow.jpg"></img>
                     </div>
                     <div className="flex w-[40%] text-lg text-white font-semibold indent-[10px] justify-start items-center font-sans">{props.elem.user.firstName} {props.elem.user.lastName}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
@@ -255,7 +255,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
-                    <div className="grid grid-cols-3 gap-x-[2px] gap-y-[5px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
+                    <div className="grid grid-cols-3 gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
@@ -273,7 +273,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex w-full flex-col">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Groups</div>
-                    <div className="grid grid-cols-3 gap-x-[2px] gap-y-[5px] text-gray-500 w-full overflow-x-auto ml-[5px]">
+                    <div className="grid grid-cols-3 gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-[5px]">
                         {
                             props.elem.groups.map((group: any) => {
                                 // return <div className=""></div>

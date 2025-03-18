@@ -231,6 +231,7 @@ function Dashboard(props: any) {
               setShowSubmissions(true);
               setShowChecklists(false);
               setShowUsers(false);
+              setShowSubmittedForms(false);
             }}
           >
             View Submissions
