@@ -230,8 +230,8 @@ export default function Users(props: any) {
         function userHasCioRole() {
             if(props.rolesCurrUser) {
                 console.log("roles curr user = " + JSON.stringify(props.rolesCurrUser))
-                const cioRole = props.rolesCurrUser.find((role : any) => {return role.name === "CIO"})
-                return cioRole !== undefined // Return true if a role with name "CIO" is found
+                return props.rolesCurrUser.includes("CIO")
+                
             } 
             return false
         }
@@ -265,7 +265,7 @@ export default function Users(props: any) {
                     }
                 </div>
                 <div className="flex flex-col w-full">
-                    <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
+                    <div className="text-lg font-semibold text-white indent-[10px] font-sans">Roles</div>
                     <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
                         {
                             props.elem.roles.map((role: any) => {
@@ -283,7 +283,7 @@ export default function Users(props: any) {
                     </div>
                 </div>
                 <div className="flex w-full flex-col">
-                    <div className="text-sm font-semibold text-white indent-[10px] font-sans">Groups</div>
+                    <div className="text-lg font-semibold text-white indent-[10px] font-sans">Groups</div>
                     <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-[5px]">
                         {
                             props.elem.groups.map((group: any) => {
