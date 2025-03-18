@@ -80,7 +80,7 @@ export default function Checklists({ token }: { token: string }) {
   }, [selectedTeam]);
 
   return (
-    <div className="absolute top-[14%] left-[19%] w-[79%] h-[84%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
+    <div className="absolute top-[2%] left-[19%] w-[79%] h-[96%] bg-gray-600 rounded-xl flex flex-col px-[0.67%] bg-opacity-70">
       
       {/* Team Selection Dropdown */}
       {userRole === "CIO" && (
