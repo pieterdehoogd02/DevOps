@@ -67,6 +67,10 @@ jobs:
 
     - name: Connect to Keycloak Instance & start Keycloak + DB
       run: |
+        eval "$(ssh-agent -s)"
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
+        ssh-add private_key.pem
         ssh -v -o StrictHostKeyChecking=no -i private_key.pem ubuntu@184.72.205.213 << 'EOF'
          
           # Ensure repository is initialized correctly
