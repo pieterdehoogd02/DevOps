@@ -231,7 +231,7 @@ export default function Users(props: any) {
             <div className="w-full h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="relative w-[20%] h-full flex flex-row items-center justify-center">
-                        <img className="w-[60px] h-[60px] object-contain rounded-full" src="./jonSnow.jpg"></img>
+                        <img className="w-[80px] h-[80px] object-contain rounded-full" src="./jonSnow.jpg"></img>
                     </div>
                     <div className="flex w-[40%] text-lg text-white font-semibold indent-[10px] justify-start items-center font-sans">{props.elem.user.firstName} {props.elem.user.lastName}</div>
                     <div className="flex w-[40%] h-full flex-col justify-center gap-[10px]">
@@ -260,7 +260,7 @@ export default function Users(props: any) {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
                                             <div className="flex flex-row justify-center items-center">
-                                                <div className="text-sm indent-[20px] flex flex-row justify-center items-center">{role.name}</div>
+                                                <div className="text-sm flex flex-row justify-center items-center">{role.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
                                                     onClick={async () => {await deleteRole(role); await props.gettingAllUserData()}}>
                                                     <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
@@ -280,7 +280,7 @@ export default function Users(props: any) {
                                 // return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
                                             <div className="flex flex-row justify-center items-center">
-                                                <div className="text-sm indent-[20px] flex flex-row justify-center items-center">{group.name}</div>
+                                                <div className="text-sm flex flex-row justify-center items-center">{group.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
                                                     onClick={async () => {await deleteGroup(group) ; await props.gettingAllUserData()}}>
                                                     <img className="w-[60%] h-[60%] object-contain" src="./grayX.png"></img>
