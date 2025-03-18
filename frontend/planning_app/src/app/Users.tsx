@@ -99,9 +99,9 @@ export default function Users(props: any) {
             {userData.length > 0 && 
                 <div className={`${(assignTeam || assignRole) ? 'backdrop-blur-sm' : 'backdrop-blur-none'} relative w-full h-full`}>
                     <div className="left-[2%] top-[5%] w-[96%] h-auto flex flex-col gap-4">
-                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-full text-white text-2xl font-semibold text-start bg-slate-500">Project members</div>
+                        <div className="flex top-[5%] left-0 indent-[10px] h-auto w-full text-slate-400 text-2xl font-semibold text-start">Project members</div>
 
-                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-white text-xl font-semibold text-start bg-slate-600">CIO(s)</div>
+                        <div className="flex top-[5%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-2 border-slate-600">CIO(s)</div>
                         <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
@@ -118,7 +118,7 @@ export default function Users(props: any) {
                                 })
                             }
                         </div>
-                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-white text-xl font-semibold text-start bg-slate-600">PO(s)</div>
+                        <div className="flex top-[2%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-2 border-slate-600">PO(s)</div>
                         <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
@@ -135,7 +135,7 @@ export default function Users(props: any) {
                                 })
                             }
                         </div>
-                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-white text-xl font-semibold text-start bg-slate-600">Devs</div>
+                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-2 border-slate-600">Devs</div>
                         <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
