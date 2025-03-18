@@ -100,7 +100,12 @@ jobs:
         -o HostKeyAlgorithms=+rsa-sha2-512,rsa-sha2-256 \
         -i ~/.ssh/id_rsa ubuntu@44.203.90.240 << 'EOF'
 
-          
+          # Ensure repository is initialized correctly
+          if [ ! -d ".git" ]; then 
+            git init .
+            git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
+          fi
+
           # Pull latest changes
           git pull origin main
 
