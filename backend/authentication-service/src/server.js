@@ -783,8 +783,8 @@ async function initializeApp() {
             console.log("body = " + JSON.stringify(req.body))
             console.log("body = " + req.body)
 
-            const { userId, group1 } = req.body;
-            if (!userId || !group1) {
+            const { userId, role } = req.body;
+            if (!userId || !role) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
@@ -821,22 +821,22 @@ async function initializeApp() {
 
             console.log("After group response with group data = " + JSON.stringify(rolesResponse.data))
 
-            const group = rolesResponse.data.find(group => group.name === group1.name);
-            if (!group) return res.status(404).json({ error: "group not found" });
+            const role1 = rolesResponse.data.find(group => group.name === role.name);
+            if (!role1) return res.status(404).json({ error: "group not found" });
             
             console.log("Deleting from group = " + JSON.stringify(group))
 
             await axios.delete(
-              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${group.id}`,
+              `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role1.id}`,
               {
                 headers: { Authorization: `Bearer ${adminToken}` },
                 httpsAgent: agent
               }
             )
 
-            console.log(`✅ User ${userId} deleted from group ${group1.name}`)
+            console.log(`✅ User ${userId} deleted from group ${role1.name}`)
 
-            res.json({ message: `✅ User ${userId} deleted from group ${group1.name}` });
+            res.json({ message: `✅ User ${userId} deleted from group ${role1.name}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
         }
