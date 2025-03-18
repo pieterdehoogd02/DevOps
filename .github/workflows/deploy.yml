@@ -91,7 +91,8 @@ jobs:
     # ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.90.240 << 'EOF'
     - name: Make checklist service 
       run: | 
-        ssh -i private_key.pem -o IdentitiesOnly=yes -o PubkeyAuthentication=yes ubuntu@44.203.90.240
+        echo "${{ secrets.EC2_SSH_KEY }}"
+        ssh -v -i private_key.pem -o IdentitiesOnly=yes -o PubkeyAuthentication=yes ubuntu@44.203.90.240
 
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
@@ -99,7 +100,7 @@ jobs:
             git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           fi
 
-          
+
           # Pull latest changes
           git pull origin main
 
