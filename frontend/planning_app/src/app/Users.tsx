@@ -230,7 +230,7 @@ export default function Users(props: any) {
         return (
             <div className="w-full h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
-                    <div className="w-[40px] h-[40px] flex flex-row items-center justify-center">
+                    <div className="relative w-[80px] h-[80px] flex flex-row items-center justify-center">
                         <img className="flex flex-row justify-center items-center w-full h-full object-cover rounded-full" src="./jonSnow.jpg"></img>
                     </div>
                     <div className="flex w-[50%] text-lg text-white font-semibold indent-[10px] justify-center items-center font-sans">{props.elem.user.firstName} {props.elem.user.lastName}</div>
