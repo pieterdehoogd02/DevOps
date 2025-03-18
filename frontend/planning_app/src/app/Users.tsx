@@ -230,8 +230,8 @@ export default function Users(props: any) {
         function userHasCioRole() {
             if(props.rolesCurrUser) {
                 console.log("roles curr user = " + JSON.stringify(props.rolesCurrUser))
-                props.rolesCurrUser.find((role : any) => {return role.name === "CIO"})
-                return false
+                const cioRole = props.rolesCurrUser.find((role : any) => {return role.name === "CIO"})
+                return cioRole !== undefined // Return true if a role with name "CIO" is found
             } 
             return false
         }
