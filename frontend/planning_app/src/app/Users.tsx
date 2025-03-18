@@ -110,7 +110,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("CIO")) user_cio = true
                                         }
                                     }
-                                    if(!user_cio) return null;
+                                    if(!user_cio) return <div></div>;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
@@ -127,7 +127,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("PO")) user_po = true
                                         }
                                     }
-                                    if(!user_po) return null;
+                                    if(!user_po) return <div></div>;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
@@ -144,7 +144,7 @@ export default function Users(props: any) {
                                             if(role.name.includes("Dev")) user_dev = true
                                         }
                                     }
-                                    if(!user_dev) return null;
+                                    if(!user_dev) return <div></div>;
                                     return <UserData elem={elem} token={props.token} userToChange={userToChange} setUserToChangeAsync={setUserToChangeAsync} prevUserChanged={prevUserChanged}
                                         setAssignTeamAsync={setAssignTeamAsync} setAssignRoleAsync={setAssignRoleAsync} gettingAllUserData={gettingAllUserData}></UserData>
                                 })
@@ -228,7 +228,7 @@ export default function Users(props: any) {
         }
 
         return (
-            <div className="w-[30%] h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
+            <div className="w-full h-auto bg-black bg-opacity-30 flex flex-col gap-3 rounded-xl">
                 <div className="flex w-full flex-row h-[100px]">
                     <div className="w-[20%] h-[40px] flex flex-row items-center justify-center">
                         <img className="w-full h-full object-cover rounded-full" src="./jonSnow.jpg"></img>
