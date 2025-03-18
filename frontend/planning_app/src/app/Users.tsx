@@ -259,7 +259,7 @@ export default function Users(props: any) {
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
-                                            <div className="flex flex-row items-center">
+                                            <div className="flex flex-row justify-center items-center">
                                                 <div className="text-sm indent-[20px]">{role.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
                                                     onClick={async () => {await deleteRole(role); await props.gettingAllUserData()}}>
@@ -279,7 +279,7 @@ export default function Users(props: any) {
                                 // return <div className=""></div>
                                 // return <div className="text-sm font-medium indent-[20px] font-sans">{group.name}</div>
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
-                                            <div className="flex flex-row items-center">
+                                            <div className="flex flex-row justify-center items-center">
                                                 <div className="text-sm indent-[20px]">{group.name}</div>
                                                 <div className="flex flex-row w-[20px] h-[20px] justify-center items-center hover:cursor-pointer" 
                                                     onClick={async () => {await deleteGroup(group) ; await props.gettingAllUserData()}}>
