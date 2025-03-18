@@ -33,6 +33,39 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 })); 
 
+// Load AWS SDK and set up CloudWatch
+const AWS = require('aws-sdk');
+const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' }); // Ensure this matches your AWS region
+
+// Middleware to track request latency
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', async () => {
+        const latency = Date.now() - start; // Measure latency in milliseconds
+        const params = {
+            MetricData: [
+                {
+                    MetricName: "RequestLatency",
+                    Dimensions: [
+                        { Name: "ServiceName", Value: "ChecklistMicroservice" },
+                        { Name: "Path", Value: req.path }
+                    ],
+                    Unit: "Milliseconds",
+                    Value: latency
+                }
+            ],
+            Namespace: "Checklist Microservice"
+        };
+        try {
+            await cloudwatch.putMetricData(params).promise();
+            console.log(`✅ Sent latency metric: ${latency}ms for ${req.path}`);
+        } catch (err) {
+            console.error("❌ Error sending latency metric:", err);
+        }
+    });
+    next();
+});
+
 // Set up DynamoDB client
 const dynamoDB = new DynamoDBClient({
     region: process.env.AWS_REGION,
