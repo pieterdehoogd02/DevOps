@@ -373,7 +373,7 @@ async function initializeApp() {
         return res.json({ "user": user, "roles": roles, "groups": groups});
       } catch(err) {
         console.error("Error: " + err)
-        return res.error(500).json({ error: "Internal Server Error", details: err.toString()})
+        return res.status(500).json({ error: "Internal Server Error", details: err.toString() });
       }
     });
 
