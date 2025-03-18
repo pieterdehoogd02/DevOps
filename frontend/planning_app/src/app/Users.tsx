@@ -418,11 +418,11 @@ function AssignTeam(props: any) {
                 </div>
 
                 {/* Dropdown Container */}
-                <div  className="relative h-[50%] w-[70%] flex flex-col justify-center items-center">
+                <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
 
                     {/* Dropdown List (Centered) */}
-                    <div ref={dropdownRef} className="relative h-[260%] w-full border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
-                    overflow-y-scroll flex flex-col items-center">
+                    <div ref={dropdownRef} className="relative h-full w-[70%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
+                    overflow-y-scroll flex flex-col justify-center items-center">
                         {groups.map((elem: any, idx: number) => (
                             <div
                                 key={idx}
@@ -575,10 +575,10 @@ function AssignRole(props: any) {
             </div>
 
             {/* Dropdown Container */}
-            <div  className="relative h-[50%] w-[70%] flex flex-col justify-center items-center">
+            <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
 
                 {/* Dropdown List (Centered) */}
-                <div ref={dropdownRef} className="relative h-[260%] w-full border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
+                <div ref={dropdownRef} className="relative h-[260%] w-[70%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
                 overflow-y-scroll flex flex-col items-center">
                     {roles.map((elem: any, idx: number) => (
                         <div
