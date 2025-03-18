@@ -444,7 +444,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                           onClick={() => handleModifyChecklist(showEditModal)} 
                           className="p-2 bg-yellow-500 text-white rounded"
                         >
-                          Save Changes
+                        Save Changes
                         </button>
                       </div>
                     </div>
