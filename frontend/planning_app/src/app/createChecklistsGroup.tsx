@@ -371,7 +371,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       <div className="flex flex-col gap-2 overflow-y-auto scrollbar-hide">
         {checklists.map((checklist, index) => (
           <div key={index} className="bg-gray-300 rounded-md p-3 flex flex-col relative">
-            <div className="font-bold">{checklist.title?.S || "No Title"}</div>
+            <div className="font-bold text-black">{checklist.title?.S || "No Title"}</div>
             <div className="text-xs text-gray-700">{checklist.description?.S || "No Description"}</div>
 
             {/* Three-dot menu for CIOs and POs */}
