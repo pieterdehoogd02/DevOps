@@ -100,7 +100,7 @@ export default function Users(props: any) {
                 <div className={`${(assignTeam || assignRole) ? 'shadow-lg' : 'shadow-none'} relative w-full h-full`}>
                     <div className="left-[2%] top-[2%] w-[96%] h-auto flex flex-col gap-4">
                         <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">CIO(s)</div>
-                        <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
                                     // if(userData.r)
@@ -117,7 +117,7 @@ export default function Users(props: any) {
                             }
                         </div>
                         <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">PO(s)</div>
-                        <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
                                     // if(userData.r)
@@ -134,7 +134,7 @@ export default function Users(props: any) {
                             }
                         </div>
                         <div className="flex top-0 left-0 indent-[10px] h-auto w-full text-white text-xl font-semibold text-start">Devs</div>
-                        <div className="flex h-auto w-full grid-cols-3 gap-x-2 gap-y-2">
+                        <div className="h-auto w-full grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
                                     // if(userData.r)
@@ -267,7 +267,6 @@ export default function Users(props: any) {
                                                 </div>
                                             </div>
                                         </div>
-                                // return <div className="text-sm indent-[20px]">{role.name}</div>
                             })
                         }
                     </div>
