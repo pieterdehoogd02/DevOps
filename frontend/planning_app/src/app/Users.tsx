@@ -118,7 +118,7 @@ export default function Users(props: any) {
                                 })
                             }
                         </div>
-                        <div className="flex top-[2%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-t-[6px] border-b-4 border-slate-400">PO(s)</div>
+                        <div className="flex top-[2%] left-0 indent-[20px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-4 border-slate-400">PO(s)</div>
                         <div className="h-auto left-[20px] w-[calc(100%-20px)] grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
@@ -135,7 +135,7 @@ export default function Users(props: any) {
                                 })
                             }
                         </div>
-                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-t-[6px] border-b-4 border-slate-400">Devs</div>
+                        <div className="flex top-[2%] left-0 indent-[10px] h-auto w-auto text-slate-400 text-xl font-semibold text-start border-b-4 border-slate-400">Devs</div>
                         <div className="h-auto left-[20px] w-[calc(100%-20px)] grid grid-cols-3 gap-x-2 gap-y-2">
                             {
                                 userData.map((elem: any, idx: number) => {
@@ -268,7 +268,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-lg font-semibold text-white indent-[10px] font-sans">Roles</div>
-                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
+                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-2 mb-2">
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
@@ -286,7 +286,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex w-full flex-col">
                     <div className="text-lg font-semibold text-white indent-[10px] font-sans">Groups</div>
-                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-[5px]">
+                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-2 mb-2">
                         {
                             props.elem.groups.map((group: any) => {
                                 // return <div className=""></div>
