@@ -333,24 +333,8 @@ async function initializeApp() {
         
         console.log("roles request")
 
-
-        const clients = await axios.get(
-            `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
-            { headers: { Authorization: `Bearer ${adminToken}` } }
-          );
-        const client = clients.data.find(c => c.clientId === keycloakClientID);
-        const clientUUID = client.id; // Get the correct UUID
-
-        
-        // const rolesUser = await axios.get(
-        //   `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/clients/${clientUUID}`,
-        //   {
-        //     headers: { Authorization: `Bearer ${adminToken}` },
-        //   }
-        // );
-
         const rolesUser = await axios.get(
-            `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
+            `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/realm`,
             {
                 headers: { Authorization: `Bearer ${adminToken}` },
                 httpsAgent: agent // If using a custom HTTPS agent
