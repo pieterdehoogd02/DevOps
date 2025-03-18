@@ -819,12 +819,12 @@ async function initializeApp() {
                 }
             );
 
-            console.log("After group response with group data = " + JSON.stringify(rolesResponse.data))
+            console.log("After role response with roles data = " + JSON.stringify(rolesResponse.data))
 
-            const role1 = rolesResponse.data.find(group => group.name === role.name);
-            if (!role1) return res.status(404).json({ error: "group not found" });
+            const role1 = rolesResponse.data.find(r => r.name === role.name);
+            if (!role1) return res.status(404).json({ error: "role not found" });
             
-            console.log("Deleting from group = " + JSON.stringify(group))
+            console.log("Deleting role = " + JSON.stringify(role1))
 
             await axios.delete(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/roles/${role1.id}`,
@@ -834,11 +834,11 @@ async function initializeApp() {
               }
             )
 
-            console.log(`✅ User ${userId} deleted from group ${role1.name}`)
+            console.log(`✅ User ${userId} deleted from role ${role1.name}`)
 
-            res.json({ message: `✅ User ${userId} deleted from group ${role1.name}` });
+            res.json({ message: `✅ User ${userId} deleted from role ${role1.name}` });
         } catch (error) {
-            res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
+            res.status(500).json({ error: "❌ Failed to delete user to role", details: error.response?.data || error.message });
         }
     }); 
 

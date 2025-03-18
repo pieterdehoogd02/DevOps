@@ -222,7 +222,7 @@ export default function Users(props: any) {
                 } else {
                     console.log("Deleted role = " + role.name)
                 }
-            }catch(error) {
+            } catch(error) {
                 console.error("Error: " + error)
             }
         }
