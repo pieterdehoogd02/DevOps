@@ -181,7 +181,7 @@ function Dashboard(props: any) {
       {/* Top Navigation Bar */}
 
       {/* Sidebar */}
-      <div className="absolute top-[2%] h-[96%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%] py-6">
+      <div className="absolute top-[2%] h-[96%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12">
         {/* Project Section */}
         <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
           <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
@@ -206,8 +206,9 @@ function Dashboard(props: any) {
         </div>
         <div 
           className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
-          onClick={ () => {
+          onClick={async () => {
             setShowUsers(true);
+            await getProjectMembers()
             setShowChecklists(false);
             setShowSubmissions(false);
             setShowSubmittedForms(false);
