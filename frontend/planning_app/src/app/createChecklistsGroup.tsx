@@ -444,7 +444,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                           onClick={() => handleModifyChecklist(showEditModal)} 
                           className="p-2 bg-yellow-500 text-white rounded"
                         >
-                        Save Changes
+                          Save Changes
                         </button>
                       </div>
                     </div>
@@ -524,13 +524,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
               placeholder="Title" 
               value={newTitle} 
               onChange={(e) => setNewTitle(e.target.value)} 
-              className="border p-2 w-full" 
+              className="border p-2 w-full text-gray-700" 
             />
             <textarea 
               placeholder="Description" 
               value={newDescription} 
               onChange={(e) => setNewDescription(e.target.value)} 
-              className="border p-2 w-full mt-2">
+              className="border p-2 w-full mt-2 text-gray-700">
             </textarea>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">
