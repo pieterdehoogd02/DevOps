@@ -87,7 +87,7 @@ export default function Checklists({ token }: { token: string }) {
         <div className="p-4 flex flex-row gap-2 items-center">
           <label className="text-white font-semibold">Viewing Team:</label>
           <select
-            className="p-2 bg-gray-300 rounded-md"
+            className="p-2 bg-black bg-opacity-30 rounded-md"
             value={selectedTeam} 
             onChange={(e) => {
               console.log("🛠 Switching to team:", e.target.value); // Debugging
@@ -533,7 +533,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
               className="border p-2 w-full mt-2 text-gray-700">
             </textarea>
             <div className="flex justify-end gap-2 mt-4">
-              <button onClick={() => setShowAddModal(false)} className="p-2 bg-gray-300 rounded">
+              <button onClick={() => setShowAddModal(false)} className="p-2 bg-blue-500 rounded bg-opacity-80">
                 Cancel
               </button>
               <button 
