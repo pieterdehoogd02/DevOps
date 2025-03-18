@@ -266,7 +266,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Roles</div>
-                    <div className="grid grid-cols-[repeat(3,minmax(0,1fr))] gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
+                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-sm font-medium text-gray-500 overflow-x-auto ml-[5px]">
                         {
                             props.elem.roles.map((role: any) => {
                                 return <div className="flex flex-row w-fit bg-slate-700 rounded-md p-[5px]">
@@ -284,7 +284,7 @@ export default function Users(props: any) {
                 </div>
                 <div className="flex w-full flex-col">
                     <div className="text-sm font-semibold text-white indent-[10px] font-sans">Groups</div>
-                    <div className="grid grid-cols-[repeat(3,minmax(0,1fr))] gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-[5px]">
+                    <div className="flex flex-wrap gap-x-[8px] gap-y-[10px] text-gray-500 w-full overflow-x-auto ml-[5px]">
                         {
                             props.elem.groups.map((group: any) => {
                                 // return <div className=""></div>
