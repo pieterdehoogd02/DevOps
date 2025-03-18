@@ -564,10 +564,11 @@ function AssignRole(props: any) {
     }
 
      return (
-        <div ref={dropdownRef2} className="fixed bg-slate-200 w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
+        <div ref={dropdownRef2} className="fixed w-[30%] h-[30%] flex flex-col gap-[20px] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
+            bg-slate-200 rounded-md bg-opacity-70">
             {/* Header */}
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="text-black text-base font-semibold">
+                <div className="text-gray-700 text-base font-semibold">
                     Assign {props.userToChange.user.username} to role..
                 </div>
             </div>
@@ -576,12 +577,12 @@ function AssignRole(props: any) {
             <div  className="relative h-[50%] w-full flex flex-col justify-center items-center">
 
                 {/* Dropdown List (Centered) */}
-                <div ref={dropdownRef} className="relative h-[260%] w-[60%] border-2 rounded-md bg-slate-500 border-black text-white 
+                <div ref={dropdownRef} className="relative h-[260%] w-[60%] border-[1px] rounded-md bg-slate-500 border-gray-700 text-white 
                 overflow-y-scroll flex flex-col items-center">
                     {roles.map((elem: any, idx: number) => (
                         <div
                             key={idx}
-                            className={`relative w-full h-[1/3] flex flex-row justify-center items-center bg-transparent border-2 border-black 
+                            className={`relative w-full h-[1/3] flex flex-row justify-center items-center bg-transparent border-[1px] border-gray-700 
                             hover:bg-slate-600 cursor-pointer 
                             ${idx === 0 ? "rounded-t-md" : idx === roles.length - 1 ? "rounded-b-md" : "rounded-none"}`}
                             onClick={async () => {
@@ -604,8 +605,8 @@ function AssignRole(props: any) {
                 </div>
             </div>
             <div className="h-[20%] w-full flex flex-row justify-center items-center">
-                <div className="flex flex-row justify-center items-center w-[50%] h-full bg-green-700 rounded-2xl
-                     text-white text-base font-semibold font-sans hover:cursor-pointer border-2 " 
+                <div className="flex flex-row justify-center items-center w-[30%] h-[60%] bg-green-700 rounded-2xl
+                     text-white text-base font-semibold font-sans hover:cursor-pointer border-[1px] border-gray-700" 
                     onClick={async () => {await assignRoles(); props.gettingAllUserData() ; props.setAssignRole(false); }}>
                     Apply changes
                 </div>
