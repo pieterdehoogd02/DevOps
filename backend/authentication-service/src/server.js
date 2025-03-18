@@ -341,7 +341,7 @@ async function initializeApp() {
             }
         );
 
-        console.log("User's Realm Roles:", userRolesResponse.data);
+        console.log("User's Realm Roles:", rolesUser.data);
 
         
         // console.log("roles user = " + JSON.stringify(rolesUser.data))
