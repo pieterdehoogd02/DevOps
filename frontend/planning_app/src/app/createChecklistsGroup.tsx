@@ -98,7 +98,7 @@ export default function Checklists({ token }: { token: string }) {
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
             ) : (
               teams.map((team) => (
-                <option key={team} value={team}>
+                <option key={team} value={team} className="bg-black bg-opacity-30 text-white">
                   {team} 
                 </option>
               ))
