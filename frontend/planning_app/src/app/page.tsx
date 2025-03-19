@@ -225,7 +225,7 @@ function Dashboard(props: any) {
 
         {/* Sidebar Menu Items */}
         <div 
-          className="absolute flex w-full h-[6%] top-[30%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="absolute flex w-full h-[10%] top-[30%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={ () => {
             setShowChecklists(true);
             setShowUsers(false);
@@ -235,7 +235,7 @@ function Dashboard(props: any) {
             Checklists
         </div>
         <div 
-          className="absolute flex w-full h-[6%] top-[36%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="absolute flex w-full h-[10%] top-[40%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={async () => {
             setShowUsers(true);
             await getProjectMembers()
@@ -248,7 +248,7 @@ function Dashboard(props: any) {
         {/* New section for CIO to view submissions */}
         {roles.includes("CIO") && (
           <div
-            className="absolute flex w-full h-[6%] top-[42%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="absolute flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 View Submissions clicked!"); // Debugging
               setShowSubmissions(true);
@@ -263,7 +263,7 @@ function Dashboard(props: any) {
 
         {roles.includes("PO") && (
           <div
-            className="relative flex w-full h-[6%] top-[42%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="relative flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 Viewing Submitted Forms");
               setShowSubmittedForms(true);
