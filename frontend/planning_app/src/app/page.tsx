@@ -103,6 +103,7 @@ function Dashboard(props: any) {
   const [showSubmissions, setShowSubmissions] = useState(false);
 
   const [showSubmittedForms, setShowSubmittedForms] = useState(false);
+  const [users, setUsers]: any[] = useState([]) 
 
   // once we get the token update roles
   useEffect(() => {
@@ -174,6 +175,35 @@ function Dashboard(props: any) {
     }
   }
 
+  // async function gettingAllUserData() {
+  //   // set the data to empty before fetching again
+  //   setUserDataAsync([]) 
+  //   for (let user of users) { // Remove `: any`
+  //       try {
+  //           console.log("user id = " + user.id)
+  //           let response = await fetch(`${authServer}/getUserData?userId=${encodeURIComponent(user.id)}`, {
+  //               method: 'GET',
+  //               headers: { 
+  //                   "Authorization": `Bearer ${props.token}`,
+  //                   "Content-Type": "application/json"
+  //               }, 
+  //           });
+
+  //           if (!response.ok) {
+  //               throw new Error(`Failed to fetch user data: ${response.status}`);
+  //           }
+            
+  //           let user_data = await response.json(); // Parse JSON
+
+  //           console.log("response user = " + JSON.stringify(user_data))
+            
+  //           setUserDataAsync((prevUserData: any) => [...prevUserData, user_data]);
+  //       } catch (error) {
+  //           console.error("Error fetching user data:", error);
+  //       }
+  //   }
+  // }
+
   console.log("Roles before rendering sidebar: ", roles); // Debugging
 
   return (
@@ -195,17 +225,17 @@ function Dashboard(props: any) {
 
         {/* Sidebar Menu Items */}
         <div 
-          className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={ () => {
             setShowChecklists(true);
             setShowUsers(false);
             setShowSubmissions(false);
             setShowSubmittedForms(false);
           }}>
-            Dashboard
+            Checklists
         </div>
         <div 
-          className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={async () => {
             setShowUsers(true);
             await getProjectMembers()
@@ -218,7 +248,7 @@ function Dashboard(props: any) {
         {/* New section for CIO to view submissions */}
         {roles.includes("CIO") && (
           <div
-            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 View Submissions clicked!"); // Debugging
               setShowSubmissions(true);
@@ -233,7 +263,7 @@ function Dashboard(props: any) {
 
         {roles.includes("PO") && (
           <div
-            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 Viewing Submitted Forms");
               setShowSubmittedForms(true);
@@ -248,7 +278,7 @@ function Dashboard(props: any) {
 
         {roles.includes("CIO") && (
           <div 
-            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               // setShowNotifications(true);
               setShowChecklists(false);
@@ -260,7 +290,7 @@ function Dashboard(props: any) {
           </div>
         )}
         <div
-            className="relative flex w-full h-[1/10] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="absolute top-[96%] flex w-full h-[4%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("Logging out");
               props.handleLogout()

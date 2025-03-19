@@ -428,13 +428,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                         placeholder="Title" 
                         value={editTitle} 
                         onChange={(e) => setEditTitle(e.target.value)} 
-                        className="border p-2 w-full"
+                        className="border p-2 w-full text-gray-700 font-medium"
                       />
                       <textarea 
                         placeholder="Description" 
                         value={editDescription} 
                         onChange={(e) => setEditDescription(e.target.value)} 
-                        className="border p-2 w-full mt-2"
+                        className="border p-2 w-full mt-2 text-gray-700 font-medium"
                       />
                       <div className="flex justify-end gap-2 mt-4">
                         <button onClick={() => setShowEditModal(null)} className="p-2 bg-gray-300 rounded">
@@ -524,13 +524,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
               placeholder="Title" 
               value={newTitle} 
               onChange={(e) => setNewTitle(e.target.value)} 
-              className="border p-2 w-full text-gray-700" 
+              className="border p-2 w-full text-gray-700 font-medium" 
             />
             <textarea 
               placeholder="Description" 
               value={newDescription} 
               onChange={(e) => setNewDescription(e.target.value)} 
-              className="border p-2 w-full mt-2 text-gray-700">
+              className="border p-2 w-full mt-2 text-gray-700 font-medium">
             </textarea>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-blue-500 rounded bg-opacity-80">
