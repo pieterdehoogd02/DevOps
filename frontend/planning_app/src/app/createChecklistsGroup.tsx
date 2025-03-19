@@ -423,7 +423,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 {showEditModal && (
                   <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded shadow-xl">
-                      <h2 className="text-lg font-semibold mb-4">Edit Checklist</h2>
+                      <h2 className="text-lg font-semibold mb-4 text-gray-700">Edit Checklist</h2>
                       <input 
                         type="text" 
                         placeholder="Title" 
@@ -495,11 +495,11 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       {showUpdateModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-xl">
-            <h2 className="text-lg font-semibold mb-4">Update Checklist Status</h2>
+            <h2 className="text-lg font-semibold mb-4 text-gray-700">Update Checklist Status</h2>
             <select 
               value={newStatus} 
               onChange={(e) => setNewStatus(e.target.value)} 
-              className="border p-2 w-full"
+              className="border p-2 w-full bg-black bg-opacity-30"
             >
               <option value="">Select Status</option>
               <option value="Backlog">Backlog</option>

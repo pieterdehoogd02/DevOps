@@ -212,6 +212,14 @@ function Dashboard(props: any) {
 
       {/* Sidebar */}
       <div className="absolute top-[2%] h-[96%] left-[2%] w-[16%] bg-gray-600 bg-opacity-70 rounded-xl flex flex-col gap-[12%]">
+
+        <div className="absolute top-[10%] h-[10%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer">
+          <div className="h-[50%] flex flex-col justify-center items-center">
+            <div className="h-[1/2] text-white"></div>
+            <div className="h-[1/2] text-white"></div>
+          </div>
+        </div>
+
         {/* Project Section */}
         <div className="relative flex flex-row w-full top-[20%] h-[1/10]">
           <div className="w-[30%] h-full flex flex-row justify-end items-center rounded-xl">
@@ -263,7 +271,7 @@ function Dashboard(props: any) {
 
         {roles.includes("PO") && (
           <div
-            className="relative flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="absolute flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 Viewing Submitted Forms");
               setShowSubmittedForms(true);
