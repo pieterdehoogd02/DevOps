@@ -225,7 +225,7 @@ function Dashboard(props: any) {
 
         {/* Sidebar Menu Items */}
         <div 
-          className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="absolute flex w-full h-[10%] top-[30%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={ () => {
             setShowChecklists(true);
             setShowUsers(false);
@@ -235,7 +235,7 @@ function Dashboard(props: any) {
             Checklists
         </div>
         <div 
-          className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
+          className="absolute flex w-full h-[10%] top-[40%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer" 
           onClick={async () => {
             setShowUsers(true);
             await getProjectMembers()
@@ -248,7 +248,7 @@ function Dashboard(props: any) {
         {/* New section for CIO to view submissions */}
         {roles.includes("CIO") && (
           <div
-            className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="absolute flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 View Submissions clicked!"); // Debugging
               setShowSubmissions(true);
@@ -263,7 +263,7 @@ function Dashboard(props: any) {
 
         {roles.includes("PO") && (
           <div
-            className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="relative flex w-full h-[10%] top-[50%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("📌 Viewing Submitted Forms");
               setShowSubmittedForms(true);
@@ -276,7 +276,7 @@ function Dashboard(props: any) {
           </div>
         )}
 
-        {roles.includes("CIO") && (
+        {/* {roles.includes("CIO") && (
           <div 
             className="relative flex w-full h-[7%] top-[12%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
@@ -288,9 +288,9 @@ function Dashboard(props: any) {
           >
             Notifications
           </div>
-        )}
+        )} */}
         <div
-            className="absolute top-[96%] flex w-full h-[4%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
+            className="absolute top-[90%] flex w-full h-[10%] text-white text-md justify-center items-center font-semibold hover:underline-offset-4 hover:underline hover:cursor-pointer"
             onClick={() => {
               console.log("Logging out");
               props.handleLogout()
