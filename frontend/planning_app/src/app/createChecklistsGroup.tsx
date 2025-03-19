@@ -365,7 +365,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
             title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"}`}>
         </div>
         <span className="flex ml-2 font-semibold text-white">{title}</span>
-        <div className="flex flex-row indent-[10px] justify-center items-center rounded-full w-[20px] h-[20px] bg-slate-500 text-white">{checklists.length}</div>
+        <div className="flex flex-row left-[10px] justify-center items-center rounded-xl w-[20px] h-[20px] bg-slate-600 text-white">{checklists.length}</div>
       </div>
 
       {/* Checklist Items */}
