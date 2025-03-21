@@ -27,13 +27,13 @@ const options = {
 // Middleware
 app.use(express.json());
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 })); 
+
 
 // Load AWS SDK and set up CloudWatch
 const AWS = require('aws-sdk');
@@ -90,6 +90,7 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "bearer-only": true
 });
 app.use(keycloak.middleware());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
