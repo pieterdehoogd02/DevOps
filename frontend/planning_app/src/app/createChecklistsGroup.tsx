@@ -98,7 +98,7 @@ export default function Checklists({ token }: { token: string }) {
               <option value="">No Teams Available</option> // ✅ Show message if no teams exist
             ) : (
               teams.map((team) => (
-                <option key={team} value={team}>
+                <option key={team} value={team} className="bg-black bg-opacity-30 text-white">
                   {team} 
                 </option>
               ))
@@ -365,7 +365,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
           ${title === "Todo" ? "bg-orange-600" : title === "In progress" ? "bg-yellow-400" :
             title === "In review" ? "bg-blue-600" : title === "Done" ? "bg-green-600" : "bg-red-600"}`}>
         </div>
-        <span className="ml-2 font-semibold text-white">{title}</span>
+        <span className="flex ml-2 font-semibold text-white">{title}</span>
+        <div className="flex flex-row ml-2 justify-center items-center rounded-xl font-semibold w-[30px] h-[20px] bg-slate-700 text-white">{checklists.length}</div>
       </div>
 
       {/* Checklist Items */}
@@ -423,19 +424,19 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
                 {showEditModal && (
                   <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded shadow-xl">
-                      <h2 className="text-lg font-semibold mb-4">Edit Checklist</h2>
+                      <h2 className="text-lg font-semibold mb-4 text-gray-700">Edit Checklist</h2>
                       <input 
                         type="text" 
                         placeholder="Title" 
                         value={editTitle} 
                         onChange={(e) => setEditTitle(e.target.value)} 
-                        className="border p-2 w-full"
+                        className="border p-2 w-full text-gray-700 font-medium"
                       />
                       <textarea 
                         placeholder="Description" 
                         value={editDescription} 
                         onChange={(e) => setEditDescription(e.target.value)} 
-                        className="border p-2 w-full mt-2"
+                        className="border p-2 w-full mt-2 text-gray-700 font-medium"
                       />
                       <div className="flex justify-end gap-2 mt-4">
                         <button onClick={() => setShowEditModal(null)} className="p-2 bg-gray-300 rounded">
@@ -495,11 +496,11 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       {showUpdateModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-xl">
-            <h2 className="text-lg font-semibold mb-4">Update Checklist Status</h2>
+            <h2 className="text-lg font-semibold mb-4 text-gray-700">Update Checklist Status</h2>
             <select 
               value={newStatus} 
               onChange={(e) => setNewStatus(e.target.value)} 
-              className="border p-2 w-full"
+              className="border p-2 w-full bg-black bg-opacity-30"
             >
               <option value="">Select Status</option>
               <option value="Backlog">Backlog</option>
@@ -525,13 +526,13 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
               placeholder="Title" 
               value={newTitle} 
               onChange={(e) => setNewTitle(e.target.value)} 
-              className="border p-2 w-full text-gray-700" 
+              className="border p-2 w-full text-gray-700 font-medium" 
             />
             <textarea 
               placeholder="Description" 
               value={newDescription} 
               onChange={(e) => setNewDescription(e.target.value)} 
-              className="border p-2 w-full mt-2 text-gray-700">
+              className="border p-2 w-full mt-2 text-gray-700 font-medium">
             </textarea>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowAddModal(false)} className="p-2 bg-blue-500 rounded bg-opacity-80">
