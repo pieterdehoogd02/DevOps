@@ -16,6 +16,7 @@ const { swaggerUi, swaggerSpec } = require('./swagger');
 
 // Initialize Express app
 const app = express();
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // Load SSL Certificates
@@ -90,7 +91,6 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "bearer-only": true
 });
 app.use(keycloak.middleware());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
