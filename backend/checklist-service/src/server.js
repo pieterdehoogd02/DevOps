@@ -12,7 +12,7 @@ const fs = require("fs");
 const https = require("https");
 const path = require("path");
 const PORT = 5002;
-const { swaggerUi, swaggerDocs } = require('./swagger');
+const { swaggerUi, swaggerSpec } = require('./swagger');
 
 // Initialize Express app
 const app = express();
@@ -90,7 +90,7 @@ const keycloak = new Keycloak({ store: memoryStore }, {
     "bearer-only": true
 });
 app.use(keycloak.middleware());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
