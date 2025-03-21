@@ -17,7 +17,7 @@ const options = {
       },
     ],
   },
-  apis: ["./server.js"], // Include the file where API endpoints are defined
+  apis: ["./src/server.js"], // Include the file where API endpoints are defined
 };
 
 // Generate Swagger Specification
