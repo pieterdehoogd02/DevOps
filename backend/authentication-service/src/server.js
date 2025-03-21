@@ -14,9 +14,7 @@ const https = require('https');
 const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
-
 const { swaggerUi, swaggerSpec } = require('./swagger');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // AWS Secrets Manager Client 
 const client = new SecretsManagerClient({
@@ -27,6 +25,7 @@ const client = new SecretsManagerClient({
 // Initialize Express app
 const app = express();
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.disable('strict routing'); // Treat /test and /test/ as the same route
 
 app.use(cors({
