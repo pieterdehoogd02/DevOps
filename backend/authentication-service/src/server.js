@@ -25,6 +25,8 @@ const client = new SecretsManagerClient({
 // Initialize Express app
 const app = express();
 app.use(express.json());
+
+console.log("Swagger Spec:", JSON.stringify(swaggerSpec, null, 2)); // Add this line to debug
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.disable('strict routing'); // Treat /test and /test/ as the same route
 
