@@ -82,7 +82,7 @@ jobs:
           sudo docker stop keycloak && sudo docker rm keycloak
 
           # start the keycloak and db service
-          sudo docker compose -f compose1.yaml up -d
+          sudo docker-compose -f compose1.yaml up -d
 
           # see if the keycloak and keycloak DB are running
           sudo docker ps
