@@ -15,6 +15,9 @@ const http = require('http');
 const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
 
+const { swaggerUi, swaggerSpec } = require('./swagger');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // AWS Secrets Manager Client 
 const client = new SecretsManagerClient({
   region: "us-east-1",
@@ -129,7 +132,49 @@ async function initializeApp() {
     app.get('/', (req, res) => {
         res.send('Authentication Service is Running');
     });
-
+    
+    /**
+     * @swagger
+     * /auth/login/:
+     *   post:
+     *     summary: Authenticate user and obtain Keycloak access token
+     *     tags:
+     *       - Authentication
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - username
+     *               - password
+     *             properties:
+     *               username:
+     *                 type: string
+     *                 example: testuser
+     *               password:
+     *                 type: string
+     *                 example: password123
+     *     responses:
+     *       200:
+     *         description: Successful authentication
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 access_token:
+     *                   type: string
+     *                 refresh_token:
+     *                   type: string
+     *                 expires_in:
+     *                   type: integer
+     *       400:
+     *         description: Missing username or password
+     *       500:
+     *         description: Failed to authenticate
+     */
     // ✅ User Login Endpoint
     app.post('/auth/login/', async (req, res) => {
         try {
@@ -178,6 +223,45 @@ async function initializeApp() {
         });
     });
 
+    /**
+     * @swagger
+     * /getUserRoles/:
+     *   get:
+     *     summary: Retrieve Keycloak roles assigned to a specific user
+     *     tags:
+     *       - User Management
+     *     security:
+     *       - bearerAuth: []  # Indicates this endpoint requires a Bearer token (Keycloak)
+     *     parameters:
+     *       - in: query
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The ID of the user in Keycloak whose roles you want to retrieve
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved user roles
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: string
+     *                   name:
+     *                     type: string
+     *                   description:
+     *                     type: string
+     *       400:
+     *         description: Missing or invalid userId
+     *       401:
+     *         description: Unauthorized - missing or invalid token
+     *       500:
+     *         description: Internal server error
+     */
     app.get('/getUserRoles/', keycloak.protect(), async (req, res) => {
       try {
 
@@ -228,6 +312,45 @@ async function initializeApp() {
       }
     });
 
+    /**
+     * @swagger
+     * /getUserGroups/:
+     *   get:
+     *     summary: Retrieve all Keycloak groups the user belongs to
+     *     tags:
+     *       - User Management
+     *     security:
+     *       - bearerAuth: []  # Uses Keycloak access token
+     *     parameters:
+     *       - in: query
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The Keycloak user ID whose groups will be retrieved
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved user groups
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: string
+     *                   name:
+     *                     type: string
+     *                   path:
+     *                     type: string
+     *       400:
+     *         description: Missing or invalid userId
+     *       401:
+     *         description: Unauthorized - missing or invalid token
+     *       500:
+     *         description: Internal server error
+     */
      app.get('/getUserGroups/', keycloak.protect(), async (req, res) => {
       try {
         // get keycloakSecret & clientSecret
@@ -268,7 +391,58 @@ async function initializeApp() {
       }
     });
    
-    
+    /**
+     * @swagger
+     * /getUserData/:
+     *   get:
+     *     summary: Retrieve full user data including basic info, groups, and roles
+     *     tags:
+     *       - User Management
+     *     security:
+     *       - bearerAuth: []  # Requires Keycloak access token
+     *     parameters:
+     *       - in: query
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The Keycloak user ID to fetch data for
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved user data
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 user:
+     *                   type: object
+     *                   description: Basic user profile info from Keycloak
+     *                 roles:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       name:
+     *                         type: string
+     *                 groups:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                       name:
+     *                         type: string
+     *                       path:
+     *                         type: string
+     *       400:
+     *         description: Missing or invalid userId
+     *       401:
+     *         description: Unauthorized - invalid or missing token
+     *       500:
+     *         description: Internal server error
+     */
     app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
 
@@ -349,7 +523,46 @@ async function initializeApp() {
       }
     });
 
-    
+    /**
+     * @swagger
+     * /project/members/:
+     *   get:
+     *     summary: Retrieve all users assigned to the Keycloak realm
+     *     tags:
+     *       - User Management
+     *     security:
+     *       - bearerAuth: []  # Requires Keycloak access token
+     *     responses:
+     *       200:
+     *         description: List of users in the Keycloak realm
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 users:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                         description: Unique user ID
+     *                       username:
+     *                         type: string
+     *                         description: Keycloak username
+     *                       email:
+     *                         type: string
+     *                         description: User's email
+     *                       firstName:
+     *                         type: string
+     *                       lastName:
+     *                         type: string
+     *       401:
+     *         description: Unauthorized - invalid or missing token
+     *       500:
+     *         description: Internal server error
+     */
     // Assume we only have one client for now
     // ✅ Protected route: Retrieve user info 
     app.get('/project/members/', keycloak.protect(), async (req, res) => {
@@ -402,6 +615,42 @@ async function initializeApp() {
       }
     });
 
+    /**
+     * @swagger
+     * /groups/:
+     *   get:
+     *     summary: Retrieve all groups from the Keycloak realm
+     *     tags:
+     *       - Group Management
+     *     security:
+     *       - bearerAuth: []  # Requires Keycloak access token
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved list of groups
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 groups:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                         description: Unique group ID
+     *                       name:
+     *                         type: string
+     *                         description: Name of the group
+     *                       path:
+     *                         type: string
+     *                         description: Full path of the group
+     *       401:
+     *         description: Unauthorized - invalid or missing token
+     *       500:
+     *         description: Internal server error
+     */
     app.get('/groups/', keycloak.protect(), async (req, res) => {
       try {
 
@@ -453,6 +702,42 @@ async function initializeApp() {
       }
     });
 
+    /**
+     * @swagger
+     * /roles/:
+     *   get:
+     *     summary: Retrieve all roles defined in the Keycloak realm
+     *     tags:
+     *       - Role Management
+     *     security:
+     *       - bearerAuth: []  # Requires Keycloak access token
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved list of roles
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 roles:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                         description: Role ID
+     *                       name:
+     *                         type: string
+     *                         description: Role name
+     *                       description:
+     *                         type: string
+     *                         description: Description of the role
+     *       401:
+     *         description: Unauthorized - invalid or missing token
+     *       500:
+     *         description: Internal server error
+     */
     app.get('/roles/', keycloak.protect(), async (req, res) => {
       try {
 
@@ -501,6 +786,53 @@ async function initializeApp() {
       }
     });
     
+    /**
+     * @swagger
+     * /assign-team/:
+     *   post:
+     *     summary: Assign a user to a team (CIO only)
+     *     tags:
+     *       - Team Management
+     *     security:
+     *       - bearerAuth: []  # Requires CIO token
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - userId
+     *               - teamName
+     *             properties:
+     *               userId:
+     *                 type: string
+     *                 description: ID of the user to assign
+     *                 example: "3f981f60-bf56-4f8f-bec4-8d52c558eae9"
+     *               teamName:
+     *                 type: string
+     *                 description: Name of the team (group) to assign user to
+     *                 example: "dev_team_1"
+     *     responses:
+     *       200:
+     *         description: User successfully assigned to the team
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: "✅ User 3f981f60-bf56-4f8f-bec4-8d52c558eae9 assigned to team dev_team_1"
+     *       400:
+     *         description: Missing userId or teamName
+     *       403:
+     *         description: Access denied - user is not CIO
+     *       404:
+     *         description: Specified team not found
+     *       500:
+     *         description: Internal server error
+     */
     // ✅ Assign a user to a team (CIO only)
     app.post('/assign-team/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -579,6 +911,56 @@ async function initializeApp() {
         }
     }); 
 
+    /**
+     * @swagger
+     * /delete-group/:
+     *   post:
+     *     summary: Remove a user from a group (CIO only)
+     *     tags:
+     *       - Team Management
+     *     security:
+     *       - bearerAuth: []  # Requires CIO token
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - userId
+     *               - group1
+     *             properties:
+     *               userId:
+     *                 type: string
+     *                 description: ID of the user to remove
+     *                 example: "3f981f60-bf56-4f8f-bec4-8d52c558eae9"
+     *               group1:
+     *                 type: object
+     *                 description: Group to remove the user from
+     *                 properties:
+     *                   name:
+     *                     type: string
+     *                     example: "dev_team_1"
+     *     responses:
+     *       200:
+     *         description: User successfully removed from the group
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: "✅ User 3f981f60-bf56-4f8f-bec4-8d52c558eae9 deleted from group dev_team_1"
+     *       400:
+     *         description: Missing userId or group1 in request
+     *       403:
+     *         description: Access denied - user is not CIO
+     *       404:
+     *         description: Group not found
+     *       500:
+     *         description: Internal server error
+     */
     // ✅ Assign a user to a team (CIO only)
     app.post('/delete-group/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
@@ -656,7 +1038,54 @@ async function initializeApp() {
         }
     }); 
 
-     // ✅ Assign a user to a team (CIO only)
+    /**
+     * @swagger
+     * /assign-role/:
+     *   post:
+     *     summary: Assign a role to a user (CIO only)
+     *     tags:
+     *       - Role Management
+     *     security:
+     *       - bearerAuth: []  # CIO authorization required
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - userId
+     *               - roleName
+     *             properties:
+     *               userId:
+     *                 type: string
+     *                 description: ID of the user to assign the role to
+     *                 example: "e01f1451-94e5-41a2-b015-03f2142b83a3"
+     *               roleName:
+     *                 type: string
+     *                 description: Name of the role to assign
+     *                 example: "PO"
+     *     responses:
+     *       200:
+     *         description: Role successfully assigned to user
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: "✅ User e01f1451-94e5-41a2-b015-03f2142b83a3 assigned to role PO"
+     *       400:
+     *         description: Missing userId or roleName
+     *       403:
+     *         description: Access denied (not a CIO)
+     *       404:
+     *         description: Role not found
+     *       500:
+     *         description: Internal server error
+     */
+    // ✅ Assign a user to a team (CIO only)
     app.post('/assign-role/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
@@ -752,7 +1181,56 @@ async function initializeApp() {
         }
     }); 
 
-
+    /**
+     * @swagger
+     * /delete-role/:
+     *   post:
+     *     summary: Remove a role from a user (CIO only)
+     *     tags:
+     *       - Role Management
+     *     security:
+     *       - bearerAuth: []  # CIO access required
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - userId
+     *               - role
+     *             properties:
+     *               userId:
+     *                 type: string
+     *                 description: ID of the user from whom the role will be removed
+     *                 example: "12345678-90ab-cdef-1234-567890abcdef"
+     *               role:
+     *                 type: object
+     *                 properties:
+     *                   name:
+     *                     type: string
+     *                     description: Name of the role to remove
+     *                     example: "PO"
+     *     responses:
+     *       200:
+     *         description: Role successfully removed from user
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: "✅ User 12345678-90ab-cdef-1234-567890abcdef deleted from role PO"
+     *       400:
+     *         description: Missing userId or role
+     *       403:
+     *         description: Access denied (not a CIO)
+     *       404:
+     *         description: Role not found
+     *       500:
+     *         description: Internal server error
+     */
      // ✅ Assign a user to a team (CIO only)
     app.post('/delete-role/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
