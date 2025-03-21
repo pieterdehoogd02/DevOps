@@ -33,6 +33,8 @@ jobs:
             git remote add origin ${{ secrets.DEPLOY_REPO_URL }}
           fi
 
+          git remote -v
+
           # Pull latest changes
           git pull origin main
 

@@ -12,11 +12,11 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: "https://auth.planmeet.net", // Update with your actual API URL
+                url: "https://checklist.planmeet.net", // Update with your actual API URL
             },
         ],
     },
-    apis: ["../server.js"], // Point to the file where your API routes are defined
+    apis: ["./src/server.js"], // Point to the file where your API routes are defined
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
