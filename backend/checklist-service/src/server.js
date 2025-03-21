@@ -95,8 +95,48 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // ✅ Health check
 app.get('/', (req, res) => res.send('Checklist Service is Running'));
 
-// tested
-// ✅ CIO: Create a new checklist
+/**
+ * @swagger
+ * /checklists:
+ *   post:
+ *     summary: Create a new checklist
+ *     description: CIO users can create a new checklist.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Checklists
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - assignedTeam
+ *               - status
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the checklist
+ *               description:
+ *                 type: string
+ *                 description: The description of the checklist (optional)
+ *               assignedTeam:
+ *                 type: string
+ *                 description: The team assigned to the checklist
+ *               status:
+ *                 type: string
+ *                 description: The status of the checklist
+ *     responses:
+ *       201:
+ *         description: Checklist created successfully
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Failed to create checklist
+ */
+ // Endpoint for CIO's
 app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     
     // extract `status`
@@ -131,6 +171,24 @@ app.post('/checklists', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /checklists:
+ *   get:
+ *     summary: Get checklists assigned to a team
+ *     description: PO & Developers can view checklists assigned to their team. CIOs can view all checklists.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Checklists
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved checklists
+ *       403:
+ *         description: User has no assigned team
+ *       500:
+ *         description: Internal Server Error
+ */
 // tested
 // ✅ PO & Devs: View checklists assigned to their team
 app.get("/checklists", keycloak.protect(), async (req, res) => {
@@ -165,6 +223,49 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /checklists/{id}/{assignedTeam}:
+ *   put:
+ *     summary: Update checklist status
+ *     description: PO users can update the status of a checklist assigned to a specific team.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Checklists
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The checklist ID
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The team assigned to the checklist
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 description: The new status of the checklist
+ *     responses:
+ *       200:
+ *         description: Checklist updated successfully
+ *       404:
+ *         description: Checklist not found
+ *       500:
+ *         description: Failed to update checklist
+ */
 // tested
 // ✅ PO: Update checklist status
 app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
@@ -205,6 +306,33 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
     }
 });
 
+/**
+ * @swagger
+ * /checklists/{id}/{assignedTeam}:
+ *   delete:
+ *     summary: Delete a checklist
+ *     description: Deletes a checklist based on its ID and assigned team.
+ *     security:
+ *       - keycloak: [realm:CIO]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Checklist ID
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         description: Assigned team
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Checklist deleted successfully
+ *       500:
+ *         description: Failed to delete checklist
+ */
 // tested
 // ✅ CIO: Delete a checklist
 app.delete('/checklists/:id/:assignedTeam', keycloak.protect('realm:CIO'), async (req, res) => {
@@ -236,6 +364,25 @@ async function getAllChecklists() {
     }
 }
 
+/**
+ * @swagger
+ * /checklists/team/{team}:
+ *   get:
+ *     summary: Get Checklists for a Specific Team
+ *     description: Retrieves checklists for a specific assigned team.
+ *     parameters:
+ *       - in: path
+ *         name: team
+ *         required: true
+ *         description: Team name
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of checklists
+ *       500:
+ *         description: Internal Server Error
+ */
 // tested
 // ✅ Get Checklists for a Specific Team
 app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
@@ -255,6 +402,46 @@ app.get('/checklists/team/:team', keycloak.protect(), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /checklists/{id}/{assignedTeam}/edit:
+ *   put:
+ *     summary: Update checklist title and description
+ *     description: Updates the title and description of a checklist.
+ *     security:
+ *       - keycloak: [realm:CIO]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Checklist updated successfully
+ *       400:
+ *         description: Title and Description are required
+ *       404:
+ *         description: Checklist not found
+ *       500:
+ *         description: Failed to update checklist
+ */
 // ✅ CIO: Update checklist title and description
 app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), async (req, res) => {
     const { id, assignedTeam } = req.params;
@@ -295,6 +482,42 @@ app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), asy
     }
 });
 
+/**
+ * @swagger
+ * /submission/{assignedTeam}:
+ *   post:
+ *     summary: Submit all "Done" checklists for the specified team.
+ *     description: Fetches and submits all checklists marked as "Done" for the specified team, and marks them as submitted.
+ *     tags:
+ *       - PO
+ *     parameters:
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         description: The team assigned to the checklists.
+ *         schema:
+ *           type: string
+ *     security:
+ *       - keycloak: [realm:PO]
+ *     responses:
+ *       200:
+ *         description: All "Done" checklists submitted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 submittedChecklists:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       400:
+ *         description: No completed checklists available for submission.
+ *       500:
+ *         description: Failed to submit checklists.
+ */
 // ✅ PO: Submit all "Done" checklists for their team 
 app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
     const { assignedTeam } = req.params;
@@ -346,6 +569,28 @@ app.post('/submission/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     }
 });
 
+/**
+ * @swagger
+ * /submissions:
+ *   get:
+ *     summary: View all submitted checklists.
+ *     description: Fetches all checklists that are marked as submitted.
+ *     tags:
+ *       - CIO
+ *     security:
+ *       - keycloak: [realm:CIO]
+ *     responses:
+ *       200:
+ *         description: A list of all submitted checklists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Failed to fetch submissions.
+ */
 // ✅ CIO: View all submitted checklists
 app.get('/submissions', keycloak.protect('realm:CIO'), async (req, res) => {
     try {
@@ -363,6 +608,35 @@ app.get('/submissions', keycloak.protect('realm:CIO'), async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /submissions/{assignedTeam}:
+ *   get:
+ *     summary: View all submitted checklists for a specific team.
+ *     description: Fetches all checklists for the specified team that are marked as submitted.
+ *     tags:
+ *       - PO
+ *     parameters:
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         description: The team assigned to the checklists.
+ *         schema:
+ *           type: string
+ *     security:
+ *       - keycloak: [realm:PO]
+ *     responses:
+ *       200:
+ *         description: A list of submitted checklists for the team.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Failed to fetch submitted checklists.
+ */
 // ✅ PO: View all submitted checklists for their team
 app.get('/submissions/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
     const { assignedTeam } = req.params;
@@ -385,6 +659,52 @@ app.get('/submissions/:assignedTeam', keycloak.protect('realm:PO'), async (req, 
     }
 });
 
+/**
+ * @swagger
+ * /submissions/{id}/{assignedTeam}/edit:
+ *   put:
+ *     summary: Modify a submitted checklist (title & description).
+ *     description: Allows a PO to modify the title and description of a submitted checklist.
+ *     tags:
+ *       - PO
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the checklist.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: assignedTeam
+ *         required: true
+ *         description: The team assigned to the checklist.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the checklist.
+ *               description:
+ *                 type: string
+ *                 description: The description of the checklist.
+ *     security:
+ *       - keycloak: [realm:PO]
+ *     responses:
+ *       200:
+ *         description: Checklist updated successfully.
+ *       400:
+ *         description: Title and description are required.
+ *       404:
+ *         description: Checklist not found.
+ *       500:
+ *         description: Failed to update checklist.
+ */
 // ✅ PO: Modify submitted checklist (title & description)
 app.put('/submissions/:id/:assignedTeam/edit', keycloak.protect('realm:PO'), async (req, res) => {
     const { id, assignedTeam } = req.params;
