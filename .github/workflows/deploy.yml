@@ -117,6 +117,5 @@ jobs:
 
           # Build and start checklist-service (only if not already running)
           docker build -t checklist-service .
-          cd /home/ubuntu/checklist-service/backend/checklist-service
           docker run -d -p 5002:5002 --name checklist-service --env-file .env -v /etc/letsencrypt:/etc/letsencrypt:ro checklist-service
         EOF
