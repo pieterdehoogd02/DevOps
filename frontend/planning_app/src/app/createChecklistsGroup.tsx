@@ -348,7 +348,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
   //       const data = await response.json();
   //       setChecklists(data);
   //     } else {
-  //       console.error("❌ Error fetching submitted checklists:", response.statusText);
+  //       console.error("❌ 
+  // Error fetching submitted checklists:", response.statusText);
   //     }
   //   } catch (error) {
   //     console.error("❌ Failed to fetch submitted checklists:", error);
