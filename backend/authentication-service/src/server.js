@@ -35,9 +35,7 @@ app.use(cors({
 
 
 // Load SSL certificates
-// const letsEncryptCA = fs.readFileSync(`/app/fullchain.pem`);
 const letsEncryptCA = fs.readFileSync('/usr/local/share/ca-certificates/ISRG_Root_X1.crt')
-// console.log('Loaded certificate chain:', letsEncryptCA.toString());
 
 const agent = new https.Agent({
     ca: letsEncryptCA
@@ -232,17 +230,10 @@ async function initializeApp() {
 
      app.get('/getUserGroups/', keycloak.protect(), async (req, res) => {
       try {
-
-        console.log("In endpoint getUserData")
-
-        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
-        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
-
-        console.log("Before getting searchedId")
-
+        // get keycloakSecret & clientSecret
+        const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  
         const searchedId = req.query.userId
-
-        console.log("SearchedId = " + JSON.stringify(searchedId))
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(
@@ -257,11 +248,11 @@ async function initializeApp() {
               httpsAgent: agent  // ✅ Use HTTPS agent }
             }
         );
-
+        // get admin token
         const adminToken = tokenResponse.data.access_token;
-        
-        // console.log("before request to get user groups")
 
+        // get groups user by making a request at the keycloak instance domain and the realm
+        // based on user id given by the user request.  
         const groupsUser = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}/groups`,
           {
@@ -269,10 +260,7 @@ async function initializeApp() {
           }
         );
         
-        // console.log("groups user = " + groupsUser.data)
-
         const groups = groupsUser.data;
-        // console.log('groups:', groups);
 
         return { groups };
       } catch(err) {
