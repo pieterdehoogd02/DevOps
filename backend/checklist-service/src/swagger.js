@@ -16,7 +16,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ["./src/server.js"], // Point to the file where your API routes are defined
+    apis: ["./server.js"], // Point to the file where your API routes are defined
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
