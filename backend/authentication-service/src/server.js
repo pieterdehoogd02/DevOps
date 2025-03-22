@@ -84,13 +84,12 @@ async function getServiceConfig() {
 
     console.log("🔍 Fetching Keycloak URL from AWS Secrets Manager...");
 
+    // get all the necessary parameters for later requests to the keycloak server
+    // url - domain of the keycloak instance, realm - organisation, clientID - application ID
     const keycloakUrl = await getSecretValue('KEYCLOAK_URL1');
     const keycloakRealm = await getSecretValue('KEYCLOAK_REALM');
     const keycloakClientID = await getSecretValue('KeycloakClientID');
     const authService = await getSecretValue('AUTH_SERVICE_SECRET');
-
-    console.log("keycloakUrl = " + JSON.stringify(keycloakUrl))
-    console.log("✅ Keycloak Secrets Fetched:");
 
     return {
       keycloakUrl: keycloakUrl.KEYCLOAK_URL1, // assuming the secret is a JSON object with the key `KEYCLOAK_URL1`
@@ -108,9 +107,6 @@ async function getServiceConfig() {
 async function initializeApp() {
     const { keycloakUrl, keycloakRealm, keycloakClientID, authServiceUrl } = await getServiceConfig();
 
-    console.log(`🔹 Keycloak URL: ${keycloakUrl}, Realm: ${keycloakRealm}, Client ID: ${keycloakClientID}`);
-    console.log(`🔹 Auth Service URL: ${authServiceUrl}`);
-
     // Configure Keycloak instance
     const keycloak = new Keycloak({ store: memoryStore }, {
         "realm": keycloakRealm,
@@ -126,8 +122,6 @@ async function initializeApp() {
         logout: '/logout',
         admin: '/',
     }))
-
-    console.log("after keycloak middleware")
 
     // ✅ Basic health check endpoint
     app.get('/', (req, res) => {
@@ -179,20 +173,18 @@ async function initializeApp() {
     // ✅ User Login Endpoint
     app.post('/auth/login/', async (req, res) => {
         try {
+
         const { username, password } = req.body;
+
+        // if missing username or password then return error
         if (!username || !password) {
             return res.status(400).json({ error: "Username and password are required" });
         }
 
 
-        console.log("🔍 Fetching Keycloak client secret from AWS Secrets Manager...");
+        // Fetching Keycloak client secret from AWS Secrets Manager
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
-
-        
-        console.log("trying to get keycloak configurations");
-
-        console.log("URL = " + `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`);
 
         // Request a token from Keycloak
         const response = await axios.post(
@@ -263,19 +255,16 @@ async function initializeApp() {
      *       500:
      *         description: Internal server error
      */
+    // endpoint where we get roles of a user
     app.get('/getUserRoles/', keycloak.protect(), async (req, res) => {
       try {
 
-        console.log("In endpoint getUserData")
-
+        
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
-        console.log("Before getting searchedId")
-
+        // get user id
         const searchedId = req.query.userId
-
-        console.log("SearchedId = " + JSON.stringify(searchedId))
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(
@@ -293,8 +282,7 @@ async function initializeApp() {
 
         const adminToken = tokenResponse.data.access_token;
 
-        console.log("before request to get user roles")
-        
+        // Step 2: get the user data associated with a particular client (application)
         const rolesUser = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}/role-mappings/clients/${keycloakClientID}`,
           {
@@ -302,10 +290,8 @@ async function initializeApp() {
           }
         );
         
-        // console.log("roles user = " + rolesUser.data)
-
+        // get roles data
         const roles = rolesUser.data;
-        // console.log('Roles:', roles);
 
         return { roles };
       } catch(err) {
@@ -352,11 +338,14 @@ async function initializeApp() {
      *       500:
      *         description: Internal server error
      */
+    // endpoint where we get groups of a user
      app.get('/getUserGroups/', keycloak.protect(), async (req, res) => {
       try {
         // get keycloakSecret & clientSecret
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  
-        const clientSecret = keycloakSecret.Keycloak_Client_Secret;  
+        const clientSecret = keycloakSecret.Keycloak_Client_Secret; 
+        
+        // get id of the desired user from the query params
         const searchedId = req.query.userId
 
         // Step 1: Get Admin Token
@@ -384,6 +373,7 @@ async function initializeApp() {
           }
         );
         
+        // get user data from the response
         const groups = groupsUser.data;
 
         return { groups };
@@ -447,16 +437,12 @@ async function initializeApp() {
     app.get('/getUserData/', keycloak.protect(), async (req, res) => {
       try {
 
-        console.log("In endpoint getUserData")
 
         const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
         const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
-        console.log("Before getting searchedId")
-
+        // get user id from the query params
         const searchedId = req.query.userId
-
-        console.log("SearchedId = " + JSON.stringify(searchedId))
 
         // Step 1: Get Admin Token
         const tokenResponse = await axios.post(
@@ -474,6 +460,7 @@ async function initializeApp() {
 
         const adminToken = tokenResponse.data.access_token;
 
+        // get information about a user
         const userResponse = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${encodeURIComponent(searchedId)}`,
           {
@@ -481,10 +468,7 @@ async function initializeApp() {
           }
         );
 
-        // console.log("userResponse data = " + JSON.stringify(userResponse.data))
-        
-        console.log("before group request")
-
+        // get user groups
         const groupsUser = await axios.get(
           `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/groups`,
           {
@@ -492,10 +476,7 @@ async function initializeApp() {
           }
         );
         
-        // console.log("groups user = " + JSON.stringify(groupsUser.data))
-        
-        console.log("roles request")
-
+        // get user roles
         const rolesUser = await axios.get(
             `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${searchedId}/role-mappings/realm`,
             {
@@ -504,19 +485,11 @@ async function initializeApp() {
             }
         );
 
-        console.log("User's Realm Roles:", rolesUser.data);
-
-        
-        // console.log("roles user = " + JSON.stringify(rolesUser.data))
-        
         const user = userResponse.data;
         const roles = rolesUser.data;
         const groups = groupsUser.data;
 
-        // console.log('User Details:', user);
-        // console.log('Roles:', roles);
-        // console.log('Groups:', groups);
-
+        // return all of the data compiled
         return res.json({ "user": user, "roles": roles, "groups": groups});
       } catch(err) {
         console.error("Error: " + err)
@@ -569,12 +542,6 @@ async function initializeApp() {
     app.get('/project/members/', keycloak.protect(), async (req, res) => {
       try {
 
-          // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
-          // let body = req.body
-          // let client_req = body.client
-          console.log("In project members innit")
-          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
-
           const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
           const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
@@ -594,9 +561,7 @@ async function initializeApp() {
 
           const adminToken = tokenResponse.data.access_token;
 
-          // console.log("after keycloak initial request")
-
-          // Step 3: Get Users Assigned to This Client
+          // Step 2: Get Users Assigned to This Client
           const usersResponse = await axios.get(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users`,
               { 
@@ -604,10 +569,6 @@ async function initializeApp() {
                 httpsAgent: agent
               }
           );
-
-          // console.log("usersResponse = " + JSON.stringify(usersResponse.data))
-           
-          console.log("after getting users from realm")
 
           return res.json({"users" : usersResponse.data});
       } catch (error) {
@@ -655,14 +616,7 @@ async function initializeApp() {
     app.get('/groups/', keycloak.protect(), async (req, res) => {
       try {
 
-        console.log("======================================") 
-        console.log("============== GROUPS ================")
-        console.log("======================================") 
           // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
-          // let body = req.body
-          // let client_req = body.client
-          console.log("Groups endpoint innit")
-          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
 
           const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
           const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
@@ -683,7 +637,7 @@ async function initializeApp() {
 
           const adminToken = tokenResponse.data.access_token;
 
-          // Step 3: Get Users Assigned to This Client
+          // Step 2: Get Groups Assigned to the realm
           const groupsResponse = await axios.get(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
               { 
@@ -691,10 +645,6 @@ async function initializeApp() {
                 httpsAgent: agent
               }
           );
-
-          // console.log("groupsResponse = " + JSON.stringify(groupsResponse.data))
-           
-          // console.log("after getting groups from realm")
 
           return res.json({"groups" : groupsResponse.data});
       } catch (error) {
@@ -739,14 +689,9 @@ async function initializeApp() {
      *       500:
      *         description: Internal server error
      */
+    // Get all the roles from a realm
     app.get('/roles/', keycloak.protect(), async (req, res) => {
       try {
-
-          // SHOULD GET ALL THE REALM NAMES AND IDs in order to check which is which
-          // let body = req.body
-          // let client_req = body.client
-          console.log("Groups endpoint innit")
-          console.log("Keycloak Authenticated User:", req.kauth?.grant?.access_token?.content);
 
           const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
           const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
@@ -767,7 +712,7 @@ async function initializeApp() {
 
           const adminToken = tokenResponse.data.access_token;
 
-          // Step 3: Get Users Assigned to This Client
+          // Step 2: Get Users roles from this realm
           const rolesResponse = await axios.get(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
               { 
@@ -776,10 +721,7 @@ async function initializeApp() {
               }
           );
 
-          // console.log("rolesResponse = " + JSON.stringify(rolesResponse.data))
-           
-          // console.log("after getting roles from realm")
-
+          // return roles
           return res.json({"roles" : rolesResponse.data});
       } catch (error) {
           console.error("Error fetching client users:", error);
@@ -838,30 +780,23 @@ async function initializeApp() {
     app.post('/assign-team/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
-            console.log("======================================") 
-            console.log("            IN ASSIGN TEAMS           ")
-            console.log("======================================") 
-
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            // if the roles of the token include CIO then continue else return unauthorized
             if (!roles.includes("CIO")) {
                 return res.status(403).json({ error: "Access Denied" });
             }
             
-            console.log("Role includes CIO moving on")
-
-            console.log("body = " + JSON.stringify(req.body))
-            console.log("body = " + req.body)
-
             const { userId, teamName } = req.body;
+            // make sure the request body has both userID or teamName otherwise return error Bad request
             if (!userId || !teamName) {
                 return res.status(400).json({ error: "User ID and Team Name are required" });
             }
             
-            console.log("Checked userId and teamName exist")
 
             const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
             const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
+            // get Keycloak token
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
                 new URLSearchParams({
@@ -877,9 +812,7 @@ async function initializeApp() {
 
             const adminToken = tokenResponse.data.access_token;
 
-            console.log("Got token")
-
-            // Step 3: Get Users Assigned to This Client
+            // Get Groups of the realm
             const groupsResponse = await axios.get(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
                 { 
@@ -888,13 +821,11 @@ async function initializeApp() {
                 }
             );
 
-            // console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
-
+            // if there is a group that has the same name as the query string then return it
             const team = groupsResponse.data.find(group => group.name === teamName);
-            if (!team) return res.status(404).json({ error: "Team not found" });
+            if (!team) return res.status(404).json({ error: "Team not found" }); // if there isn't one then return 404
             
-            // console.log("Adding to team = " + JSON.stringify(team))
-
+            // assign the user to the desired team
             await axios.put(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${team.id}`,
               {}, // Empty body as PUT to this endpoint doesn't require data
@@ -904,8 +835,7 @@ async function initializeApp() {
               }
             )
 
-            console.log(`✅ User ${userId} assigned to team ${teamName}`)
-
+            // if successful return
             res.json({ message: `✅ User ${userId} assigned to team ${teamName}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to team", details: error.response?.data || error.message });
@@ -966,30 +896,22 @@ async function initializeApp() {
     app.post('/delete-group/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
-            console.log("======================================") 
-            console.log("            IN DELETE GROUPS          ")
-            console.log("======================================") 
-
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            // if not CIO then return error
             if (!roles.includes("CIO")) {
                 return res.status(403).json({ error: "Access Denied" });
             }
             
-            console.log("Role includes CIO moving on")
-
-            console.log("body = " + JSON.stringify(req.body))
-            console.log("body = " + req.body)
-
             const { userId, group1 } = req.body;
+            // if request does not have userId in body or group then return error
             if (!userId || !group1) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
-            console.log("Checked userId and group1 exist")
-
             const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
             const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
+            // get Keycloak admin token
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
                 new URLSearchParams({
@@ -1005,9 +927,7 @@ async function initializeApp() {
 
             const adminToken = tokenResponse.data.access_token;
 
-            console.log("Got token")
-
-            // Step 3: Get Users Assigned to This Client
+            // Get groups
             const groupsResponse = await axios.get(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/groups`,
                 { 
@@ -1016,13 +936,11 @@ async function initializeApp() {
                 }
             );
 
-            console.log("After group response with group data = " + JSON.stringify(groupsResponse.data))
-
+            // find a group that matches the groupname mentioned in the query and return it
             const group = groupsResponse.data.find(group => group.name === group1.name);
-            if (!group) return res.status(404).json({ error: "group not found" });
+            if (!group) return res.status(404).json({ error: "group not found" }); // if nothing found return 404
             
-            console.log("Deleting from group = " + JSON.stringify(group))
-
+            // unassign the user from the group
             await axios.delete(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/groups/${group.id}`,
               {
@@ -1030,9 +948,8 @@ async function initializeApp() {
                 httpsAgent: agent
               }
             )
-
-            console.log(`✅ User ${userId} deleted from group ${group1.name}`)
-
+            
+            // return if successful
             res.json({ message: `✅ User ${userId} deleted from group ${group1}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to delete user to group", details: error.response?.data || error.message });
@@ -1090,30 +1007,23 @@ async function initializeApp() {
     app.post('/assign-role/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
-            console.log("======================================") 
-            console.log("            IN ASSIGN ROLES           ")
-            console.log("======================================") 
-
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            // if not user does not have the CIO role  return error
             if (!roles.includes("CIO")) {
                 return res.status(403).json({ error: "Access Denied" });
             }
             
-            console.log("Role includes CIO moving on")
-
-            console.log("body = " + JSON.stringify(req.body))
-            console.log("body = " + req.body)
-
             const { userId, roleName } = req.body;
+            // if the request body does not have userId or roleName then return error
             if (!userId || !roleName) {
                 return res.status(400).json({ error: "User ID and role Name are required" });
             }
             
-            console.log("Checked userId and roleName exist")
 
             const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
             const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
+            // get admin token
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
                 new URLSearchParams({
@@ -1129,9 +1039,7 @@ async function initializeApp() {
 
             const adminToken = tokenResponse.data.access_token;
 
-            console.log("Got token")
-
-            // Step 3: Get Users Assigned to This Client
+            // Get realm roles
             const rolesResponse = await axios.get(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
                 { 
@@ -1140,13 +1048,11 @@ async function initializeApp() {
                 }
             );
 
-            console.log("After role response with role data = " + JSON.stringify(rolesResponse.data))
-
+            // find a role that matches the rolename
             const role = rolesResponse.data.find(role => role.name === roleName);
-            if (!role) return res.status(404).json({ error: "role not found" });
+            if (!role) return res.status(404).json({ error: "role not found" }); // if not found return 404
             
-            console.log("Adding to role = " + JSON.stringify(role))
-
+            // assign user to role
             await axios.post(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
                 [role], // Array of role objects
@@ -1154,28 +1060,8 @@ async function initializeApp() {
                   httpsAgent: agent
                 }
             );
-
-            // const clientsResponse = await axios.get(
-            //     `${keycloakUrl}/admin/realms/${keycloakRealm}/clients`,
-            //     { headers: { "Authorization": `Bearer ${adminToken}` } }
-            // );
-            // const client = clientsResponse.data.find(client => client.clientId === keycloakClientID);
-            // if (!client) throw new Error("Client not found!");
-            // const keycloakClientUUID = client.id;
-            // console.log("After client")
-            // console.log("client = " + JSON.stringify(client))
-
-            // await axios.post(
-            //     `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/clients/${keycloakClientUUID}`,
-            //     [role], // Array of role objects
-            //     {
-            //         headers: { "Authorization": `Bearer ${adminToken}` },
-            //         httpsAgent: agent
-            //     }
-            // );
             
-            console.log(`✅ User ${userId} assigned to team ${roleName}`)
-
+            // return 200 if successful
             res.json({ message: `✅ User ${userId} assigned to role ${roleName}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to assign user to role", details: error.response?.data || error.message });
@@ -1236,30 +1122,22 @@ async function initializeApp() {
     app.post('/delete-role/', keycloak.protect('realm:CIO'), async (req, res) => {
         try {
 
-            console.log("======================================") 
-            console.log("            IN DELETE GROUPS          ")
-            console.log("======================================") 
-
             const roles = req.kauth.grant.access_token.content.realm_access.roles;
+            // if role does not include CIO return error
             if (!roles.includes("CIO")) {
                 return res.status(403).json({ error: "Access Denied" });
             }
             
-            console.log("Role includes CIO moving on")
-
-            console.log("body = " + JSON.stringify(req.body))
-            console.log("body = " + req.body)
-
             const { userId, role } = req.body;
+            // if userId or role not in body then return error
             if (!userId || !role) {
                 return res.status(400).json({ error: "User ID and group Name are required" });
             }
             
-            console.log("Checked userId and groupName exist")
-
             const keycloakSecret = await getSecretValue('Keycloak_Client_Secret');  // ✅ Fetch secret
             const clientSecret = keycloakSecret.Keycloak_Client_Secret;  // ✅ Ensure this matches your AWS secret key
 
+            // get admin token
             const tokenResponse = await axios.post(
                 `${keycloakUrl}/realms/${keycloakRealm}/protocol/openid-connect/token`,
                 new URLSearchParams({
@@ -1275,9 +1153,7 @@ async function initializeApp() {
 
             const adminToken = tokenResponse.data.access_token;
 
-            console.log("Got token")
-
-            // Step 3: Get Users Assigned to This Client
+            // get realm roles
             const rolesResponse = await axios.get(
                 `${keycloakUrl}/admin/realms/${keycloakRealm}/roles`,
                 { 
@@ -1286,13 +1162,11 @@ async function initializeApp() {
                 }
             );
 
-            console.log("After role response with roles data = " + JSON.stringify(rolesResponse.data))
-
+            // if role matches the rolename from the query return it
             const role1 = rolesResponse.data.find(r => r.name === role.name);
-            if (!role1) return res.status(404).json({ error: "role not found" });
+            if (!role1) return res.status(404).json({ error: "role not found" }); // if not found then return 404 
             
-            console.log("Deleting role = " + JSON.stringify(role1))
-
+            // delete client with userId from the specified role
             await axios.delete(
               `${keycloakUrl}/admin/realms/${keycloakRealm}/users/${userId}/role-mappings/realm`,
                 {
@@ -1302,9 +1176,7 @@ async function initializeApp() {
                 }
             );
 
-
-            console.log(`✅ User ${userId} deleted from role ${role1.name}`)
-
+            // return 200 if successful 
             res.json({ message: `✅ User ${userId} deleted from role ${role1.name}` });
         } catch (error) {
             res.status(500).json({ error: "❌ Failed to delete user to role", details: error.response?.data || error.message });
