@@ -28,10 +28,11 @@ const options = {
 app.use(express.json());
 console.log("Swagger Spec:", JSON.stringify(swaggerSpec, null, 2)); // Add this line to debug
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.disable('strict routing')
 
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://checklist.planmeet.net'], // Allow Amplify frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 })); 
 
