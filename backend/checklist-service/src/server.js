@@ -41,6 +41,15 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 })); 
 
+const memoryStore = new session.MemoryStore();
+app.use(session({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: false,
+    store: memoryStore,
+    cookie: { secure: false } 
+}));
+
 
 // Load AWS SDK and set up CloudWatch
 const AWS = require('aws-sdk');
@@ -88,8 +97,6 @@ const dynamoDB = new DynamoDBClient({
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 
 // Keycloak setup
-const memoryStore = new session.MemoryStore();
-app.use(session({ secret: 'my-secret', resave: false, saveUninitialized: true, store: memoryStore }));
 
 const keycloak = new Keycloak({ store: memoryStore }, {
     realm: process.env.KEYCLOAK_REALM,
