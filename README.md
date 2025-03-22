@@ -27,4 +27,4 @@ This application follows a microservice architecture, as we have 2 services in t
 
 The application has the following architecture: 
 
-![Application Architecture]("https://raw.githubusercontent.com/pieterdehoogd02/DevOps/main/images/ArchitectureDiagram.png")
+![Application Architecture]("https://raw.githubusercontent.com/pieterdehoogd02/DevOps/main/images/architecture-diagram.png")
