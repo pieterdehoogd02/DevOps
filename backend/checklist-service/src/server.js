@@ -33,7 +33,8 @@ app.disable('strict routing')
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://checklist.planmeet.net'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 })); 
 
 const memoryStore = new session.MemoryStore();
