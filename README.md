@@ -289,6 +289,8 @@ CIO, then get a group that doesn’t include CIO. Then
 get the checklists belonging to that group.</li>
 </ol>
 
+![Endpoint checklist](images/checklistsEndpoint.png)
+
 The frontend has the following components: login,
 checklist view, users view, view submissions (CIO only),
 submitted forms (PO only). Everything in the frontend is
@@ -309,3 +311,35 @@ task (from Todo to In progress for example and can submit
 done checklists for the CIO to view. A regular user does not
 have any management power and can only view checklists and
 users.
+
+**CIO checklists view:**
+![CIO checklists dashboard](images/UserDashboard-CIO.png)
+
+**PO checklists view:**
+![PO checklists dashboard](images/UserDashboard-PO.png)
+
+**CIO user management view:**
+![Role management panel](images/RoleManagementPanel.png)
+
+=========================================================================
+
+**DevOps practices**
+
+he DevOps approach that we followed involved a GitHub
+actions file, in which we automated the deployment of all
+of our microservices on separate EC2 instances. The process
+involved connecting to the EC2 instances via SSH (by utilising
+GitHub secrets where we stored the SSH key necessary
+for connecting to the instances, or the IP addresses of the
+instances), pulling the GitHub code in the EC2 instance and
+navigating to the intended directory (the one with the docker
+image and the intended service), building the Docker Image
+(the Dockerfile had all of the dependencies needed to run the
+application) and then running that application. We’ve experi-
+enced issues with certificates not updating themselves on the
+authentication service instance, so we decided to run a cron job
+in the Dockerfile to update the CA’s regularly. The Dockerfiles
+for both the authentication service and the checklist service
+both install all the packages from package.json and package-
+lock.json and after this the servers are started. Due to time
+trouble we have decided not to implement IaC.
