@@ -32,9 +32,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec), (req, res, n
     next();
 });
 
-
-// app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
-
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
