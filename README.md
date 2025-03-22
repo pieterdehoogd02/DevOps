@@ -312,6 +312,11 @@ done checklists for the CIO to view. A regular user does not
 have any management power and can only view checklists and
 users.
 
+**CIO checklists view:**
 ![CIO checklists dashboard](images/UserDashboard-CIO.png)
+
+**PO checklists view:**
 ![PO checklists dashboard](images/UserDashboard-PO.png)
+
+**CIO user management view:**
 ![Role management panel](images/RoleManagementPanel.png)
