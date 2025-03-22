@@ -30,7 +30,7 @@ console.log("Swagger Spec:", JSON.stringify(swaggerSpec, null, 2)); // Add this 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(cors({
-    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://checklist.planmeet.net'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 })); 
