@@ -26,7 +26,11 @@ const options = {
 
 // Middleware
 app.use(express.json());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec), (req, res, next) => {
+    console.log('Swagger Docs Route Hit');
+    next();
+});
+
 
 // app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
