@@ -289,6 +289,8 @@ CIO, then get a group that doesn’t include CIO. Then
 get the checklists belonging to that group.</li>
 </ol>
 
+![Endpoint checklist](images/checklistsEndpoint.png)
+
 The frontend has the following components: login,
 checklist view, users view, view submissions (CIO only),
 submitted forms (PO only). Everything in the frontend is
@@ -309,3 +311,7 @@ task (from Todo to In progress for example and can submit
 done checklists for the CIO to view. A regular user does not
 have any management power and can only view checklists and
 users.
+
+![CIO checklists dashboard](images/UserDashboard-CIO.png)
+![PO checklists dashboard](images/UserDashboard-PO.png)
+![Role management panel](images/RoleManagementPanel.png)
