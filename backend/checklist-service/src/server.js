@@ -31,7 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.disable('strict routing')
 
 app.use(cors({
-    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend
+    origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', 'https://checklist.planmeet.net'], // Allow Amplify frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
