@@ -26,6 +26,7 @@ const options = {
 
 // Middleware
 app.use(express.json());
+console.log("Swagger Spec:", JSON.stringify(swaggerSpec, null, 2)); // Add this line to debug
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec), (req, res, next) => {
     console.log('Swagger Docs Route Hit');
     next();

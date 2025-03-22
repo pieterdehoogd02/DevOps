@@ -13,6 +13,7 @@ const swaggerOptions = {
         servers: [
             {
                 url: "https://checklist.planmeet.net", // Update with your actual API URL
+                description: "Checklist server",
             },
         ],
     },
