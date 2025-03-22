@@ -27,10 +27,7 @@ const options = {
 // Middleware
 app.use(express.json());
 console.log("Swagger Spec:", JSON.stringify(swaggerSpec, null, 2)); // Add this line to debug
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec), (req, res, next) => {
-    console.log('Swagger Docs Route Hit');
-    next();
-});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(cors({
     origin: ['https://main.d1b3jmhnz9hi7t.amplifyapp.com', '*'], // Allow Amplify frontend

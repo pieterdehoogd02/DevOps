@@ -20,6 +20,6 @@ const swaggerOptions = {
     apis: ["./src/server.js"], // Point to the file where your API routes are defined
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerSpec = swaggerJsDoc(swaggerOptions);
 
-module.exports = { swaggerUi, swaggerDocs };
+module.exports = { swaggerUi, swaggerSpec };
