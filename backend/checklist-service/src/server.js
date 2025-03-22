@@ -49,6 +49,7 @@ const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' }); // Ensure this m
 // Middleware to track request latency
 app.use((req, res, next) => {
     const start = Date.now();
+    res.setHeader("Content-Security-Policy", "default-src 'none'; img-src 'self' https://checklist.planmeet.net;");
     res.on('finish', async () => {
         const latency = Date.now() - start; // Measure latency in milliseconds
         const params = {
