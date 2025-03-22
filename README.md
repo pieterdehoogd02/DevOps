@@ -27,4 +27,4 @@ This application follows a microservice architecture, as we have 2 services in t
 
 The application has the following architecture: 
 
-![Application Architecture]("images/Architecture Diagram.png")
+![Application Architecture]("images/ArchitectureDiagram.png")
