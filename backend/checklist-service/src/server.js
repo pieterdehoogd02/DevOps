@@ -46,7 +46,6 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-
 // Load AWS SDK and set up CloudWatch
 const AWS = require('aws-sdk');
 const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' }); // Ensure this matches your AWS region
@@ -54,7 +53,7 @@ const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' }); // Ensure this m
 // Middleware to track request latency
 app.use((req, res, next) => {
     const start = Date.now();
-    res.setHeader("Content-Security-Policy", "default-src 'none'; img-src 'self' https://checklist.planmeet.net;");
+    // res.setHeader("Content-Security-Policy", "default-src 'none'; img-src 'self' https://checklist.planmeet.net;");
     res.on('finish', async () => {
         const latency = Date.now() - start; // Measure latency in milliseconds
         const params = {
