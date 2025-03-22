@@ -755,6 +755,6 @@ app.put('/submissions/:id/:assignedTeam/edit', keycloak.protect('realm:PO'), asy
 });
 
 // Start HTTPS Server
-https.createServer(options, app).listen(PORT, () => {
+https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Checklist Service is running on HTTPS at https://checklist.planmeet.net:${PORT}`);
 });
