@@ -21,7 +21,7 @@ jobs:
 
     - name: Initialise the Authentication service
       run: |
-        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@54.164.144.99 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@44.203.87.220 << 'EOF'
 
           ls -la
 
@@ -70,7 +70,7 @@ jobs:
 
     - name: Connect to Keycloak Instance & start Keycloak + DB
       run: |
-        ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes ubuntu@184.72.205.213 << 'EOF'
+        ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes ubuntu@3.85.172.71 << 'EOF'
          
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
@@ -91,7 +91,7 @@ jobs:
     - name: Make checklist service 
       run: | 
         echo "${{ secrets.EC2_SSH_KEY }}"
-        ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes ubuntu@44.203.90.240 << 'EOF'
+        ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes ubuntu@13.218.67.145 << 'EOF'
 
           # Ensure repository is initialized correctly
           if [ ! -d ".git" ]; then 
