@@ -93,13 +93,14 @@ const dynamoDB = new DynamoDBClient({
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 
 // Keycloak setup
-
 const keycloak = new Keycloak({ store: memoryStore }, {
     realm: process.env.KEYCLOAK_REALM,
     "auth-server-url": process.env.KEYCLOAK_URL,
     resource: process.env.KEYCLOAK_CLIENT_ID,
     "bearer-only": true
 });
+
+// setup keycloak as middleware
 app.use(keycloak.middleware());
 
 // ✅ Health check
@@ -374,6 +375,7 @@ async function getAllChecklists() {
     }
 }
 
+
 /**
  * @swagger
  * /checklists/team/{team}:
@@ -457,6 +459,7 @@ app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), asy
     const { id, assignedTeam } = req.params;
     const { title, description } = req.body;
 
+    // if either title or description is missing then return with an error
     if (!title || !description) {
         return res.status(400).json({ error: "Title and Description are required" });
     }
@@ -472,6 +475,7 @@ app.put('/checklists/:id/:assignedTeam/edit', keycloak.protect('realm:CIO'), asy
 
         if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
 
+        // update the checklist with new title, description and date 
         await dynamoDB.send(new UpdateItemCommand({
             TableName: TABLE_NAME,
             Key: {
