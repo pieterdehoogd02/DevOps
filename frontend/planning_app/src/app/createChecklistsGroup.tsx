@@ -511,7 +511,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
             </select>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setShowUpdateModal(null)} className="p-2 bg-gray-300 rounded">Cancel</button>
-              <button onClick={() => handleUpdateStatus(showUpdateModal)} className="p-2 bg-blue-500 text-white rounded">Update</button>
+              <button onClick={() => {handleUpdateStatus(showUpdateModal); console.log("updating checklist status")}} className="p-2 bg-blue-500 text-white rounded">Update</button>
             </div>
           </div>
         </div>
