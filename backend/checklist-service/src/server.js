@@ -286,6 +286,8 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
     try {
         // let result = await dynamoDB.send(new GetItemCommand({ TableName: TABLE_NAME, Key: { id: { S: id } } }));
         
+        console.log("in checklist status before the first request")
+
         let result = await dynamoDB.send(new GetItemCommand({
             TableName: TABLE_NAME,
             Key: {
