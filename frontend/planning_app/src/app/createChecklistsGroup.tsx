@@ -193,6 +193,8 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
     if (!assignedTeam || !newStatus) return;
 
     try {
+      console.log("updating checklist status now")
+
       const oldChecklist = checklists.find((item) => item.id.S === id);
       const oldStatus = oldChecklist.status.S;
 
@@ -206,6 +208,7 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
       });
 
       if (response.ok) {
+        console.log("checklist status should be updated")
         setShowUpdateModal(null);
         setNewStatus("");
         

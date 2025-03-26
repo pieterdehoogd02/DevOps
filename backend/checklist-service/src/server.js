@@ -280,6 +280,9 @@ app.get("/checklists", keycloak.protect(), async (req, res) => {
 // tested
 // ✅ PO: Update checklist status
 app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (req, res) => {
+
+    console.log("beginning of assigned team endpoint")
+
     const { id } = req.params;
     const { status } = req.body;
 
