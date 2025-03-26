@@ -294,7 +294,11 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
             }
         }));        
 
+        console.log("changing checklist status")
+
         if (!result.Item) return res.status(404).json({ error: "Checklist not found" });
+        
+        console.log("checklist found")
 
         await dynamoDB.send(new UpdateItemCommand({
             TableName: TABLE_NAME,
@@ -310,6 +314,8 @@ app.put('/checklists/:id/:assignedTeam', keycloak.protect('realm:PO'), async (re
                 ":u": { S: new Date().toISOString() }
             }
         }));
+        
+        console.log("checklist status updated to status = " + status)
 
         res.json({ message: "Checklist updated successfully" });
     } catch (error) {
