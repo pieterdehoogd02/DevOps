@@ -197,6 +197,9 @@ function Checklist({ title, assignedTeam, userRole, token }: { title: string; as
 
       const oldChecklist = checklists.find((item) => item.id.S === id);
       const oldStatus = oldChecklist.status.S;
+      
+      console.log("new status: " + newStatus)
+      console.log("API_URL = " + API_URL)
 
       const response = await fetch(`${API_URL}/checklists/${id}/${assignedTeam}`, {
         method: "PUT",
